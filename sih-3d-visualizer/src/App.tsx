@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { CanvasViewport, type ViewportSettings } from './components/CanvasViewport';
 import { HUDOverlay } from './components/HUDOverlay';
 import { MCUTelemetryDashboard } from './components/MCUTelemetryDashboard';
+import { DigitalTwinMinefield } from './components/DigitalTwinMinefield';
 import { DocPanel } from './components/DocPanel';
 import type { RockInfo } from './components/MiningEnvironment';
-import { Flame, Sun, Moon, Layers, Cpu } from 'lucide-react';
+import { Flame, Sun, Moon, Layers, Cpu, Layers3 } from 'lucide-react';
 
 export interface AppThemeSettings {
   themeMode: 'light' | 'dark';
@@ -13,7 +14,7 @@ export interface AppThemeSettings {
 
 export default function App() {
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
-  const [viewWindow, setViewWindow] = useState<'cad' | 'mcuDashboard'>('cad');
+  const [viewWindow, setViewWindow] = useState<'cad' | 'mcuDashboard' | 'digitalTwin'>('mcuDashboard');
 
   const [settings, setSettings] = useState<ViewportSettings>({
     envMode: 'lithoPin',
@@ -31,7 +32,7 @@ export default function App() {
 
     // LithoPin Stake Settings
     lithoPinLockProgress: 0, // 0 = LOCKED (0°), 1 = RELEASED (90° CCW)
-    lithoPinAttachStep: 0, // Completely Separated Cap & Shaft View by default
+    lithoPinAttachStep: 5, // Fully Seated & Locked Cap View by default
     lithoPinRemoveStep: 0,
     lithoPinCapRotation: 0,
     lithoPinExploded: 0,
@@ -79,12 +80,12 @@ export default function App() {
           <div>
             <span className="gradient-text">GeoNail 3D Visualizer</span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: 8 }}>
-              v3.4.0 CAD & MCU
+              v3.5.0 Digital Twin & MCU
             </span>
           </div>
         </div>
 
-        {/* View Mode Switcher: 3D CAD vs MCU Telemetry Dashboard */}
+        {/* View Mode Switcher: 3D CAD vs MCU Telemetry Dashboard vs Digital Twin Minefield */}
         <div
           style={{
             display: 'flex',
@@ -97,15 +98,6 @@ export default function App() {
           }}
         >
           <button
-            className={`icon-btn ${viewWindow === 'cad' ? 'active' : ''}`}
-            onClick={() => setViewWindow('cad')}
-            style={{ width: 'auto', padding: '4px 16px', fontSize: '0.82rem', fontWeight: 800, gap: 6 }}
-          >
-            <Layers size={15} color="#0284c7" />
-            <span>GEONAIL 3D CAD</span>
-          </button>
-
-          <button
             className={`icon-btn ${viewWindow === 'mcuDashboard' ? 'active' : ''}`}
             onClick={() => setViewWindow('mcuDashboard')}
             style={{ width: 'auto', padding: '4px 16px', fontSize: '0.82rem', fontWeight: 800, gap: 6 }}
@@ -114,6 +106,23 @@ export default function App() {
             <span>MCU TELEMETRY DASHBOARD</span>
           </button>
 
+          <button
+            className={`icon-btn ${viewWindow === 'digitalTwin' ? 'active' : ''}`}
+            onClick={() => setViewWindow('digitalTwin')}
+            style={{ width: 'auto', padding: '4px 16px', fontSize: '0.82rem', fontWeight: 800, gap: 6 }}
+          >
+            <Layers3 size={15} color="#eab308" />
+            <span>DIGITAL TWIN MINE FIELD</span>
+          </button>
+
+          <button
+            className={`icon-btn ${viewWindow === 'cad' ? 'active' : ''}`}
+            onClick={() => setViewWindow('cad')}
+            style={{ width: 'auto', padding: '4px 16px', fontSize: '0.82rem', fontWeight: 800, gap: 6 }}
+          >
+            <Layers size={15} color="#0284c7" />
+            <span>GEONAIL 3D CAD</span>
+          </button>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -141,7 +150,9 @@ export default function App() {
 
       {/* Main Viewport Container */}
       <main className="main-viewport-container">
-        {viewWindow === 'mcuDashboard' ? (
+        {viewWindow === 'digitalTwin' ? (
+          <DigitalTwinMinefield settings={settings} setSettings={setSettings} />
+        ) : viewWindow === 'mcuDashboard' ? (
           <MCUTelemetryDashboard settings={settings} setSettings={setSettings} />
         ) : (
           <>
