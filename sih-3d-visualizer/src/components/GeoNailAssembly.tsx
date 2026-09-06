@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Html, PivotControls } from '@react-three/drei';
 
-export interface LithoPinProps {
+export interface GeoNailProps {
   /** Attach sequence step (0 = Unattached, 1 = Align 0°, 2 = Push 10mm, 3 = Rotate CW 90°, 4 = Drop 4mm, 5 = Captive Infinite Rotate) */
   attachStep: number;
   /** Remove sequence step (0 = Seated in Level 2, 1 = Align OPEN 0°, 2 = Gate Retracted, 3 = Pull Up 4mm, 4 = Rotate CCW 90°, 5 = Pull Up 10mm, 6 = Detached) */
@@ -37,7 +37,7 @@ export interface ComponentSpec {
   loadPath: string;
 }
 
-export const LITHO_PIN_COMPONENTS: Record<string, ComponentSpec> = {
+export const GEONAIL_COMPONENTS: Record<string, ComponentSpec> = {
   main_shaft: {
     name: 'main_shaft',
     title: 'Main Structural Shaft',
@@ -240,7 +240,7 @@ export const LITHO_PIN_COMPONENTS: Record<string, ComponentSpec> = {
   },
 };
 
-interface LithoPinAssemblyProps {
+interface GeoNailAssemblyProps {
   attachStep: number;
   removeStep: number;
   capRotationAngle: number;
@@ -257,7 +257,7 @@ interface LithoPinAssemblyProps {
   onDragStateChange?: (isDragging: boolean) => void;
 }
 
-export const LithoPinAssembly: React.FC<LithoPinAssemblyProps> = ({
+export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
   attachStep,
   removeStep,
   capRotationAngle,
@@ -445,7 +445,7 @@ export const LithoPinAssembly: React.FC<LithoPinAssemblyProps> = ({
     onClick: (e: any) => {
       e.stopPropagation();
       if (onSelectComponent) {
-        const spec = LITHO_PIN_COMPONENTS[compName];
+        const spec = GEONAIL_COMPONENTS[compName];
         if (spec) {
           onSelectComponent(compName, spec.title, {
             Material: spec.material,
@@ -476,17 +476,17 @@ export const LithoPinAssembly: React.FC<LithoPinAssemblyProps> = ({
       <group position={[0, 6.5, 0]}>
 
         {/* Interactive Floating Hover Tooltip */}
-        {hoveredComp && LITHO_PIN_COMPONENTS[hoveredComp] && (
+        {hoveredComp && GEONAIL_COMPONENTS[hoveredComp] && (
           <Html position={[0, 5.2, 0]} center distanceFactor={14}>
             <div className="hover-tooltip">
               <div className="hover-tooltip-title">
-                🔍 {LITHO_PIN_COMPONENTS[hoveredComp].title}
+                🔍 {GEONAIL_COMPONENTS[hoveredComp].title}
               </div>
               <div className="hover-tooltip-desc">
-                {LITHO_PIN_COMPONENTS[hoveredComp].functionality}
+                {GEONAIL_COMPONENTS[hoveredComp].functionality}
               </div>
               <div style={{ fontSize: '0.68rem', color: 'var(--accent-cyan)', marginTop: 2, fontWeight: 600 }}>
-                Rating: {LITHO_PIN_COMPONENTS[hoveredComp].ipRating}
+                Rating: {GEONAIL_COMPONENTS[hoveredComp].ipRating}
               </div>
             </div>
           </Html>

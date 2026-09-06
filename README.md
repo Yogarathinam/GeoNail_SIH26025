@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏔️ GeoNail / LithoPin Subterranean System
+# 🏔️ GeoNail Subterranean System
 ### *Smart India Hackathon (SIH 2026) — Problem Statement Solution #SIH26025*
 
 [![Team](https://img.shields.io/badge/Team-Team%20Stellar-blueviolet?style=for-the-badge&logo=shield)](https://github.com/Yogarathinam/GeoNail_SIH26025)
@@ -25,7 +25,7 @@
 
 | Role | Name | Email Contact | Institutional Affiliation |
 | :--- | :--- | :--- | :--- |
-| 👑 **Team Leader** | **YOGARATHINAM T L** | `yogarathinam26@gmail.com` | R.M.D. Engineering College |
+| 👑 **Team Leader** | **YOGARATHINAM T L** | `23104177@rmd.ac.in` | R.M.D. Engineering College |
 | 🛡️ Team Member | **Goutham V** | `23104180@rmd.ac.in` | R.M.D. Engineering College |
 | ⚙️ Team Member | **Sanjay Kumar K** | `23104142@rmd.ac.in` | R.M.D. Engineering College |
 | 🔬 Team Member | **Saravan kumaar R** | `23104146@rmd.ac.in` | R.M.D. Engineering College |

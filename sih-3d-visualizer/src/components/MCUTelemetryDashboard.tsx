@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
-import { LithoPinAssembly } from './LithoPinAssembly';
+import { GeoNailAssembly } from './GeoNailAssembly';
 import type { ViewportSettings } from './CanvasViewport';
 import {
   Wifi,
@@ -947,7 +947,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
 
           {/* Synchronized Realtime IMU Rotation Group */}
           <group rotation={[pitchRad, rollRad, 0]}>
-            <LithoPinAssembly
+            <GeoNailAssembly
               attachStep={5} // Always rendered in Fully Assembled & Deployed Subterranean State
               removeStep={0}
               capRotationAngle={settings.lithoPinCapRotation}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { ViewportSettings } from './CanvasViewport';
 import type { RockInfo } from './MiningEnvironment';
-import { LITHO_PIN_COMPONENTS } from './LithoPinAssembly';
+import { GEONAIL_COMPONENTS } from './GeoNailAssembly';
 import {
   FileText,
   ChevronRight,
@@ -32,7 +32,7 @@ export const DocPanel: React.FC<DocPanelProps> = ({
 
 
   const activeLithoPinSpec = settings.selectedComponent
-    ? LITHO_PIN_COMPONENTS[settings.selectedComponent]
+    ? GEONAIL_COMPONENTS[settings.selectedComponent]
     : null;
 
   return (
@@ -155,11 +155,11 @@ export const DocPanel: React.FC<DocPanelProps> = ({
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>
                   <Layers size={14} color="#00f2fe" />
-                  <span>Assembly Components ({Object.keys(LITHO_PIN_COMPONENTS).length} Named Meshes)</span>
+                  <span>Assembly Components ({Object.keys(GEONAIL_COMPONENTS).length} Named Meshes)</span>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 180, overflowY: 'auto' }}>
-                  {Object.values(LITHO_PIN_COMPONENTS).map((comp, idx) => {
+                  {Object.values(GEONAIL_COMPONENTS).map((comp, idx) => {
                     const isSelected = settings.selectedComponent === comp.name;
                     return (
                       <button

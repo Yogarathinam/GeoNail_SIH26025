@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { ViewportSettings } from './CanvasViewport';
-import { LITHO_PIN_COMPONENTS } from './LithoPinAssembly';
+import { GEONAIL_COMPONENTS } from './GeoNailAssembly';
 
 import {
   RotateCw,
@@ -150,7 +150,7 @@ export const HUDOverlay: React.FC<HUDOverlayProps> = ({ settings, setSettings })
   return (
     <>
       {/* Top-Left Corner Component Inspector Card (100% Zoom-Immune & Screen-Space) */}
-      {settings.envMode === 'lithoPin' && settings.selectedComponent && LITHO_PIN_COMPONENTS[settings.selectedComponent] && (
+      {settings.envMode === 'lithoPin' && settings.selectedComponent && GEONAIL_COMPONENTS[settings.selectedComponent] && (
         <div
           className="glass-panel"
           style={{
@@ -170,7 +170,7 @@ export const HUDOverlay: React.FC<HUDOverlayProps> = ({ settings, setSettings })
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
             <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#38bdf8' }}>
-              🔍 {LITHO_PIN_COMPONENTS[settings.selectedComponent].title}
+              🔍 {GEONAIL_COMPONENTS[settings.selectedComponent].title}
             </span>
             <button
               onClick={() => setSettings((s) => ({ ...s, selectedComponent: null }))}
@@ -182,20 +182,20 @@ export const HUDOverlay: React.FC<HUDOverlayProps> = ({ settings, setSettings })
           </div>
 
           <div style={{ fontSize: '0.74rem', color: '#cbd5e1', marginBottom: 6, lineHeight: 1.4 }}>
-            {LITHO_PIN_COMPONENTS[settings.selectedComponent].functionality}
+            {GEONAIL_COMPONENTS[settings.selectedComponent].functionality}
           </div>
 
           <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginBottom: 3 }}>
-            <strong style={{ color: '#e2e8f0' }}>Material:</strong> {LITHO_PIN_COMPONENTS[settings.selectedComponent].material}
+            <strong style={{ color: '#e2e8f0' }}>Material:</strong> {GEONAIL_COMPONENTS[settings.selectedComponent].material}
           </div>
 
           <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginBottom: 3 }}>
-            <strong style={{ color: '#e2e8f0' }}>Dimensions:</strong> {LITHO_PIN_COMPONENTS[settings.selectedComponent].dimensions}
+            <strong style={{ color: '#e2e8f0' }}>Dimensions:</strong> {GEONAIL_COMPONENTS[settings.selectedComponent].dimensions}
           </div>
 
           <div style={{ fontSize: '0.68rem', color: '#10b981', fontWeight: 700, marginTop: 6, display: 'flex', alignItems: 'center', gap: 4 }}>
             <ShieldCheck size={14} color="#10b981" />
-            <span>Rating: {LITHO_PIN_COMPONENTS[settings.selectedComponent].ipRating}</span>
+            <span>Rating: {GEONAIL_COMPONENTS[settings.selectedComponent].ipRating}</span>
           </div>
         </div>
       )}

@@ -13,7 +13,7 @@ import {
 import { MiningEnvironment, type MiningSettings, type RockInfo } from './MiningEnvironment';
 import { SunSkyEnvironment } from './SunSkyEnvironment';
 import { UndergroundShaft } from './UndergroundShaft';
-import { LithoPinAssembly } from './LithoPinAssembly';
+import { GeoNailAssembly } from './GeoNailAssembly';
 
 export interface ViewportSettings {
   envMode: 'openPit' | 'undergroundShaft' | 'lithoPin';
@@ -147,7 +147,7 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({
           ) : settings.envMode === 'undergroundShaft' ? (
             <UndergroundShaft />
           ) : (
-            <LithoPinAssembly
+            <GeoNailAssembly
               attachStep={settings.lithoPinAttachStep}
               removeStep={settings.lithoPinRemoveStep}
               capRotationAngle={settings.lithoPinCapRotation}
@@ -160,7 +160,7 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({
               showLabels={settings.showComponentLabels}
               selectedComponent={settings.selectedComponent}
               onSelectComponent={onSelectComponent}
-              onDragStateChange={(isDragging) => setIsDraggingComponent(isDragging)}
+              onDragStateChange={(isDragging: boolean) => setIsDraggingComponent(isDragging)}
             />
 
           )}
