@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Html, Sparkles, ContactShadows } from '@react-three/drei';
 import * as THREE from 'three';
@@ -15,8 +15,18 @@ import {
   MapPin,
   TrendingDown,
   Layers3,
-  Truck,
+  Bluetooth,
+  Usb,
+  Wifi,
+  Radio,
+  Cpu,
+  X,
+  CheckCircle2,
+  Zap,
 } from 'lucide-react';
+
+const BLE_SERVICE_UUID = 'f2e50000-6c9b-4bd4-8c39-4f3c7e000001';
+const BLE_TELEMETRY_UUID = 'f2e50001-6c9b-4bd4-8c39-4f3c7e000001';
 
 export interface NodeDigitalTwinData {
   id: string;
@@ -147,30 +157,23 @@ function SlopeTerraceTerrain({
 }
 
 // ----------------------------------------------------------------------
-// 2. REAL-WORLD SCALE REFERENCE: CAT 797 MINING HAUL TRUCK (1:1 SCALE)
+// 2. REAL-WORLD SCALE REFERENCE: CAT 797 MINING HAUL TRUCK
 // ----------------------------------------------------------------------
 function MiningHaulTruck({ position, rotation }: { position: [number, number, number]; rotation: [number, number, number] }) {
   return (
     <group position={position} rotation={rotation} scale={0.7}>
-      {/* Yellow Truck Body Chassis */}
       <mesh position={[0, 1.8, 0]} castShadow>
         <boxGeometry args={[3.8, 2.2, 6.5]} />
         <meshStandardMaterial color="#eab308" metalness={0.6} roughness={0.3} />
       </mesh>
-
-      {/* Dump Bed */}
       <mesh position={[0, 3.2, -0.4]} rotation={[-0.1, 0, 0]} castShadow>
         <boxGeometry args={[4.2, 1.8, 6.8]} />
         <meshStandardMaterial color="#ca8a04" metalness={0.7} roughness={0.4} />
       </mesh>
-
-      {/* Cabin */}
       <mesh position={[1.4, 3.2, 2.4]} castShadow>
         <boxGeometry args={[1.2, 1.4, 1.5]} />
         <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
       </mesh>
-
-      {/* 6 Massive Mining Tires */}
       {[-1.8, 1.8].map((x) =>
         [-2.2, 0, 2.2].map((z) => (
           <mesh key={`${x}-${z}`} position={[x, 0.9, z]} rotation={[0, 0, Math.PI / 2]} castShadow>
@@ -189,7 +192,6 @@ function MiningHaulTruck({ position, rotation }: { position: [number, number, nu
 function HydraulicExcavator({ position, rotation }: { position: [number, number, number]; rotation: [number, number, number] }) {
   return (
     <group position={position} rotation={rotation} scale={0.65}>
-      {/* Crawler Tracks */}
       <mesh position={[-1.2, 0.5, 0]} castShadow>
         <boxGeometry args={[0.6, 1.0, 4.5]} />
         <meshStandardMaterial color="#0f172a" roughness={0.9} />
@@ -198,14 +200,10 @@ function HydraulicExcavator({ position, rotation }: { position: [number, number,
         <boxGeometry args={[0.6, 1.0, 4.5]} />
         <meshStandardMaterial color="#0f172a" roughness={0.9} />
       </mesh>
-
-      {/* Excavator Cabin Body */}
       <mesh position={[0, 2.0, 0]} castShadow>
         <boxGeometry args={[2.8, 2.0, 3.2]} />
         <meshStandardMaterial color="#eab308" metalness={0.6} roughness={0.3} />
       </mesh>
-
-      {/* Boom Arm */}
       <mesh position={[0, 3.2, 1.8]} rotation={[0.6, 0, 0]} castShadow>
         <boxGeometry args={[0.6, 4.2, 0.6]} />
         <meshStandardMaterial color="#ca8a04" metalness={0.7} roughness={0.3} />
@@ -215,26 +213,21 @@ function HydraulicExcavator({ position, rotation }: { position: [number, number,
 }
 
 // ----------------------------------------------------------------------
-// 4. SUB-SURFACE PENETRATING ANCHOR SHAFT (REAL 3.5m ANCHOR DEPTH)
+// 4. SUB-SURFACE PENETRATING ANCHOR SHAFT
 // ----------------------------------------------------------------------
 function SubsurfaceAnchorShaft({ displacementMm }: { displacementMm: number }) {
   const extensionY = (displacementMm * -0.06);
 
   return (
     <group position={[0, -2.5 + extensionY, 0]}>
-      {/* Subterranean Steel Casing Pipe */}
       <mesh position={[0, -1.8, 0]}>
         <cylinderGeometry args={[0.12, 0.12, 3.6, 16]} />
         <meshStandardMaterial color="#94a3b8" metalness={0.85} roughness={0.2} />
       </mesh>
-
-      {/* Lower Spike Anchor Tip (Piece 2) */}
       <mesh position={[0, -3.8, 0]}>
         <coneGeometry args={[0.18, 0.8, 16]} />
         <meshStandardMaterial color="#eab308" metalness={0.9} roughness={0.1} />
       </mesh>
-
-      {/* Anchor Magnetic Field Pulse Lines */}
       <mesh position={[0, -3.8, 0]}>
         <sphereGeometry args={[0.45, 16, 16]} />
         <meshBasicMaterial color="#eab308" transparent opacity={0.3} wireframe />
@@ -256,7 +249,6 @@ function StrainHeatmapRing({
   displacementMm: number;
 }) {
   const ringRef = useRef<THREE.Mesh>(null!);
-
   const color = status === 'critical' ? '#ef4444' : status === 'warning' ? '#f59e0b' : '#10b981';
   const scaleMultiplier = 1.0 + Math.min(2.5, displacementMm / 12.0);
 
@@ -290,74 +282,270 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
   const [showCutaway, setShowCutaway] = useState<boolean>(false);
   const [autoRotate, setAutoRotate] = useState<boolean>(false);
   const [showHeatmap, setShowHeatmap] = useState<boolean>(true);
+  const [showConnectModal, setShowConnectModal] = useState<boolean>(false);
 
+  // MCU Hardware Transport Connection State
+  const [transportMode, setTransportMode] = useState<'simulated' | 'wifi' | 'ble' | 'serial'>('simulated');
+  const [connectionStatus, setConnectionStatus] = useState<'disconnected' | 'connecting' | 'connected'>('disconnected');
+  const [pairedNodeId, setPairedNodeId] = useState<string>('GN-001');
+  const [packetCount, setPacketCount] = useState<number>(0);
+
+  // Live MCU telemetry object
+  const [liveMcuTelemetry, setLiveMcuTelemetry] = useState<{
+    roll: number;
+    pitch: number;
+    yaw: number;
+    displacementMm: number;
+    vibrationRms: number;
+    healthScore: number;
+    anomaly: string;
+    soilMoisture: number;
+    temperatureC: number;
+  }>({
+    roll: 0.0,
+    pitch: 0.0,
+    yaw: 0.0,
+    displacementMm: 2.4,
+    vibrationRms: 0.02,
+    healthScore: 100,
+    anomaly: 'NONE',
+    soilMoisture: 42.5,
+    temperatureC: 25.0,
+  });
+
+  const bleCharacteristicRef = useRef<any>(null);
+  const bleBufferRef = useRef<string>('');
   const orbitRef = useRef<any>(null);
 
-  // Live node states (Node GN-001 reacts dynamically to landslide simulation or MCU telemetry!)
+  // Process incoming JSON telemetry packets from BLE / Serial / Wi-Fi
+  const handleIncomingJson = (jsonStr: string) => {
+    try {
+      const data = JSON.parse(jsonStr);
+      if (data && (data.motion || data.device)) {
+        const m = data.motion || {};
+        const mag = data.magnetic || {};
+        const st = data.status || {};
+        const env = data.environment || {};
+
+        const magVal = mag.mag_ut !== undefined ? mag.mag_ut : (mag.magnitude_ut || 47.60);
+        const magneticDelta = Math.max(0, 47.60 - magVal);
+        const displacementMm = magneticDelta * 2.85;
+
+        setLiveMcuTelemetry({
+          roll: m.roll || 0.0,
+          pitch: m.pitch || 0.0,
+          yaw: m.gz || 0.0,
+          displacementMm: displacementMm,
+          vibrationRms: m.vib_rms !== undefined ? m.vib_rms : (m.vibration || 0.02),
+          healthScore: st.health !== undefined ? st.health : (st.health_score || 100),
+          anomaly: st.anomaly || 'NONE',
+          soilMoisture: env.soil_pct !== undefined ? env.soil_pct : (env.soil_percent || 40.0),
+          temperatureC: env.temp_c !== undefined ? env.temp_c : (env.temperature_c || 25.0),
+        });
+
+        setPacketCount((p) => p + 1);
+        return true;
+      }
+    } catch (e) {
+      // Chunk buffering in progress
+    }
+    return false;
+  };
+
+  // Connect Web Bluetooth (BLE)
+  const connectBLE = async () => {
+    if (!('bluetooth' in navigator)) {
+      alert('Web Bluetooth API is not supported in this browser. Please use Chrome or Edge.');
+      return;
+    }
+    try {
+      setConnectionStatus('connecting');
+      const device = await (navigator as any).bluetooth.requestDevice({
+        filters: [{ namePrefix: 'GeoNail' }],
+        optionalServices: [BLE_SERVICE_UUID],
+      });
+
+      device.addEventListener('gattserverdisconnected', () => {
+        setConnectionStatus('disconnected');
+      });
+
+      const server = await device.gatt.connect();
+      const service = await server.getPrimaryService(BLE_SERVICE_UUID);
+      const characteristic = await service.getCharacteristic(BLE_TELEMETRY_UUID);
+      bleCharacteristicRef.current = characteristic;
+
+      await characteristic.startNotifications();
+      bleBufferRef.current = '';
+
+      characteristic.addEventListener('characteristicvaluechanged', (event: any) => {
+        const value = event.target.value;
+        const decoder = new TextDecoder('utf-8');
+        const chunk = decoder.decode(value);
+
+        bleBufferRef.current += chunk;
+        const buffer = bleBufferRef.current.trim();
+
+        if (buffer.startsWith('{') && buffer.endsWith('}')) {
+          if (handleIncomingJson(buffer)) {
+            bleBufferRef.current = '';
+          }
+        } else if (buffer.includes('{') && buffer.includes('}')) {
+          const start = buffer.indexOf('{');
+          const end = buffer.lastIndexOf('}');
+          if (end > start) {
+            const candidate = buffer.substring(start, end + 1);
+            if (handleIncomingJson(candidate)) {
+              bleBufferRef.current = buffer.substring(end + 1);
+            }
+          }
+        }
+      });
+
+      setConnectionStatus('connected');
+      setTransportMode('ble');
+      setShowConnectModal(false);
+    } catch (err) {
+      console.error('BLE error:', err);
+      setConnectionStatus('disconnected');
+    }
+  };
+
+  // Connect Web Serial (USB)
+  const connectSerial = async () => {
+    if (!('serial' in navigator)) {
+      alert('Web Serial API is not supported in this browser. Please use Chrome or Edge.');
+      return;
+    }
+    try {
+      setConnectionStatus('connecting');
+      const port = await (navigator as any).serial.requestPort();
+      await port.open({ baudRate: 115200 });
+
+      setConnectionStatus('connected');
+      setTransportMode('serial');
+      setShowConnectModal(false);
+
+      const textDecoder = new TextDecoderStream();
+      port.readable.pipeTo(textDecoder.writable);
+      const reader = textDecoder.readable.getReader();
+
+      let serialBuffer = '';
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) {
+          reader.releaseLock();
+          break;
+        }
+        if (value) {
+          serialBuffer += value;
+          const lines = serialBuffer.split('\n');
+          serialBuffer = lines.pop() || '';
+
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+              handleIncomingJson(trimmed);
+            }
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Serial error:', err);
+      setConnectionStatus('disconnected');
+    }
+  };
+
+  // Wi-Fi REST Client
+  useEffect(() => {
+    if (transportMode === 'wifi') {
+      setConnectionStatus('connecting');
+      const interval = setInterval(async () => {
+        try {
+          const res = await fetch(`http://192.168.4.1/api/v1/telemetry`);
+          if (res.ok) {
+            const raw = await res.text();
+            if (handleIncomingJson(raw)) {
+              setConnectionStatus('connected');
+            }
+          } else {
+            setConnectionStatus('disconnected');
+          }
+        } catch (err) {
+          setConnectionStatus('disconnected');
+        }
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [transportMode]);
+
+  // Compute live node states (Live MCU telemetry binds to pairedNodeId!)
   const nodes: Record<string, NodeDigitalTwinData> = useMemo(() => {
+    const isMcuConnected = connectionStatus === 'connected';
+
     return {
       'GN-001': {
         id: 'GN-001',
-        name: 'GeoNail Probe #001 (Live Stream)',
+        name: 'GeoNail Probe #001 (Primary Escarpment)',
         zone: 'Zone A - Primary Escarpment Slope',
         position: [-6.5, -2.1, -4.5],
-        roll: simulatedLandslide ? 16.4 : 1.2,
-        pitch: simulatedLandslide ? -12.8 : 0.8,
-        yaw: 42.0,
-        displacementMm: simulatedLandslide ? 34.5 : 2.4,
-        vibrationRms: simulatedLandslide ? 0.842 : 0.022,
-        healthScore: simulatedLandslide ? 62 : 98,
-        anomaly: simulatedLandslide ? 'TILT_CRITICAL & DISPLACEMENT_SPIKE' : 'NONE',
-        soilMoisture: simulatedLandslide ? 78.5 : 44.2,
-        temperatureC: 28.4,
+        roll: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.roll : (simulatedLandslide ? 16.4 : 1.2),
+        pitch: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.pitch : (simulatedLandslide ? -12.8 : 0.8),
+        yaw: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.yaw : 42.0,
+        displacementMm: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.displacementMm : (simulatedLandslide ? 34.5 : 2.4),
+        vibrationRms: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.vibrationRms : (simulatedLandslide ? 0.842 : 0.022),
+        healthScore: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.healthScore : (simulatedLandslide ? 62 : 98),
+        anomaly: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.anomaly : (simulatedLandslide ? 'TILT_CRITICAL & DISPLACEMENT_SPIKE' : 'NONE'),
+        soilMoisture: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.soilMoisture : (simulatedLandslide ? 78.5 : 44.2),
+        temperatureC: (isMcuConnected && pairedNodeId === 'GN-001') ? liveMcuTelemetry.temperatureC : 28.4,
       },
       'GN-002': {
         id: 'GN-002',
-        name: 'GeoNail Probe #002',
+        name: 'GeoNail Probe #002 (North Crest)',
         zone: 'Zone B - North Highwall Crest',
         position: [9.0, 1.4, -11.0],
-        roll: 0.6,
-        pitch: -0.4,
-        yaw: 15.0,
-        displacementMm: 1.1,
-        vibrationRms: 0.015,
-        healthScore: 100,
-        anomaly: 'NONE',
+        roll: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.roll : 0.6,
+        pitch: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.pitch : -0.4,
+        yaw: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.yaw : 15.0,
+        displacementMm: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.displacementMm : 1.1,
+        vibrationRms: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.vibrationRms : 0.015,
+        healthScore: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.healthScore : 100,
+        anomaly: (isMcuConnected && pairedNodeId === 'GN-002') ? liveMcuTelemetry.anomaly : 'NONE',
         soilMoisture: 38.0,
         temperatureC: 27.8,
       },
       'GN-003': {
         id: 'GN-003',
-        name: 'GeoNail Probe #003',
+        name: 'GeoNail Probe #003 (Haul Road)',
         zone: 'Zone C - Haul Road Interface',
         position: [-11.0, -4.8, 9.0],
-        roll: -2.1,
-        pitch: 1.8,
-        yaw: 88.0,
-        displacementMm: simulatedLandslide ? 14.2 : 4.8,
-        vibrationRms: simulatedLandslide ? 0.285 : 0.038,
-        healthScore: simulatedLandslide ? 85 : 95,
-        anomaly: simulatedLandslide ? 'TILT_WARNING' : 'NONE',
-        soilMoisture: simulatedLandslide ? 65.0 : 42.1,
+        roll: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.roll : (simulatedLandslide ? -2.1 : -0.5),
+        pitch: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.pitch : (simulatedLandslide ? 1.8 : 0.2),
+        yaw: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.yaw : 88.0,
+        displacementMm: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.displacementMm : (simulatedLandslide ? 14.2 : 4.8),
+        vibrationRms: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.vibrationRms : (simulatedLandslide ? 0.285 : 0.038),
+        healthScore: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.healthScore : 95,
+        anomaly: (isMcuConnected && pairedNodeId === 'GN-003') ? liveMcuTelemetry.anomaly : (simulatedLandslide ? 'TILT_WARNING' : 'NONE'),
+        soilMoisture: 42.1,
         temperatureC: 29.1,
       },
       'GN-004': {
         id: 'GN-004',
-        name: 'GeoNail Probe #004',
+        name: 'GeoNail Probe #004 (Baseline)',
         zone: 'Zone D - Overburden Baseline',
         position: [11.0, -4.2, 11.0],
-        roll: 0.2,
-        pitch: 0.1,
-        yaw: 120.0,
-        displacementMm: 0.5,
-        vibrationRms: 0.012,
-        healthScore: 100,
-        anomaly: 'NONE',
+        roll: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.roll : 0.2,
+        pitch: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.pitch : 0.1,
+        yaw: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.yaw : 120.0,
+        displacementMm: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.displacementMm : 0.5,
+        vibrationRms: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.vibrationRms : 0.012,
+        healthScore: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.healthScore : 100,
+        anomaly: (isMcuConnected && pairedNodeId === 'GN-004') ? liveMcuTelemetry.anomaly : 'NONE',
         soilMoisture: 35.4,
         temperatureC: 28.0,
       },
     };
-  }, [simulatedLandslide]);
+  }, [simulatedLandslide, connectionStatus, pairedNodeId, liveMcuTelemetry]);
 
   const activeNode = nodes[selectedNodeId] || nodes['GN-001'];
 
@@ -460,6 +648,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
           {/* Render Deployed GeoNail Node Probes */}
           {Object.values(nodes).map((node) => {
             const isSelected = selectedNodeId === node.id;
+            const isPairedMcu = connectionStatus === 'connected' && pairedNodeId === node.id;
             const status: 'nominal' | 'warning' | 'critical' =
               node.anomaly.includes('CRITICAL') ? 'critical' : node.anomaly.includes('WARNING') ? 'warning' : 'nominal';
 
@@ -504,7 +693,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
                       borderRadius: '12px',
                       background: isSelected ? 'rgba(2, 132, 199, 0.95)' : 'rgba(255, 255, 255, 0.9)',
                       color: isSelected ? '#ffffff' : '#0f172a',
-                      border: `1.5px solid ${status === 'critical' ? '#ef4444' : status === 'warning' ? '#f59e0b' : '#0284c7'}`,
+                      border: `1.5px solid ${isPairedMcu ? '#10b981' : status === 'critical' ? '#ef4444' : status === 'warning' ? '#f59e0b' : '#0284c7'}`,
                       boxShadow: '0 6px 20px rgba(15, 23, 42, 0.15)',
                       cursor: 'pointer',
                       fontSize: '0.72rem',
@@ -516,8 +705,13 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
                       transition: 'all 0.2s',
                     }}
                   >
-                    <MapPin size={14} color={status === 'critical' ? '#ef4444' : '#0284c7'} />
+                    <MapPin size={14} color={isPairedMcu ? '#10b981' : status === 'critical' ? '#ef4444' : '#0284c7'} />
                     <span>{node.id}</span>
+                    {isPairedMcu && (
+                      <span style={{ fontSize: '0.62rem', padding: '1px 5px', borderRadius: '4px', background: '#10b981', color: '#ffffff', fontWeight: 800 }}>
+                        MCU LIVE
+                      </span>
+                    )}
                     <span style={{ padding: '2px 6px', borderRadius: '6px', fontSize: '0.66rem', background: status === 'critical' ? '#ef444422' : '#10b98122', color: status === 'critical' ? '#dc2626' : '#059669' }}>
                       {node.displacementMm.toFixed(1)} mm
                     </span>
@@ -576,10 +770,30 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             <span>{simulatedLandslide ? '⚠️ SLOPE FAILURE CRITICAL' : 'NOMINAL STABILITY'}</span>
           </div>
 
-          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#475569', padding: '4px 12px', background: 'rgba(241, 245, 249, 0.9)', borderRadius: '20px', border: '1px solid rgba(203, 213, 225, 0.8)', display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Truck size={14} color="#0284c7" />
-            <span>Scale: <strong>1:1 Real World</strong> (4 Probes + CAT 797 Dump Truck)</span>
-          </div>
+          {/* MCU Hardware Connection Status Badge */}
+          <button
+            onClick={() => setShowConnectModal(true)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              background: connectionStatus === 'connected' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(2, 132, 199, 0.15)',
+              color: connectionStatus === 'connected' ? '#059669' : '#0284c7',
+              border: `1.5px solid ${connectionStatus === 'connected' ? '#10b981' : '#0284c7'}`,
+              cursor: 'pointer',
+            }}
+          >
+            <Zap size={14} />
+            <span>
+              {connectionStatus === 'connected'
+                ? `MCU LIVE (${pairedNodeId}) - ${packetCount} pkts`
+                : '🔌 Connect MCU Hardware'}
+            </span>
+          </button>
         </div>
 
         {/* Action Controls */}
@@ -731,7 +945,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             <span>{activeNode.id} INSPECTOR</span>
           </div>
           <span style={{ fontSize: '0.68rem', padding: '2px 8px', borderRadius: '8px', background: activeNode.anomaly === 'NONE' ? '#10b98122' : '#ef444422', color: activeNode.anomaly === 'NONE' ? '#059669' : '#dc2626', fontWeight: 800 }}>
-            {activeNode.anomaly === 'NONE' ? 'ONLINE' : 'ALERT'}
+            {connectionStatus === 'connected' && pairedNodeId === activeNode.id ? 'MCU LIVE' : activeNode.anomaly === 'NONE' ? 'ONLINE' : 'ALERT'}
           </span>
         </div>
 
@@ -850,6 +1064,187 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
           ))}
         </div>
       </div>
+
+      {/* -------------------------------------------------------------
+          6. INTERACTIVE MCU HARDWARE CONNECTION & NODE PAIRING MODAL
+         ------------------------------------------------------------- */}
+      {showConnectModal && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            zIndex: 50,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'rgba(15, 23, 42, 0.65)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <div
+            style={{
+              width: '440px',
+              padding: '24px',
+              borderRadius: '20px',
+              background: '#ffffff',
+              border: '1.5px solid rgba(2, 132, 199, 0.4)',
+              boxShadow: '0 20px 50px rgba(15, 23, 42, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 16,
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
+                <Cpu size={22} color="#0284c7" />
+                <span>CONNECT REAL MCU HARDWARE</span>
+              </div>
+              <button
+                onClick={() => setShowConnectModal(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ fontSize: '0.8rem', color: '#475569' }}>
+              Select which deployed 3D Digital Twin node receives live hardware stream from your ESP32 M5Stack probe:
+            </div>
+
+            {/* Node Selector */}
+            <div>
+              <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#0284c7', display: 'block', marginBottom: 6 }}>
+                SELECT DEPLOYED NODE TARGET:
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                {['GN-001', 'GN-002', 'GN-003', 'GN-004'].map((id) => (
+                  <button
+                    key={id}
+                    onClick={() => setPairedNodeId(id)}
+                    style={{
+                      padding: '8px 12px',
+                      borderRadius: '10px',
+                      fontSize: '0.78rem',
+                      fontWeight: 800,
+                      background: pairedNodeId === id ? 'rgba(2, 132, 199, 0.15)' : 'rgba(241, 245, 249, 0.9)',
+                      color: pairedNodeId === id ? '#0284c7' : '#334155',
+                      border: `1.5px solid ${pairedNodeId === id ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span>{id}</span>
+                    {pairedNodeId === id && <CheckCircle2 size={14} color="#0284c7" />}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Transport Action Buttons */}
+            <div>
+              <label style={{ fontSize: '0.74rem', fontWeight: 800, color: '#0284c7', display: 'block', marginBottom: 6 }}>
+                SELECT HARDWARE TRANSPORT METHOD:
+              </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <button
+                  onClick={connectBLE}
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    background: '#0284c7',
+                    color: '#ffffff',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)',
+                  }}
+                >
+                  <Bluetooth size={16} />
+                  <span>Connect Web Bluetooth (BLE)</span>
+                </button>
+
+                <button
+                  onClick={connectSerial}
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    background: 'rgba(241, 245, 249, 0.9)',
+                    color: '#334155',
+                    border: '1.5px solid rgba(203, 213, 225, 0.8)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <Usb size={16} />
+                  <span>Connect Web Serial (USB COM Port)</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setTransportMode('wifi');
+                    setShowConnectModal(false);
+                  }}
+                  style={{
+                    padding: '10px 14px',
+                    borderRadius: '12px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    background: 'rgba(241, 245, 249, 0.9)',
+                    color: '#334155',
+                    border: '1.5px solid rgba(203, 213, 225, 0.8)',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                  }}
+                >
+                  <Wifi size={16} />
+                  <span>Connect Wi-Fi REST Stream (192.168.4.1)</span>
+                </button>
+
+                {connectionStatus === 'connected' && (
+                  <button
+                    onClick={() => {
+                      setConnectionStatus('disconnected');
+                      setTransportMode('simulated');
+                    }}
+                    style={{
+                      padding: '8px 14px',
+                      borderRadius: '10px',
+                      fontSize: '0.78rem',
+                      fontWeight: 800,
+                      background: 'rgba(254, 226, 226, 0.9)',
+                      color: '#dc2626',
+                      border: '1.5px solid #fca5a5',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: 6,
+                    }}
+                  >
+                    <Radio size={14} />
+                    <span>Disconnect Hardware & Revert to Simulated</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
