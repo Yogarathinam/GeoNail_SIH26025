@@ -118,14 +118,50 @@ function updateDashboard(data) {
   const sys = data.system || {};
   const st = data.status || {};
 
-  setText('nodeId', fmt(d.node_id)); setText('nodeName', fmt(d.name)); setText('location', fmt(d.location)); setText('firmware', fmt(d.firmware));
-  setText('healthScore', fmt(st.health_score, 0, '%')); setBadge('anomalyTag', st.anomaly || 'NONE'); setBadge('overall', st.overall || 'NORMAL');
-  setText('roll', fmt(m.roll, 2, ' deg')); setText('pitch', fmt(m.pitch, 2, ' deg')); setText('acceleration', fmt(m.accel_g || m.acceleration, 3, ' g')); setText('vibrationRms', fmt(m.vib_rms || m.vibration, 4, ' g')); setText('shockPeakG', fmt(m.shock_peak_g || 1.0, 2, ' g')); setBadge('vibrationLevel', m.vib_level || m.vibration_level || 'LOW');
-  setText('magX', fmt(mag.x_ut, 2, ' uT')); setText('magY', fmt(mag.y_ut, 2, ' uT')); setText('magZ', fmt(mag.z_ut, 2, ' uT')); setText('magMagnitude', fmt(mag.magnitude_ut, 2, ' uT')); setText('magCalibrated', mag.calibrated === undefined ? 'YES' : mag.calibrated ? 'YES' : 'NO');
-  setText('temperature', fmt(env.temperature_c, 1, ' C')); setText('humidity', fmt(env.humidity_percent || env.humidity, 1, ' %')); setText('soilRaw', fmt(env.soil_raw)); setText('soilPercent', fmt(env.soil_percent || env.soil_pct, 1, ' %')); setText('mq7Raw', fmt(env.mq7_raw)); setText('mq7Ppm', fmt(env.mq7_ppm, 1, ' ppm'));
-  setBadge('mpu', sensors.mpu6500 || 'HEALTHY'); setBadge('hmc', sensors.hmc5883l || 'HEALTHY'); setBadge('dht', sensors.dht11 || 'HEALTHY'); setBadge('soil', sensors.soil || 'NOT_TESTED'); setBadge('mq7', sensors.mq7 || 'NOT_TESTED');
-  setBadge('wifi', net.wifi?.status || 'ACTIVE'); setBadge('ble', net.bluetooth?.status || 'ADVERTISING'); setBadge('serial', net.serial?.status || 'ACTIVE');
-  setText('uptime', fmt(sys.uptime_ms) + ' ms'); setText('heap', fmt(sys.free_heap || 184500) + ' B');
+  setText('nodeId', fmt(d.node_id)); 
+  setText('nodeName', fmt(d.name || d.node_id)); 
+  setText('location', fmt(d.location)); 
+  setText('firmware', fmt(d.firmware));
+  
+  const healthVal = st.health_score !== undefined ? st.health_score : st.health;
+  setText('healthScore', fmt(healthVal !== undefined ? healthVal : 100, 0, '%')); 
+  setBadge('anomalyTag', st.anomaly || 'NONE'); 
+  setBadge('overall', st.overall || 'NORMAL');
+  
+  setText('roll', fmt(m.roll, 2, ' deg')); 
+  setText('pitch', fmt(m.pitch, 2, ' deg')); 
+  setText('acceleration', fmt(m.accel || m.accel_g || m.acceleration, 3, ' g')); 
+  setText('vibrationRms', fmt(m.vib_rms || m.vibration, 4, ' g')); 
+  setText('shockPeakG', fmt(m.shock || m.shock_peak_g || 1.0, 2, ' g')); 
+  setBadge('vibrationLevel', m.vib_lvl || m.vib_level || m.vibration_level || 'LOW');
+  
+  setText('magX', fmt(mag.x_ut, 2, ' uT')); 
+  setText('magY', fmt(mag.y_ut, 2, ' uT')); 
+  setText('magZ', fmt(mag.z_ut, 2, ' uT')); 
+  setText('magMagnitude', fmt(mag.mag_ut || mag.magnitude_ut, 2, ' uT')); 
+  
+  const calVal = mag.cal !== undefined ? mag.cal : mag.calibrated;
+  setText('magCalibrated', calVal === undefined ? 'YES' : (calVal ? 'YES' : 'NO'));
+  
+  setText('temperature', fmt(env.temp_c || env.temperature_c, 1, ' C')); 
+  setText('humidity', fmt(env.hum_pct || env.humidity_percent || env.humidity, 1, ' %')); 
+  setText('soilRaw', fmt(env.soil_raw)); 
+  setText('soilPercent', fmt(env.soil_percent || env.soil_pct, 1, ' %')); 
+  setText('mq7Raw', fmt(env.mq7_raw)); 
+  setText('mq7Ppm', fmt(env.mq7_ppm, 1, ' ppm'));
+  
+  setBadge('mpu', sensors.mpu || sensors.mpu6500 || 'HEALTHY'); 
+  setBadge('hmc', sensors.hmc || sensors.hmc5883l || 'HEALTHY'); 
+  setBadge('dht', sensors.dht || sensors.dht11 || 'HEALTHY'); 
+  setBadge('soil', sensors.soil || 'NOT_TESTED'); 
+  setBadge('mq7', sensors.mq7 || 'NOT_TESTED');
+  
+  setBadge('wifi', net.wifi?.status || 'ACTIVE'); 
+  setBadge('ble', net.bluetooth?.status || 'ADVERTISING'); 
+  setBadge('serial', net.serial?.status || 'ACTIVE');
+  
+  setText('uptime', fmt(sys.uptime_ms || data.timestamp_ms) + ' ms'); 
+  setText('heap', fmt(sys.free_heap || 184500) + ' B');
 }
 
 

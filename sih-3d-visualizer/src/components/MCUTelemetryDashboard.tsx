@@ -256,14 +256,45 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
     try {
       const data = JSON.parse(jsonStr);
       if (data && (data.motion || data.device)) {
+        const m = data.motion || {};
+        const env = data.environment || {};
+        const mag = data.magnetic || {};
+        const st = data.status || {};
+        const sen = data.sensor_status || {};
+
         setTelemetry((prev) => ({
           ...prev,
           ...data,
-          motion: { ...prev.motion, ...(data.motion || {}) },
-          magnetic: { ...prev.magnetic, ...(data.magnetic || {}) },
-          environment: { ...prev.environment, ...(data.environment || {}) },
-          sensor_status: { ...prev.sensor_status, ...(data.sensor_status || {}) },
-          status: { ...prev.status, ...(data.status || {}) },
+          motion: {
+            ...prev.motion,
+            ...m,
+            acceleration: m.accel !== undefined ? m.accel : m.acceleration,
+            vibration_level: m.vib_lvl !== undefined ? m.vib_lvl : m.vibration_level,
+          },
+          magnetic: {
+            ...prev.magnetic,
+            ...mag,
+            magnitude_ut: mag.mag_ut !== undefined ? mag.mag_ut : mag.magnitude_ut,
+            calibrated: mag.cal !== undefined ? mag.cal : mag.calibrated,
+          },
+          environment: {
+            ...prev.environment,
+            ...env,
+            temperature_c: env.temp_c !== undefined ? env.temp_c : env.temperature_c,
+            humidity_percent: env.hum_pct !== undefined ? env.hum_pct : env.humidity_percent,
+          },
+          sensor_status: {
+            ...prev.sensor_status,
+            ...sen,
+            mpu6500: sen.mpu !== undefined ? sen.mpu : sen.mpu6500,
+            hmc5883l: sen.hmc !== undefined ? sen.hmc : sen.hmc5883l,
+            dht11: sen.dht !== undefined ? sen.dht : sen.dht11,
+          },
+          status: {
+            ...prev.status,
+            ...st,
+            health_score: st.health !== undefined ? st.health : st.health_score,
+          },
         }));
         setPacketCount((p) => p + 1);
         addPacketLog(transport, jsonStr);

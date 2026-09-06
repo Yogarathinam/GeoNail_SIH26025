@@ -660,30 +660,34 @@ String bleTelemetryJson() {
   String tempStr = isnan(gnState.temperature) ? "24.50" : String(gnState.temperature, 1);
   String humStr = isnan(gnState.humidity) ? "55.00" : String(gnState.humidity, 1);
 
+  String mpuSt = (gnState.imuStatus == HEALTHY) ? "OK" : (gnState.imuStatus == INITIALIZING) ? "INIT" : "ERR";
+  String hmcSt = (gnState.magStatus == HEALTHY || gnState.magStatus == UNCALIBRATED) ? "OK" : "ERR";
+  String dhtSt = (gnState.dhtStatus == HEALTHY) ? "OK" : "ERR";
+
   String json = "{\"device\":{\"node_id\":\"" + gnState.nodeId +
-                "\",\"name\":\"" + gnState.nodeName +
+                "\",\"name\":\"" + gnState.nodeId +
                 "\",\"location\":\"" + gnState.location +
                 "\",\"firmware\":\"" + gnState.firmware + "\"}," +
                 "\"timestamp_ms\":" + String(millis()) + "," +
                 "\"motion\":{\"roll\":" + rollStr +
                 ",\"pitch\":" + pitchStr +
-                ",\"accel_g\":" + accelStr +
+                ",\"accel\":" + accelStr +
                 ",\"vib_rms\":" + vibRmsStr +
-                ",\"shock_peak_g\":" + shockStr +
-                ",\"vib_level\":\"" + gnState.vibrationLevel + "\"}," +
-                "\"magnetic\":{\"magnitude_ut\":" + magStr +
-                ",\"calibrated\":" + String(gnState.magCalibrated ? "true" : "false") + "}," +
-                "\"environment\":{\"temperature_c\":" + tempStr +
-                ",\"humidity_percent\":" + humStr +
+                ",\"shock\":" + shockStr +
+                ",\"vib_lvl\":\"" + gnState.vibrationLevel + "\"}," +
+                "\"magnetic\":{\"mag_ut\":" + magStr +
+                ",\"cal\":" + String(gnState.magCalibrated ? "true" : "false") + "}," +
+                "\"environment\":{\"temp_c\":" + tempStr +
+                ",\"hum_pct\":" + humStr +
                 ",\"soil_raw\":" + String(gnState.soilRaw < 0 ? 1850 : gnState.soilRaw) +
                 ",\"mq7_raw\":" + String(gnState.mq7Raw < 0 ? 620 : gnState.mq7Raw) + "}," +
-                "\"sensor_status\":{\"mpu6500\":\"" + String(sensorStatusName(gnState.imuStatus)) +
-                "\",\"hmc5883l\":\"" + String(sensorStatusName(gnState.magStatus)) +
-                "\",\"dht11\":\"" + String(sensorStatusName(gnState.dhtStatus)) + "\"}," +
+                "\"sensor_status\":{\"mpu\":\"" + mpuSt +
+                "\",\"hmc\":\"" + hmcSt +
+                "\",\"dht\":\"" + dhtSt + "\"}," +
                 "\"status\":{\"overall\":\"" + String(systemStatusName(gnState.systemStatus)) +
-                "\",\"health_score\":" + String(gnState.healthScore) +
+                "\",\"health\":" + String(gnState.healthScore) +
                 ",\"anomaly\":\"" + gnState.primaryAnomaly +
-                "\",\"burst_active\":" + String(gnState.isBurstActive ? "true" : "false") + "}}";
+                "\",\"burst\":" + String(gnState.isBurstActive ? "true" : "false") + "}}";
   return json;
 }
 
