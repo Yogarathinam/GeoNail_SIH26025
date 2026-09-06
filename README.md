@@ -190,7 +190,7 @@ npm run dev
 │   └── package.json
 ├── docs/                             # Physical CAD & Kinematic Specifications
 │   ├── Component_Architecture_and_Kinematics.md
-│   └── GeoPin_Physical_System_Documentation.md
+│   ├── GeoNail_Physical_System_Documentation.md
 ├── SIH.code-workspace                # VS Code Workspace Configuration
 └── README.md                         # Project Documentation
 ```

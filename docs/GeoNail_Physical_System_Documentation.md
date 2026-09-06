@@ -1,5 +1,5 @@
-# GeoPin Physical System & CAD Prototype Documentation
-**Project Title**: SIH GeoPin / LithoPin 3D Visualizer & Physical Subterranean Rock Anchor System  
+# GeoNail Physical System & CAD Prototype Documentation
+**Project Title**: SIH GeoNail 3D Visualizer & Physical Subterranean Rock Anchor System  
 **Document Version**: 2.4.0  
 **Classification**: Engineering CAD Specification & Mechanical Kinematics Guide  
 
@@ -7,7 +7,7 @@
 
 ## 1. System Overview & Engineering Purpose
 
-The **GeoPin (LithoPin) Subterranean Rock Anchor System** is a heavy-duty, two-stage captive bayonet and lead-screw driven geotechnical rock anchor engineered for deep underground mining, tunnel reinforcement, and open-pit slope stabilization. 
+The **GeoNail Subterranean Rock Anchor System** is a heavy-duty, two-stage captive bayonet and lead-screw driven geotechnical rock anchor engineered for deep underground mining, tunnel reinforcement, and open-pit slope stabilization. 
 
 The system combines **pneumatic impact pile-driving capability**, a **two-stage captive bayonet locking cap**, an **internal Acme lead-screw drive**, and a **dual-opposed rotary lock conical spike anchor** capable of expanding into subterranean bedrock.
 
@@ -175,4 +175,4 @@ The system combines **pneumatic impact pile-driving capability**, a **two-stage 
 3. **Piece 2 Pocket Audit**: Inspect lock grooves 1-4 on `conical_spike_anchor` for rock dust buildup before engaging rotary lock tabs.
 
 ---
-*Documentation compiled for SIH 3D GeoPin Visualizer System.*
+*Documentation compiled for SIH 3D GeoNail Visualizer System.*

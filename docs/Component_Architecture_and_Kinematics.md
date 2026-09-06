@@ -1,22 +1,22 @@
-# GeoPin Component Architecture & Kinematic Motion Matrix
+# GeoNail Component Architecture & Kinematic Motion Matrix
 
 ## 1. Directory Structure
 
 ```
 e:/SIH/
 ├── docs/
-│   ├── GeoPin_Physical_System_Documentation.md
+│   ├── GeoNail_Physical_System_Documentation.md
 │   └── Component_Architecture_and_Kinematics.md
 └── sih-3d-visualizer/
     ├── src/
-    │   ├── components/
-    │   │   ├── LithoPinAssembly.tsx      # Main 3D CAD Component & Kinematics Engine
-    │   │   ├── CanvasViewport.tsx        # Three.js Viewport & Lighting Setup
-    │   │   ├── HUDOverlay.tsx            # Floating Control Deck & Inspector UI
-    │   │   ├── UndergroundShaft.tsx      # Subterranean Mine Shaft Shaft Environment
-    │   │   ├── MiningEnvironment.tsx     # Open-Pit Terrain & Geology Renderer
-    │   │   └── SunSkyEnvironment.tsx     # Dynamic Lighting & Sky Preset Engine
-    │   └── App.tsx                       # Main Application State & Layout Host
+    ├── components/
+    │   ├── LithoPinAssembly.tsx      # Main 3D CAD Component & Kinematics Engine
+    │   ├── CanvasViewport.tsx        # Three.js Viewport & Lighting Setup
+    │   ├── HUDOverlay.tsx            # Floating Control Deck & Inspector UI
+    │   ├── UndergroundShaft.tsx      # Subterranean Mine Shaft Environment
+    │   ├── MiningEnvironment.tsx     # Open-Pit Terrain & Geology Renderer
+    │   └── SunSkyEnvironment.tsx     # Dynamic Lighting & Sky Preset Engine
+    └── App.tsx                       # Main Application State & Layout Host
 ```
 
 ---
@@ -65,4 +65,4 @@ $$\theta_{\text{spike}} = \begin{cases}
 \end{cases}$$
 
 ---
-*Documentation generated for SIH GeoPin Visualizer System.*
+*Documentation generated for SIH GeoNail Visualizer System.*

@@ -78,7 +78,7 @@ export const DocPanel: React.FC<DocPanelProps> = ({
                 <FileText size={20} color="#00f2fe" />
               )}
               <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>
-                {settings.envMode === 'lithoPin' ? 'LithoPin CAD Inspector' : 'Coal Mine Specs'}
+                {settings.envMode === 'lithoPin' ? 'GeoNail CAD Inspector' : 'Coal Mine Specs'}
               </span>
             </div>
             <span className="badge" style={{ background: 'rgba(0, 242, 254, 0.15)', color: '#00f2fe' }}>
@@ -86,7 +86,7 @@ export const DocPanel: React.FC<DocPanelProps> = ({
                 ? 'Open-Pit'
                 : settings.envMode === 'undergroundShaft'
                 ? 'Underground'
-                : 'LithoPin Node'}
+                : 'GeoNail Node'}
             </span>
           </div>
 
@@ -146,7 +146,7 @@ export const DocPanel: React.FC<DocPanelProps> = ({
                 >
                   <Search size={22} color="#00f2fe" style={{ margin: '0 auto 6px' }} />
                   <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-                    Click any LithoPin component mesh in 3D scene to inspect engineering specifications.
+                    Click any GeoNail component mesh in 3D scene to inspect engineering specifications.
                   </p>
                 </div>
               )}
