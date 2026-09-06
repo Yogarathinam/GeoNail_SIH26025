@@ -153,27 +153,27 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
 
     switch (preset) {
       case 'iso':
-        cam.position.set(12, 4, 16);
+        cam.position.set(20, 8, 28);
         controls.target.set(0, -4, 0);
         break;
       case 'front':
-        cam.position.set(0, -4, 20);
+        cam.position.set(0, -4, 32);
         controls.target.set(0, -4, 0);
         break;
       case 'top':
-        cam.position.set(0, 24, 0.01);
+        cam.position.set(0, 38, 0.01);
         controls.target.set(0, -4, 0);
         break;
       case 'side':
-        cam.position.set(20, -4, 0);
+        cam.position.set(32, -4, 0);
         controls.target.set(0, -4, 0);
         break;
       case 'spike':
-        cam.position.set(0, -12, 7);
+        cam.position.set(0, -12, 12);
         controls.target.set(0, -12, 0);
         break;
       case 'reset':
-        cam.position.set(0, 2, 14.5);
+        cam.position.set(0, -4, 32);
         controls.target.set(0, -4, 0);
         break;
     }
@@ -602,7 +602,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
           1. CENTER STAGE: 3D REALTIME WEBGL CANVAS VISUALIZER
          ------------------------------------------------------------- */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <Canvas camera={{ position: [0, 2.0, 14.5], fov: 45 }} gl={{ antialias: true, alpha: true }}>
+        <Canvas camera={{ position: [0, -4.0, 32.0], fov: 45 }} gl={{ antialias: true, alpha: true }}>
           <ambientLight intensity={1.8} color="#ffffff" />
           <hemisphereLight args={['#ffffff', '#cbd5e1', 1.2]} />
           <directionalLight position={[12, 20, 15]} intensity={3.2} castShadow />
@@ -617,8 +617,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
             makeDefault
             enableDamping
             dampingFactor={0.05}
-            minDistance={2}
-            maxDistance={45}
+            minDistance={1}
+            maxDistance={120}
+            zoomSpeed={1.5}
             target={[0, -4, 0]}
             autoRotate={autoRotate}
             autoRotateSpeed={1.5}
