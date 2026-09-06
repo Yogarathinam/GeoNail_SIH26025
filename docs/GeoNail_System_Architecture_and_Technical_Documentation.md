@@ -1,5 +1,18 @@
-# GeoNail System Architecture & Comprehensive Technical Manual
+# GeoNail System Architecture & Technical Manual
 **Smart Subterranean Anchoring, Slope Stability Monitoring & Real-Time Digital Twin System**
+
+---
+
+### Project & Team Information
+* **Hackathon Event**: Smart India Hackathon 2026 (SIH 2026)
+* **Problem Statement ID**: SIH26025
+* **Project Name**: GeoNail Subterranean Monitoring System
+* **Team Name**: GeoNail Innovations
+* **Team Lead**: Yogarathinam
+* **Development Team**: GeoNail Hardware & Software Engineering Group
+* **Repository**: [Yogarathinam/GeoNail_SIH26025](https://github.com/Yogarathinam/GeoNail_SIH26025)
+* **Document Version**: v1.0.0 (Production Release)
+* **Date**: September 2026
 
 ---
 
@@ -48,44 +61,49 @@ The firmware is written in C++ for the Arduino/ESP32 framework (`GeoNail_M5Stack
 ### 3.1 Sensor Fusion & Orientation Math
 To compute real-time Roll, Pitch, and Yaw angles without gimbal lock, the firmware implements a Complementary Filter combining raw gyroscope angular rates with accelerometer gravity vectors.
 
-#### Accelerometer Roll ($\phi_{acc}$) and Pitch ($\theta_{acc}$):
-$$\phi_{acc} = \arctan2(A_y, A_z) \cdot \frac{180}{\pi}$$
-$$\theta_{acc} = \arctan2(-A_x, \sqrt{A_y^2 + A_z^2}) \cdot \frac{180}{\pi}$$
+* **Accelerometer Roll Angle**:
+  φ_acc = arctan2(A_y, A_z) × (180 / π)
 
-#### Complementary Filter Equation:
-$$\phi_t = \alpha \cdot (\phi_{t-1} + G_x \cdot \Delta t) + (1 - \alpha) \cdot \phi_{acc}$$
-$$\theta_t = \alpha \cdot (\theta_{t-1} + G_y \cdot \Delta t) + (1 - \alpha) \cdot \theta_{acc}$$
-$$\psi_t = \psi_{t-1} + G_z \cdot \Delta t \quad (\text{Yaw integration})$$
+* **Accelerometer Pitch Angle**:
+  θ_acc = arctan2(-A_x, √(A_y² + A_z²)) × (180 / π)
 
-*where $\alpha = 0.96$ is the filter weight tuning constant, balancing gyroscope responsiveness with accelerometer low-pass drift suppression.*
+* **Complementary Filter Integration**:
+  φ_t = α · (φ_(t-1) + G_x · Δt) + (1 - α) · φ_acc
+  θ_t = α · (θ_(t-1) + G_y · Δt) + (1 - α) · θ_acc
+  ψ_t = ψ_(t-1) + G_z · Δt
+
+*(where α = 0.96 is the filter tuning constant, balancing gyroscope responsiveness with accelerometer low-pass drift suppression).*
 
 ### 3.2 Subterranean Anchor Displacement Math
-The magnetic flux density $B$ measured along the longitudinal axis varies inverse-proportionally with the insertion distance $d$ of the magnetic spike anchor relative to the casing baseline:
+The magnetic flux density B measured along the longitudinal axis varies inverse-proportionally with the insertion distance d of the magnetic spike anchor relative to the casing baseline:
 
-$$\Delta B = B_{ref} - B_{measured}$$
-$$d_{mm} = k_m \cdot \sqrt{\frac{1}{\Delta B + \epsilon}} + d_{offset}$$
+* **Magnetic Field Change**:
+  ΔB = B_ref - B_measured
 
-* As the spike anchor shifts deeper or pulls out during soil subsidence, $\Delta B$ changes dynamically.
-* The calibrated constant $k_m$ converts gauss / tesla micro-variations into exact linear displacement in millimeters ($mm$) and centimeters ($cm$).
+* **Linear Soil Displacement (mm)**:
+  d_mm = k_m · √( 1 / (ΔB + ε) ) + d_offset
+
+* As the spike anchor shifts deeper or pulls out during soil subsidence, ΔB changes dynamically.
+* The calibrated constant k_m converts micro-tesla field variations into exact linear displacement in millimeters (mm) and centimeters (cm).
 
 ### 3.3 Edge Anomaly & Seismic Detection Engine
 To eliminate environmental noise while guaranteeing immediate triggering during shear collapses or seismic shocks, the firmware utilizes dual statistical estimators:
 
-#### Exponential Moving Average ($\text{EMA}$):
-$$\text{EMA}_t = \beta \cdot X_t + (1 - \beta) \cdot \text{EMA}_{t-1}$$
-*where $\beta = 0.05$ smooths slow creep baseline drift.*
+* **Exponential Moving Average (EMA)**:
+  EMA_t = β · X_t + (1 - β) · EMA_(t-1)
+  *(where β = 0.05 smooths slow creep baseline drift).*
 
-#### Root Mean Square Acceleration ($\text{RMS}_{vib}$):
-$$\text{RMS}_{vib} = \sqrt{\frac{1}{N} \sum_{i=1}^N (A_{x,i}^2 + A_{y,i}^2 + A_{z,i}^2 - 1.0^2)}$$
+* **Root Mean Square Acceleration (RMS_vib)**:
+  RMS_vib = √[ (1 / N) ∑ (A_{x,i}² + A_{y,i}² + A_{z,i}² - 1.0²) ]
 
 #### Multi-Stage Trigger Thresholds:
-| State | Condition | Firmware Action |
+| Operational State | Sensor Condition | System Action & Telemetry |
 | :--- | :--- | :--- |
-| `NORMAL` | $|\Delta \text{Angle}| < 2.0^\circ$, $d < 5\text{mm}$, $\text{RMS} < 0.15g$ | Display regular green HUD telemetry |
-| `WARNING` | $2.0^\circ \le |\Delta \text{Angle}| < 5.0^\circ$ OR $5\text{mm} \le d < 15\text{mm}$ | Amber LED blink, 1 Hz audio prompt |
-| `CRITICAL` | $|\Delta \text{Angle}| \ge 5.0^\circ$ OR $d \ge 15\text{mm}$ | Red LED strobe, 5 Hz piezo siren |
-| `SEISMIC_ANOMALY` | $\text{RMS}_{vib} > 0.65g$ (Transient spike) | Instant emergency telemetry beacon dispatch |
-| `ANCHOR_SLIP` | $\frac{\partial d}{\partial t} > 2.5 \text{ mm/s}$ | Lock memory dump, triggers immediate shear alert |
+| **NORMAL** | |ΔAngle| < 2.0°, d < 5.0 mm, RMS < 0.15g | Display regular green HUD telemetry |
+| **WARNING** | 2.0° ≤ |ΔAngle| < 5.0° OR 5.0 mm ≤ d < 15.0 mm | Amber LED blink, 1 Hz cautionary audio prompt |
+| **CRITICAL** | |ΔAngle| ≥ 5.0° OR d ≥ 15.0 mm | Red LED strobe, 5 Hz piezo siren alert |
+| **SEISMIC_ANOMALY** | RMS_vib > 0.65g (Transient shock spike) | Instant emergency telemetry beacon dispatch |
+| **ANCHOR_SLIP** | Rate of displacement ∂d/∂t > 2.5 mm/s | Lock memory log dump, trigger shear collapse alert |
 
 ---
 
@@ -143,8 +161,8 @@ The frontend visualizer is a modern React 18 + TypeScript web application (`sih-
 
 ### 5.2 3D CAD Viewer Page Features
 * **Full 3-Axis Reactive Model**: Real-time rotational synchronization driven by live or simulated Pitch, Roll, and Yaw angles.
-* **Translucent X-Ray Mode**: Renders exterior casing with glass-like transparency ($opacity = 0.35$), exposing internal battery, M5Stack core board, magnetometer coils, and internal anchoring mechanism.
-* **White Engineering Grid Aesthetics**: Crisp white grid floor (`#ffffff` canvas background, `#cbd5e1` grid lines, `#64748b` axis markers) for clear CAD visualization.
+* **Translucent X-Ray Mode**: Renders exterior casing with glass-like transparency (opacity = 0.35), exposing internal battery, M5Stack core board, magnetometer coils, and internal anchoring mechanism.
+* **White Engineering Grid Aesthetics**: Crisp white grid floor background, slate grid lines, and axis markers for clear CAD visualization.
 * **Locked Cap State**: Standardized fixed state showing locked protective cap securely attached to top shaft.
 * **Multi-Preset Camera Control**: Dedicated controls for standard engineering projections:
   * **Isometric View**: Position `[12, 10, 12]`, Target `[0, 0, 0]`
@@ -155,13 +173,13 @@ The frontend visualizer is a modern React 18 + TypeScript web application (`sih-
 
 ### 5.3 MCU Dashboard Page Features
 * **Hardware Connection Modal**: Native Web Serial API & Web Bluetooth API integration allowing operators to connect directly to physical GeoNail devices from any browser.
-* **Interactive Telemetry Gauges**: Real-time dial gauges for Pitch ($^\circ$), Roll ($^\circ$), Displacement ($mm$), and Vibration RMS ($g$).
+* **Interactive Telemetry Gauges**: Real-time dial gauges for Pitch (°), Roll (°), Displacement (mm), and Vibration RMS (g).
 * **Historical Signal Trends**: Canvas-based line graphs tracking 60-second sliding windows of ground movement.
 * **System State Indicator**: Dynamic color-coded status banner with audio warning indicators.
 
 ### 5.4 1:1 Scale Minefield Digital Twin Page Features
-* **Real-World Environment**: Models an 800m $\times$ 600m open-cast mining pit complete with terraced benches (5m height steps), haulage ramps, excavation zones, and top perimeter access roads.
-* **Real-World Scale Reference**: Features detailed 1:1 scale 3D models of **CAT 797 Dump Trucks** ($14.8\text{m} \times 9.8\text{m} \times 6.5\text{m}$) navigating haul roads, allowing engineers to intuitively judge scale.
+* **Real-World Environment**: Models an 800m × 600m open-cast mining pit complete with terraced benches (5m height steps), haulage ramps, excavation zones, and top perimeter access roads.
+* **Real-World Scale Reference**: Features detailed 1:1 scale 3D models of **CAT 797 Dump Trucks** (14.8m × 9.8m × 6.5m) navigating haul roads, allowing engineers to intuitively judge scale.
 * **Multi-Node Deployment Grid**: Multi-node monitoring network (`GEONAIL-01` to `GEONAIL-06`) positioned along critical slope benches. Clicking any node selects it, displaying its live telemetry HUD overlay and triggering a smooth camera glide to its coordinates.
 * **Subterranean Shear Slice Visualization**: Underground cross-section plane highlighting slip surfaces, failure arcs, soil strata layers, and real-time anchor penetration depths.
 
@@ -174,8 +192,8 @@ The frontend visualizer is a modern React 18 + TypeScript web application (`sih-
 2. **Spike Extension**: Drive telescoping spike anchor into bedrock / solid substrate.
 3. **Firmware Zeroing**:
    * Hold M5Stack **Button A** for 3 seconds or trigger **Zero Calibration** in GeoNail OS Web Visualizer.
-   * Device records current $A_x, A_y, A_z$ baseline offset as $0.0^\circ$ pitch/roll reference.
-   * Device stores current magnetic flux reading $B_0$ as zero displacement ($0.0\text{ mm}$).
+   * Device records current A_x, A_y, A_z baseline offset as 0.0° pitch/roll reference.
+   * Device stores current magnetic flux reading B_0 as zero displacement (0.0 mm).
 
 ### 6.2 Troubleshooting Audio & Display Behavior
 * **Audio Noise / Buzzing**: Occurs when PWM buzzer pin is left floating during WiFi transmission bursts. Solved in firmware v2.1 via active pull-down logic and low-pass filter capacitor across speaker lines.
@@ -188,8 +206,8 @@ The frontend visualizer is a modern React 18 + TypeScript web application (`sih-
 The full GeoNail system architecture has undergone extensive end-to-end integration testing:
 
 1. **Hardware Communication**: Web Serial and BLE hardware communication modules verified at 115200 baud and 20 Hz packet rates.
-2. **Orientation Accuracy**: Roll/Pitch tracking verified within $\pm 0.2^\circ$ accuracy against physical digital clinometer.
-3. **Anchor Displacement Resolution**: Magnetometer displacement calculation validated from $0.0\text{ mm}$ to $50.0\text{ mm}$ with sub-millimeter precision.
+2. **Orientation Accuracy**: Roll/Pitch tracking verified within ±0.2° accuracy against physical digital clinometer.
+3. **Anchor Displacement Resolution**: Magnetometer displacement calculation validated from 0.0 mm to 50.0 mm with sub-millimeter precision.
 4. **Digital Twin Visualization**: Smooth 60 FPS 3D canvas rendering verified across CAD, MCU, and Minefield views.
 
 ---
