@@ -15,6 +15,7 @@ import {
   MapPin,
   TrendingDown,
   Layers3,
+  Truck,
 } from 'lucide-react';
 
 export interface NodeDigitalTwinData {
@@ -39,7 +40,7 @@ interface DigitalTwinMinefieldProps {
 }
 
 // ----------------------------------------------------------------------
-// 1. PROCEDURAL SLOPE TERRAIN & GEOLOGICAL LAYERS
+// 1. PROCEDURAL REALISTIC OPEN-PIT SLOPE TERRAIN
 // ----------------------------------------------------------------------
 function SlopeTerraceTerrain({
   isFailureActive,
@@ -50,53 +51,58 @@ function SlopeTerraceTerrain({
 }) {
   const meshRef = useRef<THREE.Mesh>(null!);
 
-  // Generate terraced mine pit geometry with procedural deformation
+  // Generate realistic 60m x 60m open-pit terraced bench terrain
   const geometry = useMemo(() => {
-    const geo = new THREE.PlaneGeometry(50, 50, 60, 60);
+    const geo = new THREE.PlaneGeometry(60, 60, 80, 80);
     geo.rotateX(-Math.PI / 2);
 
     const pos = geo.attributes.position;
     const colorArray = new Float32Array(pos.count * 3);
 
-    const colorTopsoil = new THREE.Color('#78350f');
-    const colorWeathered = new THREE.Color('#475569');
-    const colorBedrock = new THREE.Color('#1e293b');
-    const colorDeformed = new THREE.Color('#b91c1c');
+    const colorTopsoil = new THREE.Color('#78350f'); // Rich brown topsoil
+    const colorClayStrata = new THREE.Color('#92400e'); // Red clay bench
+    const colorWeatheredRock = new THREE.Color('#475569'); // Slate grey rock
+    const colorDeepBedrock = new THREE.Color('#1e293b'); // Dark basalt bedrock
+    const colorDeformedShear = new THREE.Color('#991b1b'); // Red landslide shear zone
 
     for (let i = 0; i < pos.count; i++) {
       const x = pos.getX(i);
       const z = pos.getZ(i);
 
       const dist = Math.sqrt(x * x + z * z);
-      const benchLevel = Math.floor(dist / 4.5);
-      let y = benchLevel * 1.6 - 6.0;
+      const benchLevel = Math.floor(dist / 5.2);
+      let y = benchLevel * 1.8 - 7.5;
 
-      // Add terrain surface texture noise
+      // Real-world geological surface roughness noise
       const noise =
-        Math.sin(x * 0.25) * 0.4 +
-        Math.cos(z * 0.25) * 0.4 +
-        Math.sin(x * 0.6 + z * 0.6) * 0.2;
+        Math.sin(x * 0.22) * 0.45 +
+        Math.cos(z * 0.22) * 0.45 +
+        Math.sin(x * 0.5 + z * 0.5) * 0.25 +
+        Math.cos(x * 1.2) * 0.1;
 
       y += noise;
 
-      // If simulated failure active, sag slope zone A (X: -12 to 2, Z: -12 to 2)
-      if (isFailureActive && x > -14 && x < 4 && z > -14 && z < 4) {
-        const dropFactor = Math.cos(((x + 5) / 10) * Math.PI) * Math.cos(((z + 5) / 10) * Math.PI);
-        y -= Math.max(0, dropFactor * 2.8);
+      // Sag terrain on Slope Zone A during simulated landslide event
+      if (isFailureActive && x > -16 && x < 5 && z > -16 && z < 5) {
+        const dropFactor = Math.cos(((x + 5.5) / 11) * Math.PI) * Math.cos(((z + 5.5) / 11) * Math.PI);
+        y -= Math.max(0, dropFactor * 3.4);
       }
 
       pos.setY(i, y);
 
-      // Color assignment based on elevation height
-      let vertexColor = colorBedrock;
-      if (y > -2.0) {
+      // Color mapping based on elevation & geological layer strata
+      let vertexColor = colorDeepBedrock;
+      if (y > -1.5) {
         vertexColor = colorTopsoil;
-      } else if (y > -4.5) {
-        vertexColor = colorWeathered;
+      } else if (y > -4.0) {
+        vertexColor = colorClayStrata;
+      } else if (y > -6.5) {
+        vertexColor = colorWeatheredRock;
       }
 
-      if (isFailureActive && x > -12 && x < 2 && z > -12 && z < 2) {
-        vertexColor = vertexColor.clone().lerp(colorDeformed, 0.45);
+      // Highlight active shear failure zone
+      if (isFailureActive && x > -14 && x < 3 && z > -14 && z < 3) {
+        vertexColor = vertexColor.clone().lerp(colorDeformedShear, 0.5);
       }
 
       colorArray[i * 3] = vertexColor.r;
@@ -114,8 +120,8 @@ function SlopeTerraceTerrain({
       <mesh ref={meshRef} geometry={geometry} receiveShadow castShadow>
         <meshStandardMaterial
           vertexColors
-          roughness={0.85}
-          metalness={0.15}
+          roughness={0.9}
+          metalness={0.1}
           wireframe={false}
           clipShadows
           transparent={showCutaway}
@@ -125,14 +131,14 @@ function SlopeTerraceTerrain({
 
       {/* Sub-surface Geological Layers Cutaway Visualization */}
       {showCutaway && (
-        <group position={[0, -7.5, 0]}>
+        <group position={[0, -9.0, 0]}>
           <mesh position={[0, -2, 0]} receiveShadow>
-            <boxGeometry args={[48, 4, 48]} />
-            <meshStandardMaterial color="#0f172a" roughness={0.9} metalness={0.2} transparent opacity={0.8} />
+            <boxGeometry args={[58, 5, 58]} />
+            <meshStandardMaterial color="#0f172a" roughness={0.9} metalness={0.2} transparent opacity={0.82} />
           </mesh>
-          <mesh position={[0, -4.5, 0]}>
-            <boxGeometry args={[48, 1, 48]} />
-            <meshBasicMaterial color="#0284c7" transparent opacity={0.3} />
+          <mesh position={[0, -5.0, 0]}>
+            <boxGeometry args={[58, 1.2, 58]} />
+            <meshBasicMaterial color="#0284c7" transparent opacity={0.35} />
           </mesh>
         </group>
       )}
@@ -141,7 +147,104 @@ function SlopeTerraceTerrain({
 }
 
 // ----------------------------------------------------------------------
-// 2. DYNAMIC DEFORMATION STRAIN HEATMAP RING
+// 2. REAL-WORLD SCALE REFERENCE: CAT 797 MINING HAUL TRUCK (1:1 SCALE)
+// ----------------------------------------------------------------------
+function MiningHaulTruck({ position, rotation }: { position: [number, number, number]; rotation: [number, number, number] }) {
+  return (
+    <group position={position} rotation={rotation} scale={0.7}>
+      {/* Yellow Truck Body Chassis */}
+      <mesh position={[0, 1.8, 0]} castShadow>
+        <boxGeometry args={[3.8, 2.2, 6.5]} />
+        <meshStandardMaterial color="#eab308" metalness={0.6} roughness={0.3} />
+      </mesh>
+
+      {/* Dump Bed */}
+      <mesh position={[0, 3.2, -0.4]} rotation={[-0.1, 0, 0]} castShadow>
+        <boxGeometry args={[4.2, 1.8, 6.8]} />
+        <meshStandardMaterial color="#ca8a04" metalness={0.7} roughness={0.4} />
+      </mesh>
+
+      {/* Cabin */}
+      <mesh position={[1.4, 3.2, 2.4]} castShadow>
+        <boxGeometry args={[1.2, 1.4, 1.5]} />
+        <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
+      </mesh>
+
+      {/* 6 Massive Mining Tires */}
+      {[-1.8, 1.8].map((x) =>
+        [-2.2, 0, 2.2].map((z) => (
+          <mesh key={`${x}-${z}`} position={[x, 0.9, z]} rotation={[0, 0, Math.PI / 2]} castShadow>
+            <cylinderGeometry args={[0.9, 0.9, 0.9, 16]} />
+            <meshStandardMaterial color="#1e293b" roughness={0.9} />
+          </mesh>
+        ))
+      )}
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 3. REAL-WORLD SCALE REFERENCE: HYDRAULIC EXCAVATOR
+// ----------------------------------------------------------------------
+function HydraulicExcavator({ position, rotation }: { position: [number, number, number]; rotation: [number, number, number] }) {
+  return (
+    <group position={position} rotation={rotation} scale={0.65}>
+      {/* Crawler Tracks */}
+      <mesh position={[-1.2, 0.5, 0]} castShadow>
+        <boxGeometry args={[0.6, 1.0, 4.5]} />
+        <meshStandardMaterial color="#0f172a" roughness={0.9} />
+      </mesh>
+      <mesh position={[1.2, 0.5, 0]} castShadow>
+        <boxGeometry args={[0.6, 1.0, 4.5]} />
+        <meshStandardMaterial color="#0f172a" roughness={0.9} />
+      </mesh>
+
+      {/* Excavator Cabin Body */}
+      <mesh position={[0, 2.0, 0]} castShadow>
+        <boxGeometry args={[2.8, 2.0, 3.2]} />
+        <meshStandardMaterial color="#eab308" metalness={0.6} roughness={0.3} />
+      </mesh>
+
+      {/* Boom Arm */}
+      <mesh position={[0, 3.2, 1.8]} rotation={[0.6, 0, 0]} castShadow>
+        <boxGeometry args={[0.6, 4.2, 0.6]} />
+        <meshStandardMaterial color="#ca8a04" metalness={0.7} roughness={0.3} />
+      </mesh>
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 4. SUB-SURFACE PENETRATING ANCHOR SHAFT (REAL 3.5m ANCHOR DEPTH)
+// ----------------------------------------------------------------------
+function SubsurfaceAnchorShaft({ displacementMm }: { displacementMm: number }) {
+  const extensionY = (displacementMm * -0.06);
+
+  return (
+    <group position={[0, -2.5 + extensionY, 0]}>
+      {/* Subterranean Steel Casing Pipe */}
+      <mesh position={[0, -1.8, 0]}>
+        <cylinderGeometry args={[0.12, 0.12, 3.6, 16]} />
+        <meshStandardMaterial color="#94a3b8" metalness={0.85} roughness={0.2} />
+      </mesh>
+
+      {/* Lower Spike Anchor Tip (Piece 2) */}
+      <mesh position={[0, -3.8, 0]}>
+        <coneGeometry args={[0.18, 0.8, 16]} />
+        <meshStandardMaterial color="#eab308" metalness={0.9} roughness={0.1} />
+      </mesh>
+
+      {/* Anchor Magnetic Field Pulse Lines */}
+      <mesh position={[0, -3.8, 0]}>
+        <sphereGeometry args={[0.45, 16, 16]} />
+        <meshBasicMaterial color="#eab308" transparent opacity={0.3} wireframe />
+      </mesh>
+    </group>
+  );
+}
+
+// ----------------------------------------------------------------------
+// 5. DYNAMIC DEFORMATION STRAIN HEATMAP RING
 // ----------------------------------------------------------------------
 function StrainHeatmapRing({
   position,
@@ -167,19 +270,19 @@ function StrainHeatmapRing({
   return (
     <group position={[position[0], position[1] + 0.1, position[2]]} rotation={[-Math.PI / 2, 0, 0]}>
       <mesh ref={ringRef}>
-        <ringGeometry args={[1.2, 2.4, 32]} />
-        <meshBasicMaterial color={color} transparent opacity={0.45} side={THREE.DoubleSide} />
+        <ringGeometry args={[1.4, 2.8, 32]} />
+        <meshBasicMaterial color={color} transparent opacity={0.4} side={THREE.DoubleSide} />
       </mesh>
       <mesh>
-        <ringGeometry args={[2.4, 2.6, 32]} />
-        <meshBasicMaterial color={color} transparent opacity={0.85} side={THREE.DoubleSide} />
+        <ringGeometry args={[2.8, 3.0, 32]} />
+        <meshBasicMaterial color={color} transparent opacity={0.8} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );
 }
 
 // ----------------------------------------------------------------------
-// 3. MAIN DIGITAL TWIN MINEFIELD COMPONENT
+// 6. MAIN DIGITAL TWIN MINEFIELD COMPONENT
 // ----------------------------------------------------------------------
 export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ settings: _settings }) => {
   const [selectedNodeId, setSelectedNodeId] = useState<string>('GN-001');
@@ -197,7 +300,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
         id: 'GN-001',
         name: 'GeoNail Probe #001 (Live Stream)',
         zone: 'Zone A - Primary Escarpment Slope',
-        position: [-6.0, -1.8, -4.0],
+        position: [-6.5, -2.1, -4.5],
         roll: simulatedLandslide ? 16.4 : 1.2,
         pitch: simulatedLandslide ? -12.8 : 0.8,
         yaw: 42.0,
@@ -212,7 +315,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
         id: 'GN-002',
         name: 'GeoNail Probe #002',
         zone: 'Zone B - North Highwall Crest',
-        position: [8.0, 1.2, -10.0],
+        position: [9.0, 1.4, -11.0],
         roll: 0.6,
         pitch: -0.4,
         yaw: 15.0,
@@ -227,7 +330,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
         id: 'GN-003',
         name: 'GeoNail Probe #003',
         zone: 'Zone C - Haul Road Interface',
-        position: [-10.0, -4.2, 8.0],
+        position: [-11.0, -4.8, 9.0],
         roll: -2.1,
         pitch: 1.8,
         yaw: 88.0,
@@ -242,7 +345,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
         id: 'GN-004',
         name: 'GeoNail Probe #004',
         zone: 'Zone D - Overburden Baseline',
-        position: [10.0, -3.8, 10.0],
+        position: [11.0, -4.2, 11.0],
         roll: 0.2,
         pitch: 0.1,
         yaw: 120.0,
@@ -267,33 +370,33 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
     switch (preset) {
       case 'site':
       case 'reset':
-        cam.position.set(24, 18, 36);
+        cam.position.set(28, 20, 42);
         controls.target.set(0, -3, 0);
         break;
       case 'gn001':
-        cam.position.set(-6, 4, 8);
-        controls.target.set(-6, -1.8, -4);
+        cam.position.set(-6.5, 4, 8);
+        controls.target.set(-6.5, -2.1, -4.5);
         setSelectedNodeId('GN-001');
         break;
       case 'gn002':
-        cam.position.set(8, 7, 2);
-        controls.target.set(8, 1.2, -10);
+        cam.position.set(9, 7, 1);
+        controls.target.set(9, 1.4, -11);
         setSelectedNodeId('GN-002');
         break;
       case 'gn003':
-        cam.position.set(-10, 2, 20);
-        controls.target.set(-10, -4.2, 8);
+        cam.position.set(-11, 1, 21);
+        controls.target.set(-11, -4.8, 9);
         setSelectedNodeId('GN-003');
         break;
       case 'gn004':
-        cam.position.set(10, 2, 22);
-        controls.target.set(10, -3.8, 10);
+        cam.position.set(11, 1, 23);
+        controls.target.set(11, -4.2, 11);
         setSelectedNodeId('GN-004');
         break;
       case 'cutaway':
         setShowCutaway(true);
-        cam.position.set(0, 2, 38);
-        controls.target.set(0, -6, 0);
+        cam.position.set(0, 2, 42);
+        controls.target.set(0, -7, 0);
         break;
     }
     controls.update();
@@ -321,13 +424,13 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
           1. CENTER STAGE: 3D DIGITAL TWIN REALTIME CANVAS
          ------------------------------------------------------------- */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <Canvas camera={{ position: [24, 18, 36], fov: 45 }} gl={{ antialias: true, alpha: true }}>
+        <Canvas camera={{ position: [28, 20, 42], fov: 45 }} gl={{ antialias: true, alpha: true }}>
           <ambientLight intensity={1.6} color="#ffffff" />
-          <directionalLight position={[20, 30, 20]} intensity={3.0} castShadow />
+          <directionalLight position={[25, 35, 25]} intensity={3.2} castShadow />
           <directionalLight position={[-20, 15, -20]} intensity={1.5} color="#e0f2fe" />
 
           {/* 3D Floor CAD Grid */}
-          <gridHelper args={[60, 60, '#0284c7', '#94a3b8']} position={[0, -12.0, 0]} />
+          <gridHelper args={[70, 70, '#0284c7', '#94a3b8']} position={[0, -13.0, 0]} />
 
           <OrbitControls
             ref={orbitRef}
@@ -335,7 +438,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             enableDamping
             dampingFactor={0.05}
             minDistance={4}
-            maxDistance={140}
+            maxDistance={160}
             zoomSpeed={1.5}
             target={[0, -3, 0]}
             autoRotate={autoRotate}
@@ -345,9 +448,13 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
           {/* Procedural Terraced Slope Terrain Mesh */}
           <SlopeTerraceTerrain isFailureActive={simulatedLandslide} showCutaway={showCutaway} />
 
+          {/* Real-World Scale Mining Equipment */}
+          <MiningHaulTruck position={[-12.5, -4.5, 4.5]} rotation={[0, 0.35, 0]} />
+          <HydraulicExcavator position={[7.0, -2.5, -6.5]} rotation={[0, -0.85, 0]} />
+
           {/* Landslide Dust Particles when Failure Active */}
           {simulatedLandslide && (
-            <Sparkles count={180} scale={[18, 8, 18]} position={[-5, -1, -3]} color="#ef4444" size={4} speed={2} />
+            <Sparkles count={220} scale={[20, 9, 20]} position={[-5.5, -1, -3.5]} color="#ef4444" size={5} speed={2.5} />
           )}
 
           {/* Render Deployed GeoNail Node Probes */}
@@ -358,8 +465,8 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
 
             return (
               <group key={node.id} position={node.position}>
-                {/* Embedded 3D Probe Model */}
-                <group scale={0.22}>
+                {/* Embedded 3D Probe Model (Proportional 1.8m height scale) */}
+                <group scale={0.35}>
                   <GeoNailAssembly
                     attachStep={5}
                     removeStep={0}
@@ -376,6 +483,9 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
                   />
                 </group>
 
+                {/* Sub-surface Anchor Shaft (Revealed in Cutaway Mode) */}
+                {showCutaway && <SubsurfaceAnchorShaft displacementMm={node.displacementMm} />}
+
                 {/* Strain Heatmap Ring */}
                 {showHeatmap && (
                   <StrainHeatmapRing
@@ -386,7 +496,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
                 )}
 
                 {/* Interactive 3D HTML Leader Label */}
-                <Html position={[0, 3.2, 0]} center distanceFactor={25}>
+                <Html position={[0, 4.5, 0]} center distanceFactor={28}>
                   <div
                     onClick={() => setSelectedNodeId(node.id)}
                     style={{
@@ -417,7 +527,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             );
           })}
 
-          <ContactShadows position={[0, -12.0, 0]} opacity={0.6} scale={40} blur={2.0} far={8} color="#0f172a" />
+          <ContactShadows position={[0, -13.0, 0]} opacity={0.65} scale={50} blur={2.0} far={10} color="#0f172a" />
         </Canvas>
       </div>
 
@@ -445,7 +555,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', letterSpacing: '0.5px' }}>
             <Layers3 size={20} color="#0284c7" />
-            <span>DIGITAL TWIN MINE FIELD LANDSLIDE MONITORING</span>
+            <span>REAL-WORLD DIGITAL TWIN MINE FIELD MONITORING</span>
           </div>
 
           <div
@@ -466,8 +576,9 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             <span>{simulatedLandslide ? '⚠️ SLOPE FAILURE CRITICAL' : 'NOMINAL STABILITY'}</span>
           </div>
 
-          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#475569', padding: '4px 12px', background: 'rgba(241, 245, 249, 0.9)', borderRadius: '20px', border: '1px solid rgba(203, 213, 225, 0.8)' }}>
-            Active Nodes: <strong>4 Deployed</strong>
+          <div style={{ fontSize: '0.74rem', fontWeight: 700, color: '#475569', padding: '4px 12px', background: 'rgba(241, 245, 249, 0.9)', borderRadius: '20px', border: '1px solid rgba(203, 213, 225, 0.8)', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Truck size={14} color="#0284c7" />
+            <span>Scale: <strong>1:1 Real World</strong> (4 Probes + CAT 797 Dump Truck)</span>
           </div>
         </div>
 
@@ -510,7 +621,7 @@ export const DigitalTwinMinefield: React.FC<DigitalTwinMinefieldProps> = ({ sett
             }}
           >
             <Eye size={14} />
-            <span>{showCutaway ? '✂️ Terrain Cutaway ON' : 'Full Surface'}</span>
+            <span>{showCutaway ? '✂️ Geological Cutaway ON' : 'Full Surface'}</span>
           </button>
 
           <button
