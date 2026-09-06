@@ -141,6 +141,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
   const [showSimControls, setShowSimControls] = useState(false);
   const [xrayMode, setXrayMode] = useState(false);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [assemblyLockState, setAssemblyLockState] = useState<'locked' | 'unattached' | 'exploded'>('locked');
   const [packetLogs, setPacketLogs] = useState<PacketLog[]>([]);
 
   const orbitRef = useRef<any>(null);
@@ -623,13 +624,14 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
             autoRotateSpeed={1.5}
           />
 
+          {/* Compute lock state parameters */}
           <GeoNailAssembly
-            attachStep={settings.lithoPinAttachStep}
-            removeStep={settings.lithoPinRemoveStep}
+            attachStep={assemblyLockState === 'unattached' ? 0 : 5}
+            removeStep={0}
             capRotationAngle={settings.lithoPinCapRotation}
-            spikeLockAngle={settings.lithoPinSpikeLock}
+            spikeLockAngle={assemblyLockState === 'locked' ? (Math.PI / 4) : 0}
             spikeDetached={settings.lithoPinSpikeDetached}
-            explodedProgress={settings.lithoPinExploded}
+            explodedProgress={assemblyLockState === 'exploded' ? 1.0 : (settings.lithoPinExploded || 0)}
             cutawayMode={xrayMode}
             showLoadPath={settings.lithoPinLoadPath}
             dragModeEnabled={settings.lithoPinDragMode}
@@ -962,6 +964,30 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
 
         {/* Quick Action Toggles */}
         <div style={{ display: 'flex', gap: 8 }}>
+          <button
+            onClick={() => {
+              if (assemblyLockState === 'locked') setAssemblyLockState('unattached');
+              else if (assemblyLockState === 'unattached') setAssemblyLockState('exploded');
+              else setAssemblyLockState('locked');
+            }}
+            title="Toggle between Locked (Seated Deployed State), Unattached Cap, and Exploded Assembly"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              padding: '6px 14px',
+              borderRadius: '10px',
+              fontSize: '0.76rem',
+              fontWeight: 800,
+              background: assemblyLockState === 'locked' ? 'rgba(16, 185, 129, 0.18)' : assemblyLockState === 'exploded' ? 'rgba(239, 68, 68, 0.18)' : 'rgba(241, 245, 249, 0.9)',
+              color: assemblyLockState === 'locked' ? '#059669' : assemblyLockState === 'exploded' ? '#dc2626' : '#475569',
+              border: `1.5px solid ${assemblyLockState === 'locked' ? '#10b981' : assemblyLockState === 'exploded' ? '#ef4444' : 'rgba(203, 213, 225, 0.8)'}`,
+              cursor: 'pointer',
+            }}
+          >
+            <span>{assemblyLockState === 'locked' ? '🔒 Cap Seated & Locked' : assemblyLockState === 'exploded' ? '💥 Exploded View' : '🔓 Cap Unattached'}</span>
+          </button>
+
           <button
             onClick={() => setXrayMode(!xrayMode)}
             style={{
