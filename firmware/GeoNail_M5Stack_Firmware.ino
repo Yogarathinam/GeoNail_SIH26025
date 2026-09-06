@@ -17,6 +17,8 @@
 #include <BLEServer.h>
 #include <BLEUtils.h>
 #include <BLE2902.h>
+#include <SPI.h>
+#include <SD.h>
 
 #define I2C_SDA_PIN 21
 #define I2C_SCL_PIN 22
@@ -126,6 +128,7 @@ struct GeoNailState {
   bool bleAdvertising = false;
   bool bleClientConnected = false;
   bool serialActive = false;
+  bool sdMounted = false;
 
   String apIp = "0.0.0.0";
   uint8_t apClientCount = 0;
@@ -492,6 +495,35 @@ void processMotion() {
   else gnState.vibrationLevel = "HIGH";
 }
 
+void updateAudioAlerts() {
+  if (gnState.systemStatus == SYS_CRITICAL) {
+    M5.Speaker.tone(2500, 350); // High pitch 2.5kHz critical alert siren
+  } else if (gnState.systemStatus == SYS_WARNING) {
+    M5.Speaker.tone(1200, 180); // Warning 1.2kHz alert tone
+  } else {
+    M5.Speaker.stop(); // Auto-Mute Speaker when anomaly resolves and system returns to SYS_NORMAL!
+  }
+}
+
+void initSDCard() {
+  if (SD.begin()) {
+    gnState.sdMounted = true;
+    logEvent("SD", "MicroSD card mounted successfully");
+  } else {
+    gnState.sdMounted = false;
+    logEvent("SD", "MicroSD card not present or failed");
+  }
+}
+
+void logToSDCard(const String &jsonLine) {
+  if (!gnState.sdMounted || jsonLine.length() == 0) return;
+  File file = SD.open("/geonail_telemetry.jsonl", FILE_APPEND);
+  if (file) {
+    file.println(jsonLine);
+    file.close();
+  }
+}
+
 void updateEventEngine() {
   if (demoMode || gnState.imuStatus != HEALTHY || isnan(gnState.roll) || isnan(gnState.pitch) || isnan(gnState.vibration)) return;
   bool critical = fabsf(gnState.roll) >= gnState.thresholds.tiltCritical || fabsf(gnState.pitch) >= gnState.thresholds.tiltCritical || gnState.vibration >= gnState.thresholds.vibrationCritical;
@@ -511,7 +543,11 @@ void updateEventEngine() {
     if (alertActive) {
       alertTitle = desired == SYS_CRITICAL ? "GEO EVENT CRITICAL" : "GEO EVENT WARNING";
       alertMessage = reason;
+      logEvent("ALERT", alertTitle + ": " + alertMessage);
+    } else {
+      logEvent("SYS", "System restored to NORMAL");
     }
+    updateAudioAlerts();
   }
   pendingEvent = false;
 }
@@ -1271,6 +1307,7 @@ void setup() {
   scanI2CBus();
   initMPU6500();
   initHMC5883L();
+  initSDCard();
   gnState.soilStatus = NOT_TESTED;
   gnState.mq7Status = NOT_TESTED;
 
@@ -1306,6 +1343,8 @@ void loop() {
 
   if (now - lastTelemetryMs >= gnState.telemetryIntervalMs) {
     lastTelemetryMs = now;
+    String telemetry = bleTelemetryJson();
+    if (gnState.sdMounted) logToSDCard(telemetry);
     if (gnState.transports.bleEnabled && gnState.bleInitialized) updateBLE();
     if (gnState.transports.serialEnabled) sendSerialTelemetry();
   }
