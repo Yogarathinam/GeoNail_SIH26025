@@ -1448,6 +1448,7 @@ void drawSettingsDetail() {
 }
 
 void renderUI() {
+  M5.Display.startWrite();
   M5.Display.fillScreen(COLOR_BG);
   if (currentScreen == "home") drawMenu("GEONAIL OS");
   else if (currentScreen == "network") drawMenu("NETWORK");
@@ -1459,6 +1460,7 @@ void renderUI() {
   else if (currentScreen == "network_detail") drawNetworkDetail();
   else if (currentScreen == "settings_detail") drawSettingsDetail();
   else drawMenu(currentScreen);
+  M5.Display.endWrite();
 }
 
 void navigateTo(const String &target) {
@@ -1570,6 +1572,8 @@ void setup() {
   auto config = M5.config();
   config.clear_display = true;
   M5.begin(config);
+  M5.Speaker.setVolume(128);
+  M5.Speaker.stop();
   M5.Display.setRotation(1);
   Serial.begin(115200);
   delay(100);
