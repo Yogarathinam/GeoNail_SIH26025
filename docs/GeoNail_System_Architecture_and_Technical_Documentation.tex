@@ -208,13 +208,13 @@ The current operational GeoNail hardware prototype is built on the M5Stack Core2
 \toprule
 Sensor / IC Component & Interface & Hardware Address / Pin & Functional Role in GeoNail Prototype \\
 \midrule
-ESP32-S3 Core MCU & Internal & Dual-Core 240MHz & Executes 100Hz sampling, sensor fusion, & BLE/WiFi transports. \\
-MPU6050 / MPU6886 & I2C Bus & Address \texttt{0x68} & 3-Axis Accel + 3-Axis Gyro for tilt, pitch/roll, peak shock ($g$), & RMS vibration. \\
+ESP32-S3 Core MCU & Internal & Dual-Core 240MHz & Executes 100Hz sampling, sensor fusion, BLE/WiFi transports. \\
+MPU6050 / MPU6886 & I2C Bus & Address \texttt{0x68} & 3-Axis Accel + 3-Axis Gyro for tilt, pitch/roll, peak shock ($g$), and RMS vibration. \\
 HMC5883L / QMC5883L & I2C Bus & Address \texttt{0x1E} & 3-Axis Magnetometer measuring subterranean magnetic flux decay ($\Delta B$) for anchor depth. \\
 DHT11 Probe & Digital & GPIO \texttt{Pin 26} & Subsurface ambient temperature and humidity tracking. \\
 Capacitive Soil Probe & Analog ADC & GPIO \texttt{Pin 34} & Soil moisture saturation percentage (3200 ADC dry $\to$ 1100 ADC wet). \\
 MQ7 Gas Sensor & Analog ADC & GPIO \texttt{Pin 36} & Subterranean Carbon Monoxide (CO) and toxic gas detection. \\
-AXP192 PMIC & I2C Bus & Address \texttt{0x34} & Power Management IC, battery voltage, charging current, & capacity management. \\
+AXP192 PMIC & I2C Bus & Address \texttt{0x34} & Power Management IC, battery voltage, charging current, and capacity management. \\
 MicroSD Card Slot & SPI Bus & CS \texttt{Pin 4} & Offline persistent telemetry JSONL logging (\texttt{/geonail\_telemetry.jsonl}). \\
 M5 Speaker / Piezo & PWM & DAC / Speaker Pin & Dual-tone audio siren (\texttt{SYS\_CRITICAL} 2.5kHz, \texttt{SYS\_WARNING} 1.2kHz). \\
 \bottomrule
