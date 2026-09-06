@@ -17,6 +17,11 @@ import {
   Terminal,
   Eye,
   Navigation,
+  Camera,
+  RotateCcw,
+  Maximize2,
+  Box,
+  Focus,
 } from 'lucide-react';
 
 const BLE_SERVICE_UUID = 'f2e50000-6c9b-4bd4-8c39-4f3c7e000001';
@@ -135,7 +140,44 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
   const [showTerminal, setShowTerminal] = useState(false);
   const [showSimControls, setShowSimControls] = useState(false);
   const [xrayMode, setXrayMode] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(false);
   const [packetLogs, setPacketLogs] = useState<PacketLog[]>([]);
+
+  const orbitRef = useRef<any>(null);
+
+  const setCameraPreset = (preset: 'iso' | 'front' | 'top' | 'side' | 'spike' | 'reset') => {
+    if (!orbitRef.current) return;
+    const controls = orbitRef.current;
+    const cam = controls.object;
+
+    switch (preset) {
+      case 'iso':
+        cam.position.set(12, 4, 16);
+        controls.target.set(0, -4, 0);
+        break;
+      case 'front':
+        cam.position.set(0, -4, 20);
+        controls.target.set(0, -4, 0);
+        break;
+      case 'top':
+        cam.position.set(0, 24, 0.01);
+        controls.target.set(0, -4, 0);
+        break;
+      case 'side':
+        cam.position.set(20, -4, 0);
+        controls.target.set(0, -4, 0);
+        break;
+      case 'spike':
+        cam.position.set(0, -12, 7);
+        controls.target.set(0, -12, 0);
+        break;
+      case 'reset':
+        cam.position.set(0, 2, 14.5);
+        controls.target.set(0, -4, 0);
+        break;
+    }
+    controls.update();
+  };
 
   // Simulated Telemetry Sliders State
   const [simRoll, setSimRoll] = useState(0.0);
@@ -569,7 +611,17 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
           {/* 3D CAD Floor Measurement Grid */}
           <gridHelper args={[40, 40, '#0284c7', '#94a3b8']} position={[0, -14.5, 0]} />
 
-          <OrbitControls makeDefault enableDamping dampingFactor={0.05} minDistance={3} maxDistance={30} />
+          <OrbitControls
+            ref={orbitRef}
+            makeDefault
+            enableDamping
+            dampingFactor={0.05}
+            minDistance={2}
+            maxDistance={45}
+            target={[0, -4, 0]}
+            autoRotate={autoRotate}
+            autoRotateSpeed={1.5}
+          />
 
           <GeoNailAssembly
             attachStep={settings.lithoPinAttachStep}
@@ -591,6 +643,177 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
 
           <ContactShadows position={[0, -14.5, 0]} opacity={0.65} scale={22} blur={2.0} far={6} color="#0f172a" />
         </Canvas>
+      </div>
+
+      {/* -------------------------------------------------------------
+          1.5. FLOATING DEDICATED 3D CAD CAMERA CONTROL TOOLBAR
+         ------------------------------------------------------------- */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 24,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 15,
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '6px 14px',
+          borderRadius: '30px',
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(16px)',
+          border: '1.5px solid rgba(2, 132, 199, 0.4)',
+          boxShadow: '0 8px 32px rgba(15, 23, 42, 0.15)',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5, paddingRight: 8, borderRight: '1px solid rgba(203, 213, 225, 0.8)', fontSize: '0.72rem', fontWeight: 800, color: '#0284c7' }}>
+          <Camera size={15} />
+          <span>CAMERA</span>
+        </div>
+
+        <button
+          onClick={() => setCameraPreset('iso')}
+          title="Isometric 3D Perspective"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(240, 249, 255, 0.9)',
+            color: '#0284c7',
+            border: '1px solid rgba(186, 230, 253, 0.8)',
+            cursor: 'pointer',
+          }}
+        >
+          <Box size={13} />
+          <span>ISO</span>
+        </button>
+
+        <button
+          onClick={() => setCameraPreset('front')}
+          title="Front Elevation View"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(241, 245, 249, 0.9)',
+            color: '#334155',
+            border: '1px solid rgba(203, 213, 225, 0.8)',
+            cursor: 'pointer',
+          }}
+        >
+          <span>FRONT</span>
+        </button>
+
+        <button
+          onClick={() => setCameraPreset('top')}
+          title="Top Plan View"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(241, 245, 249, 0.9)',
+            color: '#334155',
+            border: '1px solid rgba(203, 213, 225, 0.8)',
+            cursor: 'pointer',
+          }}
+        >
+          <span>TOP</span>
+        </button>
+
+        <button
+          onClick={() => setCameraPreset('side')}
+          title="Right Side Profile View"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(241, 245, 249, 0.9)',
+            color: '#334155',
+            border: '1px solid rgba(203, 213, 225, 0.8)',
+            cursor: 'pointer',
+          }}
+        >
+          <span>SIDE</span>
+        </button>
+
+        <button
+          onClick={() => setCameraPreset('spike')}
+          title="Focus Close-up on Sub-surface Spike Anchor Tip"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(254, 243, 199, 0.9)',
+            color: '#b45309',
+            border: '1px solid #d97706',
+            cursor: 'pointer',
+          }}
+        >
+          <Focus size={13} />
+          <span>SPIKE TIP</span>
+        </button>
+
+        <button
+          onClick={() => setAutoRotate(!autoRotate)}
+          title="Toggle Smooth 360° Auto-Rotation"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: autoRotate ? 'rgba(236, 253, 245, 0.95)' : 'rgba(241, 245, 249, 0.9)',
+            color: autoRotate ? '#059669' : '#334155',
+            border: `1px solid ${autoRotate ? '#10b981' : 'rgba(203, 213, 225, 0.8)'}`,
+            cursor: 'pointer',
+          }}
+        >
+          <RotateCcw size={13} />
+          <span>360° ROTATE</span>
+        </button>
+
+        <button
+          onClick={() => setCameraPreset('reset')}
+          title="Reset Camera View to Default Position"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            padding: '5px 11px',
+            borderRadius: '16px',
+            fontSize: '0.72rem',
+            fontWeight: 800,
+            background: 'rgba(241, 245, 249, 0.9)',
+            color: '#475569',
+            border: '1px solid rgba(203, 213, 225, 0.8)',
+            cursor: 'pointer',
+          }}
+        >
+          <Maximize2 size={13} />
+          <span>RESET</span>
+        </button>
       </div>
 
       {/* -------------------------------------------------------------
