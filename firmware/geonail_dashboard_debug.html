@@ -18,17 +18,19 @@
     <button id="serialConnect">Connect Serial</button>
     <button id="serialDisconnect" disabled>Disconnect Serial</button>
     <button id="requestSerialTelemetry" disabled>Request TELEMETRY</button>
+    <button id="sendTareCal">Auto-Tare IMU</button>
+    <button id="toggleBurst">Toggle Burst Mode</button>
     <select id="serialBaud"><option value="115200">115200 baud</option></select>
   </div>
   <div class="status"><span id="stateDot" class="dot"></span><span id="stateText">Not connected</span> · Packets: <span class="count" id="packetCount">0</span> · Invalid: <span class="count" id="invalidCount">0</span></div>
 </header>
 
 <main class="grid">
-  <section class="card"><h2>Device</h2>
-    <div class="row"><span class="label">Node ID</span><span class="value" id="nodeId">--</span></div><div class="row"><span class="label">Name</span><span class="value" id="nodeName">--</span></div><div class="row"><span class="label">Location</span><span class="value" id="location">--</span></div><div class="row"><span class="label">Firmware</span><span class="value" id="firmware">--</span></div><div class="row"><span class="label">System</span><span class="value" id="overall">--</span></div>
+  <section class="card"><h2>Device & Health</h2>
+    <div class="row"><span class="label">Node ID</span><span class="value" id="nodeId">--</span></div><div class="row"><span class="label">Name</span><span class="value" id="nodeName">--</span></div><div class="row"><span class="label">Location</span><span class="value" id="location">--</span></div><div class="row"><span class="label">Firmware</span><span class="value" id="firmware">--</span></div><div class="row"><span class="label">Health Index</span><span class="value" id="healthScore">--</span></div><div class="row"><span class="label">Anomaly Tag</span><span class="value" id="anomalyTag">--</span></div><div class="row"><span class="label">System</span><span class="value" id="overall">--</span></div>
   </section>
-  <section class="card"><h2>Motion</h2>
-    <div class="row"><span class="label">Roll</span><span class="value" id="roll">--</span></div><div class="row"><span class="label">Pitch</span><span class="value" id="pitch">--</span></div><div class="row"><span class="label">Acceleration</span><span class="value" id="acceleration">--</span></div><div class="row"><span class="label">Vibration</span><span class="value" id="vibration">--</span></div><div class="row"><span class="label">Vibration level</span><span class="value" id="vibrationLevel">--</span></div>
+  <section class="card"><h2>Motion & Signal Processing</h2>
+    <div class="row"><span class="label">Roll</span><span class="value" id="roll">--</span></div><div class="row"><span class="label">Pitch</span><span class="value" id="pitch">--</span></div><div class="row"><span class="label">Acceleration</span><span class="value" id="acceleration">--</span></div><div class="row"><span class="label">Vibration RMS</span><span class="value" id="vibrationRms">--</span></div><div class="row"><span class="label">Peak Shock</span><span class="value" id="shockPeakG">--</span></div><div class="row"><span class="label">Vibration level</span><span class="value" id="vibrationLevel">--</span></div>
   </section>
   <section class="card"><h2>Magnetic</h2>
     <div class="row"><span class="label">X</span><span class="value" id="magX">--</span></div><div class="row"><span class="label">Y</span><span class="value" id="magY">--</span></div><div class="row"><span class="label">Z</span><span class="value" id="magZ">--</span></div><div class="row"><span class="label">Magnitude</span><span class="value" id="magMagnitude">--</span></div><div class="row"><span class="label">Calibrated</span><span class="value" id="magCalibrated">--</span></div>
@@ -114,12 +116,13 @@ function updateDashboard(data) {
   const sensors = data.sensor_status || {};
   const net = data.network || {};
   const sys = data.system || {};
+  const st = data.status || {};
 
   setText('nodeId', fmt(d.node_id)); setText('nodeName', fmt(d.name)); setText('location', fmt(d.location)); setText('firmware', fmt(d.firmware));
-  setBadge('overall', data.status?.overall || 'NORMAL');
-  setText('roll', fmt(m.roll, 2, ' deg')); setText('pitch', fmt(m.pitch, 2, ' deg')); setText('acceleration', fmt(m.acceleration, 3, ' g')); setText('vibration', fmt(m.vibration, 4, ' g')); setBadge('vibrationLevel', m.vibration_level || 'LOW');
+  setText('healthScore', fmt(st.health_score, 0, '%')); setBadge('anomalyTag', st.anomaly || 'NONE'); setBadge('overall', st.overall || 'NORMAL');
+  setText('roll', fmt(m.roll, 2, ' deg')); setText('pitch', fmt(m.pitch, 2, ' deg')); setText('acceleration', fmt(m.accel_g || m.acceleration, 3, ' g')); setText('vibrationRms', fmt(m.vib_rms || m.vibration, 4, ' g')); setText('shockPeakG', fmt(m.shock_peak_g || 1.0, 2, ' g')); setBadge('vibrationLevel', m.vib_level || m.vibration_level || 'LOW');
   setText('magX', fmt(mag.x_ut, 2, ' uT')); setText('magY', fmt(mag.y_ut, 2, ' uT')); setText('magZ', fmt(mag.z_ut, 2, ' uT')); setText('magMagnitude', fmt(mag.magnitude_ut, 2, ' uT')); setText('magCalibrated', mag.calibrated === undefined ? 'YES' : mag.calibrated ? 'YES' : 'NO');
-  setText('temperature', fmt(env.temperature_c, 1, ' C')); setText('humidity', fmt(env.humidity_percent, 1, ' %')); setText('soilRaw', fmt(env.soil_raw)); setText('soilPercent', fmt(env.soil_percent, 1, ' %')); setText('mq7Raw', fmt(env.mq7_raw)); setText('mq7Ppm', fmt(env.mq7_ppm, 1, ' ppm'));
+  setText('temperature', fmt(env.temperature_c, 1, ' C')); setText('humidity', fmt(env.humidity_percent || env.humidity, 1, ' %')); setText('soilRaw', fmt(env.soil_raw)); setText('soilPercent', fmt(env.soil_percent || env.soil_pct, 1, ' %')); setText('mq7Raw', fmt(env.mq7_raw)); setText('mq7Ppm', fmt(env.mq7_ppm, 1, ' ppm'));
   setBadge('mpu', sensors.mpu6500 || 'HEALTHY'); setBadge('hmc', sensors.hmc5883l || 'HEALTHY'); setBadge('dht', sensors.dht11 || 'HEALTHY'); setBadge('soil', sensors.soil || 'NOT_TESTED'); setBadge('mq7', sensors.mq7 || 'NOT_TESTED');
   setBadge('wifi', net.wifi?.status || 'ACTIVE'); setBadge('ble', net.bluetooth?.status || 'ADVERTISING'); setBadge('serial', net.serial?.status || 'ACTIVE');
   setText('uptime', fmt(sys.uptime_ms) + ' ms'); setText('heap', fmt(sys.free_heap || 184500) + ' B');
@@ -316,6 +319,9 @@ $('bleDisconnect').addEventListener('click', disconnectBLE);
 $('serialConnect').addEventListener('click', connectSerial);
 $('serialDisconnect').addEventListener('click', disconnectSerial);
 $('requestSerialTelemetry').addEventListener('click', () => sendSerialCommand('TELEMETRY'));
+let burstState = true;
+$('sendTareCal').addEventListener('click', () => { debug('Sending CAL_TARE command...', 'warn'); sendSerialCommand('CAL_TARE'); });
+$('toggleBurst').addEventListener('click', () => { burstState = !burstState; const cmd = burstState ? 'BURST ON' : 'BURST OFF'; debug('Sending: ' + cmd, 'info'); sendSerialCommand(cmd); });
 $('clearDebug').addEventListener('click', () => { $('debug').textContent = ''; debug('Debug console cleared.', 'info'); });
 $('copyDebug').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('debug').textContent); debug('Debug console copied to clipboard.', 'ok'); } catch (e) { debug('Copy debug failed: ' + e.message, 'error'); } });
 $('copyRaw').addEventListener('click', async () => { try { await navigator.clipboard.writeText(lastRawJson); debug('Raw JSON copied to clipboard.', 'ok'); } catch (e) { debug('Copy raw JSON failed: ' + e.message, 'error'); } });

@@ -39,7 +39,7 @@
 #define HMC_MODE 0x02
 #define HMC_DATA_X_MSB 0x03
 
-#define FW_VERSION "0.7.1"
+#define FW_VERSION "0.8.0"
 #define AP_SSID "GeoNail-AP"
 #define AP_PASS "geonail123"
 #define MAX_LOGS 20
@@ -47,7 +47,7 @@
 #define MAX_SERIAL_LINE 128
 #define ADC_SATURATION_THRESHOLD 4090
 #define UI_REFRESH_MS 250
-#define TELEMETRY_MIN_MS 500
+#define TELEMETRY_MIN_MS 100
 #define TELEMETRY_MAX_MS 60000
 
 #define COLOR_BG 0x18C3
@@ -89,6 +89,8 @@ struct GeoNailState {
   float gx = NAN, gy = NAN, gz = NAN;
   float roll = NAN, pitch = NAN;
   float acceleration = NAN, vibration = NAN;
+  float vibrationRms = 0.0f;
+  float shockPeakG = 1.0f;
   String vibrationLevel = "N/A";
   float rollOffset = 0.0f, pitchOffset = 0.0f;
 
@@ -99,6 +101,8 @@ struct GeoNailState {
   float temperature = NAN, humidity = NAN;
   int soilRaw = -1;
   float soilPercent = NAN;
+  int soilDryAdc = 3200;
+  int soilWetAdc = 1100;
   bool soilCalibrated = false;
   int mq7Raw = -1;
   float mq7Ppm = NAN;
@@ -109,6 +113,12 @@ struct GeoNailState {
   SensorStatus soilStatus = NOT_TESTED;
   SensorStatus mq7Status = NOT_TESTED;
   SystemStatus systemStatus = SYS_NORMAL;
+  uint8_t healthScore = 100;
+  String primaryAnomaly = "NONE";
+
+  bool burstModeEnabled = true;
+  bool isBurstActive = false;
+  uint32_t baseIntervalMs = 1000;
 
   bool apActive = false;
   bool apiActive = false;
@@ -386,6 +396,64 @@ void readADCInputs() {
   gnState.mq7Status = NOT_TESTED;
 }
 
+static float imuAccSumSq = 0.0f;
+static float imuShockMax = 0.0f;
+static uint16_t imuSampleCount = 0;
+static uint32_t lastRmsMs = 0;
+
+void evaluateHealth() {
+  uint8_t score = 0;
+  if (gnState.imuStatus == HEALTHY) score += 25;
+  if (gnState.magStatus == HEALTHY || gnState.magStatus == UNCALIBRATED) score += 20;
+  if (gnState.dhtStatus == HEALTHY) score += 20;
+  if (gnState.soilStatus == HEALTHY || gnState.soilStatus == UNCALIBRATED) score += 15;
+  if (ESP.getFreeHeap() > 50000) score += 20;
+  gnState.healthScore = score;
+}
+
+void evaluateAnomalies() {
+  if (gnState.imuStatus != HEALTHY) {
+    gnState.primaryAnomaly = "IMU_OFFLINE";
+  } else if (fabsf(gnState.roll) >= gnState.thresholds.tiltCritical || fabsf(gnState.pitch) >= gnState.thresholds.tiltCritical) {
+    gnState.primaryAnomaly = "TILT_CRITICAL";
+  } else if (gnState.shockPeakG >= 2.0f) {
+    gnState.primaryAnomaly = "SHOCK_SPIKE";
+  } else if (fabsf(gnState.roll) >= gnState.thresholds.tiltWarning || fabsf(gnState.pitch) >= gnState.thresholds.tiltWarning) {
+    gnState.primaryAnomaly = "TILT_WARNING";
+  } else if (gnState.vibrationRms >= gnState.thresholds.vibrationWarning) {
+    gnState.primaryAnomaly = "HIGH_VIB";
+  } else {
+    gnState.primaryAnomaly = "NONE";
+  }
+
+  if (gnState.burstModeEnabled && (gnState.primaryAnomaly != "NONE" || gnState.shockPeakG >= 1.8f)) {
+    gnState.telemetryIntervalMs = 100;
+    gnState.isBurstActive = true;
+  } else {
+    gnState.telemetryIntervalMs = gnState.baseIntervalMs;
+    gnState.isBurstActive = false;
+  }
+}
+
+void autoTareIMU() {
+  if (gnState.imuStatus != HEALTHY) return;
+  float sumRoll = 0, sumPitch = 0;
+  int count = 50;
+  for (int i = 0; i < count; i++) {
+    readMPU6500();
+    float r = atan2f(gnState.ay, gnState.az) * 180.0f / PI;
+    float p = atan2f(-gnState.ax, sqrtf(gnState.ay * gnState.ay + gnState.az * gnState.az)) * 180.0f / PI;
+    sumRoll += r;
+    sumPitch += p;
+    delay(10);
+  }
+  gnState.rollOffset = sumRoll / count;
+  gnState.pitchOffset = sumPitch / count;
+  preferences.putFloat("roll_off", gnState.rollOffset);
+  preferences.putFloat("pitch_off", gnState.pitchOffset);
+  logEvent("CAL", "Auto-tare complete");
+}
+
 void processMotion() {
   if (gnState.imuStatus != HEALTHY) {
     gnState.roll = gnState.pitch = gnState.acceleration = gnState.vibration = NAN;
@@ -399,6 +467,26 @@ void processMotion() {
   gnState.acceleration = sqrtf(gnState.ax * gnState.ax + gnState.ay * gnState.ay + gnState.az * gnState.az);
   float rawVib = fabsf(gnState.acceleration - 1.0f);
   gnState.vibration = isnan(gnState.vibration) ? rawVib : gnState.vibration * 0.8f + rawVib * 0.2f;
+
+  imuAccSumSq += rawVib * rawVib;
+  if (gnState.acceleration > imuShockMax) imuShockMax = gnState.acceleration;
+  imuSampleCount++;
+
+  uint32_t now = millis();
+  if (now - lastRmsMs >= 1000) {
+    lastRmsMs = now;
+    if (imuSampleCount > 0) {
+      gnState.vibrationRms = sqrtf(imuAccSumSq / imuSampleCount);
+      gnState.shockPeakG = imuShockMax;
+    }
+    imuAccSumSq = 0.0f;
+    imuShockMax = 0.0f;
+    imuSampleCount = 0;
+
+    evaluateHealth();
+    evaluateAnomalies();
+  }
+
   if (gnState.vibration < gnState.thresholds.vibrationWarning) gnState.vibrationLevel = "LOW";
   else if (gnState.vibration < gnState.thresholds.vibrationCritical) gnState.vibrationLevel = "MEDIUM";
   else gnState.vibrationLevel = "HIGH";
@@ -530,7 +618,8 @@ String bleTelemetryJson() {
   String rollStr = isnan(gnState.roll) ? "0.00" : String(gnState.roll, 2);
   String pitchStr = isnan(gnState.pitch) ? "0.00" : String(gnState.pitch, 2);
   String accelStr = isnan(gnState.acceleration) ? "1.00" : String(gnState.acceleration, 2);
-  String vibStr = isnan(gnState.vibration) ? "0.02" : String(gnState.vibration, 3);
+  String vibRmsStr = String(gnState.vibrationRms, 3);
+  String shockStr = String(gnState.shockPeakG, 2);
   String magStr = isnan(gnState.magneticMagnitude) ? "47.60" : String(gnState.magneticMagnitude, 1);
   String tempStr = isnan(gnState.temperature) ? "24.50" : String(gnState.temperature, 1);
   String humStr = isnan(gnState.humidity) ? "55.00" : String(gnState.humidity, 1);
@@ -542,9 +631,10 @@ String bleTelemetryJson() {
                 "\"timestamp_ms\":" + String(millis()) + "," +
                 "\"motion\":{\"roll\":" + rollStr +
                 ",\"pitch\":" + pitchStr +
-                ",\"acceleration\":" + accelStr +
-                ",\"vibration\":" + vibStr +
-                ",\"vibration_level\":\"" + gnState.vibrationLevel + "\"}," +
+                ",\"accel_g\":" + accelStr +
+                ",\"vib_rms\":" + vibRmsStr +
+                ",\"shock_peak_g\":" + shockStr +
+                ",\"vib_level\":\"" + gnState.vibrationLevel + "\"}," +
                 "\"magnetic\":{\"magnitude_ut\":" + magStr +
                 ",\"calibrated\":" + String(gnState.magCalibrated ? "true" : "false") + "}," +
                 "\"environment\":{\"temperature_c\":" + tempStr +
@@ -554,7 +644,10 @@ String bleTelemetryJson() {
                 "\"sensor_status\":{\"mpu6500\":\"" + String(sensorStatusName(gnState.imuStatus)) +
                 "\",\"hmc5883l\":\"" + String(sensorStatusName(gnState.magStatus)) +
                 "\",\"dht11\":\"" + String(sensorStatusName(gnState.dhtStatus)) + "\"}," +
-                "\"status\":{\"overall\":\"" + String(systemStatusName(gnState.systemStatus)) + "\"}}";
+                "\"status\":{\"overall\":\"" + String(systemStatusName(gnState.systemStatus)) +
+                "\",\"health_score\":" + String(gnState.healthScore) +
+                ",\"anomaly\":\"" + gnState.primaryAnomaly +
+                "\",\"burst_active\":" + String(gnState.isBurstActive ? "true" : "false") + "}}";
   return json;
 }
 
@@ -840,11 +933,40 @@ void serialCommand(String command) {
   String upper = command;
   upper.toUpperCase();
   if (upper == "HELP") {
-    Serial.println("STATUS, TELEMETRY, WIFI ON/OFF, BLE ON/OFF");
+    Serial.println("STATUS, TELEMETRY, CAL_TARE, BURST ON/OFF, SET_INTERVAL <ms>, WIFI ON/OFF, BLE ON/OFF");
     return;
   }
   if (upper == "STATUS" || upper == "TELEMETRY") {
     Serial.println(telemetryJson(false));
+    return;
+  }
+  if (upper == "CAL_TARE" || upper == "TARE") {
+    autoTareIMU();
+    Serial.println("OK CAL_TARE_SUCCESS");
+    return;
+  }
+  if (upper == "BURST ON") {
+    gnState.burstModeEnabled = true;
+    saveConfiguration("serial");
+    Serial.println("OK BURST_MODE_ENABLED");
+    return;
+  }
+  if (upper == "BURST OFF") {
+    gnState.burstModeEnabled = false;
+    saveConfiguration("serial");
+    Serial.println("OK BURST_MODE_DISABLED");
+    return;
+  }
+  if (upper.startsWith("SET_INTERVAL ")) {
+    uint32_t val = upper.substring(13).toInt();
+    if (val >= 100 && val <= 60000) {
+      gnState.baseIntervalMs = val;
+      gnState.telemetryIntervalMs = val;
+      saveConfiguration("serial");
+      Serial.printf("OK INTERVAL_SET_%u_MS\n", val);
+    } else {
+      Serial.println("ERROR INVALID_INTERVAL");
+    }
     return;
   }
   if (upper == "WIFI ON") {
