@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.cache/
+
+# Ignored Folders
+sih-presentation/
+venv/
+.venv/
+env/
+
+# OS / Environment files
+.DS_Store
+*.log
+.env.local

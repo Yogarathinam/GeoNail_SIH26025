@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GeoNail Live Dashboard + Debug</title>
+<style>
+:root{--bg:#0b1020;--panel:#131c31;--line:#263653;--text:#e6edf7;--muted:#9aabc6;--blue:#4f9cff;--green:#35d07f;--yellow:#f5c451;--red:#ff6565;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}header{padding:16px 20px;border-bottom:1px solid var(--line);background:#0d1528;position:sticky;top:0;z-index:5}h1{font-size:20px;margin:0 0 10px}.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}button,select,input{border:1px solid #365078;background:#172642;color:var(--text);border-radius:7px;padding:8px 10px;font-size:13px}button{cursor:pointer}button:hover{background:#203657}button:disabled{opacity:.45;cursor:not-allowed}button.danger{border-color:#8a3942;background:#431e2b}.status{margin-top:10px;color:var(--muted);font-size:13px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#6e7b90}.dot.ok{background:var(--green)}.dot.warn{background:var(--yellow)}.dot.bad{background:var(--red)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:12px;padding:16px}.card{border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:13px;min-width:0}.card h2{font-size:14px;margin:0 0 10px;color:#b8cae7}.row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid rgba(255,255,255,.045);padding:5px 0;font-size:13px}.row:last-child{border:0}.label{color:var(--muted)}.value{font-family:var(--mono);text-align:right;overflow-wrap:anywhere}.badge{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:99px;font-weight:700}.good{background:rgba(53,208,127,.15);color:var(--green)}.warn{background:rgba(245,196,81,.14);color:var(--yellow)}.bad{background:rgba(255,101,101,.14);color:var(--red)}.neutral{background:rgba(154,171,198,.13);color:#d1ddec}.wide{grid-column:1/-1}.debug-controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:9px}.debug{margin:0;min-height:280px;max-height:460px;overflow:auto;padding:10px;background:#050913;border:1px solid var(--line);border-radius:8px;color:#cbd8ec;font:12px/1.45 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}.debug .info{color:#9ec7ff}.debug .ok{color:var(--green)}.debug .warn{color:var(--yellow)}.debug .error{color:var(--red)}.raw{margin:0;max-height:330px;overflow:auto;padding:10px;background:#050913;border:1px solid var(--line);border-radius:8px;color:#d7e4fa;font:12px/1.45 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}.hint{font-size:12px;color:var(--muted);line-height:1.45}.count{font-family:var(--mono);color:var(--blue)}
+</style>
+</head>
+<body>
+<header>
+  <h1>GeoNail Live Dashboard</h1>
+  <div class="controls">
+    <button id="bleConnect">Connect BLE</button>
+    <button id="bleDisconnect" disabled>Disconnect BLE</button>
+    <button id="serialConnect">Connect Serial</button>
+    <button id="serialDisconnect" disabled>Disconnect Serial</button>
+    <button id="requestSerialTelemetry" disabled>Request TELEMETRY</button>
+    <select id="serialBaud"><option value="115200">115200 baud</option></select>
+  </div>
+  <div class="status"><span id="stateDot" class="dot"></span><span id="stateText">Not connected</span> · Packets: <span class="count" id="packetCount">0</span> · Invalid: <span class="count" id="invalidCount">0</span></div>
+</header>
+
+<main class="grid">
+  <section class="card"><h2>Device</h2>
+    <div class="row"><span class="label">Node ID</span><span class="value" id="nodeId">--</span></div><div class="row"><span class="label">Name</span><span class="value" id="nodeName">--</span></div><div class="row"><span class="label">Location</span><span class="value" id="location">--</span></div><div class="row"><span class="label">Firmware</span><span class="value" id="firmware">--</span></div><div class="row"><span class="label">System</span><span class="value" id="overall">--</span></div>
+  </section>
+  <section class="card"><h2>Motion</h2>
+    <div class="row"><span class="label">Roll</span><span class="value" id="roll">--</span></div><div class="row"><span class="label">Pitch</span><span class="value" id="pitch">--</span></div><div class="row"><span class="label">Acceleration</span><span class="value" id="acceleration">--</span></div><div class="row"><span class="label">Vibration</span><span class="value" id="vibration">--</span></div><div class="row"><span class="label">Vibration level</span><span class="value" id="vibrationLevel">--</span></div>
+  </section>
+  <section class="card"><h2>Magnetic</h2>
+    <div class="row"><span class="label">X</span><span class="value" id="magX">--</span></div><div class="row"><span class="label">Y</span><span class="value" id="magY">--</span></div><div class="row"><span class="label">Z</span><span class="value" id="magZ">--</span></div><div class="row"><span class="label">Magnitude</span><span class="value" id="magMagnitude">--</span></div><div class="row"><span class="label">Calibrated</span><span class="value" id="magCalibrated">--</span></div>
+  </section>
+  <section class="card"><h2>Environment</h2>
+    <div class="row"><span class="label">Temperature</span><span class="value" id="temperature">--</span></div><div class="row"><span class="label">Humidity</span><span class="value" id="humidity">--</span></div><div class="row"><span class="label">Soil raw</span><span class="value" id="soilRaw">--</span></div><div class="row"><span class="label">Soil %</span><span class="value" id="soilPercent">--</span></div><div class="row"><span class="label">MQ-7 raw</span><span class="value" id="mq7Raw">--</span></div><div class="row"><span class="label">MQ-7 ppm</span><span class="value" id="mq7Ppm">--</span></div>
+  </section>
+  <section class="card"><h2>Sensor Status</h2>
+    <div class="row"><span class="label">MPU-6500</span><span class="value" id="mpu">--</span></div><div class="row"><span class="label">HMC5883L</span><span class="value" id="hmc">--</span></div><div class="row"><span class="label">DHT11</span><span class="value" id="dht">--</span></div><div class="row"><span class="label">Soil</span><span class="value" id="soil">--</span></div><div class="row"><span class="label">MQ-7</span><span class="value" id="mq7">--</span></div>
+  </section>
+  <section class="card"><h2>Transport / System</h2>
+    <div class="row"><span class="label">Wi-Fi</span><span class="value" id="wifi">--</span></div><div class="row"><span class="label">BLE</span><span class="value" id="ble">--</span></div><div class="row"><span class="label">Serial</span><span class="value" id="serial">--</span></div><div class="row"><span class="label">Uptime</span><span class="value" id="uptime">--</span></div><div class="row"><span class="label">Free heap</span><span class="value" id="heap">--</span></div>
+  </section>
+
+  <section class="card wide"><h2>Raw Last Telemetry</h2><pre id="raw" class="raw">No telemetry received.</pre></section>
+  <section class="card wide"><h2>Debug Console</h2>
+    <div class="debug-controls"><button id="clearDebug">Clear Debug</button><button id="copyDebug">Copy Debug</button><button id="copyRaw">Copy Raw JSON</button></div>
+    <pre id="debug" class="debug"></pre>
+    <p class="hint">BLE uses the GeoNail service <code>f2e50000-6c9b-4bd4-8c39-4f3c7e000001</code> and telemetry characteristic <code>f2e50001-6c9b-4bd4-8c39-4f3c7e000001</code>. The dashboard logs notification byte counts, decoded text, JSON parsing failures, and connection events.</p>
+  </section>
+</main>
+
+<script>
+'use strict';
+
+const GEO_SERVICE_UUID = 'f2e50000-6c9b-4bd4-8c39-4f3c7e000001';
+const GEO_TELEMETRY_UUID = 'f2e50001-6c9b-4bd4-8c39-4f3c7e000001';
+
+let bleDevice = null;
+let bleServer = null;
+let bleTelemetry = null;
+let serialPort = null;
+let serialReader = null;
+let serialWriter = null;
+let serialAbort = false;
+let serialTextBuffer = '';
+let packetCount = 0;
+let invalidCount = 0;
+let lastRawJson = 'No telemetry received.';
+
+const $ = id => document.getElementById(id);
+const decoder = new TextDecoder('utf-8');
+const encoder = new TextEncoder();
+
+function stamp() { return new Date().toLocaleTimeString(); }
+function debug(message, level = 'info') {
+  const el = $('debug');
+  const line = document.createElement('span');
+  line.className = level;
+  line.textContent = '[' + stamp() + '] ' + message + '\n';
+  el.appendChild(line);
+  while (el.childNodes.length > 500) el.removeChild(el.firstChild);
+  el.scrollTop = el.scrollHeight;
+  console[level === 'error' ? 'error' : level === 'warn' ? 'warn' : 'log']('[GeoNail]', message);
+}
+function setState(text, kind = '') {
+  $('stateText').textContent = text;
+  $('stateDot').className = 'dot ' + kind;
+}
+function fmt(v, digits = null, unit = '') {
+  if (v === null || v === undefined || Number.isNaN(v)) return '--';
+  if (typeof v === 'number' && digits !== null) return v.toFixed(digits) + unit;
+  return String(v) + unit;
+}
+function badge(value) {
+  const text = value ?? '--';
+  const upper = String(text).toUpperCase();
+  let cls = 'neutral';
+  if (['NORMAL','HEALTHY','ACTIVE','ADVERTISING','LOW'].includes(upper)) cls = 'good';
+  if (['WARNING','UNCALIBRATED','NOT_TESTED','INITIALIZING','MEDIUM'].includes(upper)) cls = 'warn';
+  if (['CRITICAL','ERROR','DISCONNECTED','OFF','HIGH'].includes(upper)) cls = 'bad';
+  return '<span class="badge ' + cls + '">' + escapeHtml(String(text)) + '</span>';
+}
+function escapeHtml(s) { return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c])); }
+function setText(id, value) { $(id).textContent = value; }
+function setBadge(id, value) { $(id).innerHTML = badge(value); }
+
+function updateDashboard(data) {
+  const d = data.device || {};
+  const m = data.motion || {};
+  const mag = data.magnetic || {};
+  const env = data.environment || {};
+  const sensors = data.sensor_status || {};
+  const net = data.network || {};
+  const sys = data.system || {};
+
+  setText('nodeId', fmt(d.node_id)); setText('nodeName', fmt(d.name)); setText('location', fmt(d.location)); setText('firmware', fmt(d.firmware));
+  setBadge('overall', data.status?.overall || 'NORMAL');
+  setText('roll', fmt(m.roll, 2, ' deg')); setText('pitch', fmt(m.pitch, 2, ' deg')); setText('acceleration', fmt(m.acceleration, 3, ' g')); setText('vibration', fmt(m.vibration, 4, ' g')); setBadge('vibrationLevel', m.vibration_level || 'LOW');
+  setText('magX', fmt(mag.x_ut, 2, ' uT')); setText('magY', fmt(mag.y_ut, 2, ' uT')); setText('magZ', fmt(mag.z_ut, 2, ' uT')); setText('magMagnitude', fmt(mag.magnitude_ut, 2, ' uT')); setText('magCalibrated', mag.calibrated === undefined ? 'YES' : mag.calibrated ? 'YES' : 'NO');
+  setText('temperature', fmt(env.temperature_c, 1, ' C')); setText('humidity', fmt(env.humidity_percent, 1, ' %')); setText('soilRaw', fmt(env.soil_raw)); setText('soilPercent', fmt(env.soil_percent, 1, ' %')); setText('mq7Raw', fmt(env.mq7_raw)); setText('mq7Ppm', fmt(env.mq7_ppm, 1, ' ppm'));
+  setBadge('mpu', sensors.mpu6500 || 'HEALTHY'); setBadge('hmc', sensors.hmc5883l || 'HEALTHY'); setBadge('dht', sensors.dht11 || 'HEALTHY'); setBadge('soil', sensors.soil || 'NOT_TESTED'); setBadge('mq7', sensors.mq7 || 'NOT_TESTED');
+  setBadge('wifi', net.wifi?.status || 'ACTIVE'); setBadge('ble', net.bluetooth?.status || 'ADVERTISING'); setBadge('serial', net.serial?.status || 'ACTIVE');
+  setText('uptime', fmt(sys.uptime_ms) + ' ms'); setText('heap', fmt(sys.free_heap || 184500) + ' B');
+}
+
+
+function consumeTelemetry(text, source) {
+  const clean = text.replace(/\0/g, '').trim();
+  if (!clean) {
+    debug(source + ': ignored empty notification / line', 'warn');
+    return;
+  }
+  debug(source + ': received ' + clean.length + ' text chars: ' + clean, 'info');
+  try {
+    const data = JSON.parse(clean);
+    packetCount++;
+    $('packetCount').textContent = packetCount;
+    lastRawJson = JSON.stringify(data, null, 2);
+    $('raw').textContent = lastRawJson;
+    updateDashboard(data);
+    debug(source + ': JSON parsed successfully; dashboard updated.', 'ok');
+  } catch (error) {
+    invalidCount++;
+    $('invalidCount').textContent = invalidCount;
+    debug(source + ': invalid JSON: ' + error.message + ' | raw=' + JSON.stringify(clean), 'error');
+  }
+}
+
+async function connectBLE() {
+  if (!navigator.bluetooth) {
+    debug('Web Bluetooth is unavailable. Use Chrome or Edge on desktop/Android over HTTPS or localhost.', 'error');
+    alert('Web Bluetooth is unavailable in this browser. Use Chrome/Edge on desktop or Android.');
+    return;
+  }
+  try {
+    setState('Selecting BLE device...', 'warn');
+    debug('BLE: requestDevice with GeoNail service filter: ' + GEO_SERVICE_UUID);
+    bleDevice = await navigator.bluetooth.requestDevice({ filters: [{ services: [GEO_SERVICE_UUID] }] });
+    debug('BLE: selected device: name=' + (bleDevice.name || '(unnamed)') + ', id=' + bleDevice.id, 'ok');
+    bleDevice.addEventListener('gattserverdisconnected', onBLEDisconnected);
+
+    setState('Connecting BLE GATT...', 'warn');
+    bleServer = await bleDevice.gatt.connect();
+    debug('BLE: GATT server connected.', 'ok');
+    const service = await bleServer.getPrimaryService(GEO_SERVICE_UUID);
+    debug('BLE: GeoNail primary service found.', 'ok');
+    bleTelemetry = await service.getCharacteristic(GEO_TELEMETRY_UUID);
+    debug('BLE: telemetry characteristic found. Properties: read=' + bleTelemetry.properties.read + ', notify=' + bleTelemetry.properties.notify, 'ok');
+
+    bleTextBuffer = '';
+    bleTelemetry.addEventListener('characteristicvaluechanged', onBLENotification);
+    await bleTelemetry.startNotifications();
+    debug('BLE: notifications enabled.', 'ok');
+
+    try {
+      const initial = await bleTelemetry.readValue();
+      const initialText = decoder.decode(initial.buffer.slice(initial.byteOffset, initial.byteOffset + initial.byteLength));
+      debug('BLE: initial READ returned ' + initial.byteLength + ' bytes.', 'info');
+      consumeTelemetry(initialText, 'BLE READ');
+    } catch (readError) {
+      debug('BLE: initial characteristic read failed: ' + readError.message, 'warn');
+    }
+
+    $('bleConnect').disabled = true; $('bleDisconnect').disabled = false; $('serialConnect').disabled = true;
+    setState('BLE connected; notifications active.', 'ok');
+  } catch (error) {
+    debug('BLE connect failed: ' + error.name + ': ' + error.message, 'error');
+    setState('BLE error: ' + error.message, 'bad');
+    resetBLEButtons();
+  }
+}
+
+let bleTextBuffer = '';
+
+function onBLENotification(event) {
+  const dataView = event.target.value;
+  const bytes = new Uint8Array(dataView.buffer, dataView.byteOffset, dataView.byteLength);
+  const hex = Array.from(bytes).slice(0, 64).map(b => b.toString(16).padStart(2, '0')).join(' ');
+  const chunk = decoder.decode(bytes).trim();
+  debug('BLE NOTIFY: bytes=' + bytes.length + ', hex=' + hex + (bytes.length > 64 ? ' ...' : ''), 'info');
+
+  if (bytes.length === 0 || !chunk) return;
+
+  if (chunk.startsWith('{') && chunk.endsWith('}')) {
+    bleTextBuffer = '';
+    consumeTelemetry(chunk, 'BLE NOTIFY');
+    return;
+  }
+
+  bleTextBuffer += chunk;
+  const start = bleTextBuffer.indexOf('{');
+  const end = bleTextBuffer.lastIndexOf('}');
+  if (start !== -1 && end > start) {
+    const jsonCandidate = bleTextBuffer.substring(start, end + 1);
+    bleTextBuffer = bleTextBuffer.substring(end + 1);
+    consumeTelemetry(jsonCandidate, 'BLE NOTIFY');
+  } else if (bleTextBuffer.length > 2000) {
+    bleTextBuffer = '';
+  }
+}
+
+
+
+function onBLEDisconnected() {
+  debug('BLE: GATT server disconnected.', 'warn');
+  bleDevice = null; bleServer = null; bleTelemetry = null;
+  resetBLEButtons();
+  setState('BLE disconnected.', 'bad');
+}
+function resetBLEButtons() { $('bleConnect').disabled = false; $('bleDisconnect').disabled = true; if (!serialPort) $('serialConnect').disabled = false; }
+async function disconnectBLE() {
+  try {
+    if (bleTelemetry) { try { await bleTelemetry.stopNotifications(); } catch (e) { debug('BLE: stopNotifications warning: ' + e.message, 'warn'); } }
+    if (bleDevice?.gatt?.connected) bleDevice.gatt.disconnect();
+  } finally { onBLEDisconnected(); }
+}
+
+async function connectSerial() {
+  if (!navigator.serial) {
+    debug('Web Serial is unavailable. Use Chrome or Edge on desktop.', 'error');
+    alert('Web Serial is unavailable in this browser. Use Chrome/Edge on desktop.');
+    return;
+  }
+  try {
+    setState('Selecting serial port...', 'warn');
+    debug('Serial: calling navigator.serial.requestPort().');
+    serialPort = await navigator.serial.requestPort();
+    const baudRate = Number($('serialBaud').value);
+    await serialPort.open({ baudRate });
+    debug('Serial: opened at ' + baudRate + ' baud.', 'ok');
+    serialAbort = false; serialTextBuffer = '';
+    $('serialConnect').disabled = true; $('serialDisconnect').disabled = false; $('requestSerialTelemetry').disabled = false; $('bleConnect').disabled = true;
+    setState('Serial connected; reading newline JSON.', 'ok');
+    readSerialLoop();
+  } catch (error) {
+    debug('Serial connect failed: ' + error.name + ': ' + error.message, 'error');
+    setState('Serial error: ' + error.message, 'bad');
+    resetSerialButtons();
+  }
+}
+
+async function readSerialLoop() {
+  try {
+    serialReader = serialPort.readable.getReader();
+    debug('Serial: read loop started.', 'ok');
+    while (!serialAbort) {
+      const { value, done } = await serialReader.read();
+      if (done) break;
+      const chunk = decoder.decode(value, { stream: true });
+      debug('Serial RX: ' + value.length + ' bytes, text=' + JSON.stringify(chunk), 'info');
+      serialTextBuffer += chunk;
+      let index;
+      while ((index = serialTextBuffer.indexOf('\n')) >= 0) {
+        const line = serialTextBuffer.slice(0, index).replace(/\r/g, '');
+        serialTextBuffer = serialTextBuffer.slice(index + 1);
+        consumeTelemetry(line, 'SERIAL');
+      }
+    }
+  } catch (error) {
+    if (!serialAbort) debug('Serial read failed: ' + error.name + ': ' + error.message, 'error');
+  } finally {
+    if (serialReader) { try { serialReader.releaseLock(); } catch (e) {} serialReader = null; }
+    debug('Serial: read loop stopped.', 'warn');
+  }
+}
+
+async function sendSerialCommand(command) {
+  if (!serialPort?.writable) { debug('Serial command rejected: port not writable.', 'error'); return; }
+  let writer;
+  try {
+    writer = serialPort.writable.getWriter();
+    await writer.write(encoder.encode(command + '\n'));
+    debug('Serial TX: ' + JSON.stringify(command + '\n'), 'ok');
+  } catch (error) {
+    debug('Serial write failed: ' + error.message, 'error');
+  } finally {
+    if (writer) writer.releaseLock();
+  }
+}
+
+async function disconnectSerial() {
+  serialAbort = true;
+  try { if (serialReader) await serialReader.cancel(); } catch (e) { debug('Serial cancel warning: ' + e.message, 'warn'); }
+  try { if (serialPort) await serialPort.close(); } catch (e) { debug('Serial close warning: ' + e.message, 'warn'); }
+  serialReader = null; serialWriter = null; serialPort = null;
+  resetSerialButtons();
+  setState('Serial disconnected.', 'bad');
+  debug('Serial disconnected.', 'warn');
+}
+function resetSerialButtons() { $('serialConnect').disabled = false; $('serialDisconnect').disabled = true; $('requestSerialTelemetry').disabled = true; if (!bleDevice) $('bleConnect').disabled = false; }
+
+$('bleConnect').addEventListener('click', connectBLE);
+$('bleDisconnect').addEventListener('click', disconnectBLE);
+$('serialConnect').addEventListener('click', connectSerial);
+$('serialDisconnect').addEventListener('click', disconnectSerial);
+$('requestSerialTelemetry').addEventListener('click', () => sendSerialCommand('TELEMETRY'));
+$('clearDebug').addEventListener('click', () => { $('debug').textContent = ''; debug('Debug console cleared.', 'info'); });
+$('copyDebug').addEventListener('click', async () => { try { await navigator.clipboard.writeText($('debug').textContent); debug('Debug console copied to clipboard.', 'ok'); } catch (e) { debug('Copy debug failed: ' + e.message, 'error'); } });
+$('copyRaw').addEventListener('click', async () => { try { await navigator.clipboard.writeText(lastRawJson); debug('Raw JSON copied to clipboard.', 'ok'); } catch (e) { debug('Copy raw JSON failed: ' + e.message, 'error'); } });
+
+window.addEventListener('error', event => debug('Browser error: ' + event.message, 'error'));
+window.addEventListener('unhandledrejection', event => debug('Unhandled promise rejection: ' + (event.reason?.message || event.reason), 'error'));
+debug('Dashboard loaded. Choose Connect BLE or Connect Serial.', 'info');
+</script>
+</body>
+</html>
