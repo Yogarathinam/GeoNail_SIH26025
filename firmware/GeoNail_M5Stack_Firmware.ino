@@ -173,6 +173,8 @@ int menuCursor = 0;
 int sensorPage = 0;
 int networkMenuCursor = 0;
 int networkDetailPage = 0;
+int settingsMenuCursor = 0;
+int settingsDetailPage = 0;
 String navScreens[MAX_NAV];
 int navCursors[MAX_NAV];
 uint8_t navDepth = 0;
@@ -1105,7 +1107,7 @@ String menuLabel(int i) {
 
 void drawMenu(const String &title) {
   drawHeader(title);
-  int selected = currentScreen == "network" ? networkMenuCursor : menuCursor;
+  int selected = currentScreen == "network" ? networkMenuCursor : currentScreen == "settings" ? settingsMenuCursor : menuCursor;
   M5.Display.setTextSize(2);
   for (int i = 0; i < menuLength(); ++i) {
     int y = 38 + i * 28;
@@ -1197,13 +1199,101 @@ void drawNetworkDetail() {
   else drawWiFiPage();
 }
 
+void drawTelemetry() {
+  drawHeader("TELEMETRY MONITOR");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 40);
+  M5.Display.printf("Interval: %u ms\n", gnState.telemetryIntervalMs);
+  M5.Display.printf("Burst Mode: %s\n", gnState.isBurstActive ? "ACTIVE (100ms)" : "IDLE (1000ms)");
+  M5.Display.printf("SD Card Log: %s\n", gnState.sdMounted ? "MOUNTED (/geonail_telemetry.jsonl)" : "NOT MOUNTED");
+  M5.Display.printf("Packets Sent: %u\n", gnState.packetCount);
+  M5.Display.printf("Last TX: %lu ms ago\n\n", millis() - gnState.lastTxMs);
+  M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.println("Transports Active:");
+  M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.printf("BLE: %s  Serial: %s  AP: %s\n",
+    gnState.bleAdvertising ? (gnState.bleClientConnected ? "CONNECTED" : "ADVERTISING") : "OFF",
+    gnState.serialActive ? "ACTIVE" : "OFF",
+    gnState.apActive ? "ACTIVE" : "OFF");
+}
+
+void drawDiagnostics() {
+  drawHeader("DIAGNOSTICS");
+  M5.Display.setTextSize(2); M5.Display.setTextColor(systemColor(gnState.systemStatus)); M5.Display.setCursor(10, 36);
+  M5.Display.printf("Health: %u%%", gnState.healthScore);
+  
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 70);
+  M5.Display.printf("Anomaly: %s\n", gnState.primaryAnomaly.c_str());
+  M5.Display.printf("Free Heap: %u B\n", ESP.getFreeHeap());
+  M5.Display.printf("Uptime: %lu ms\n\n", millis());
+  
+  M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.println("Sensor Health Status:");
+  M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.printf("MPU6500: %s\nHMC5883L: %s\nDHT11: %s\nSOIL: %s\nMQ7: %s\n",
+    sensorStatusName(gnState.imuStatus),
+    sensorStatusName(gnState.magStatus),
+    sensorStatusName(gnState.dhtStatus),
+    sensorStatusName(gnState.soilStatus),
+    sensorStatusName(gnState.mq7Status));
+}
+
+void drawLogs() {
+  drawHeader("SYSTEM LOGS");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE);
+  int start = logCount > 6 ? logCount - 6 : 0;
+  for (int i = start; i < logCount; ++i) {
+    int y = 38 + (i - start) * 28;
+    M5.Display.setCursor(8, y);
+    M5.Display.printf("[%s] %s", logs[i].category.c_str(), logs[i].message.c_str());
+  }
+}
+
+void drawNodeConfig() {
+  drawHeader("NODE CONFIG");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
+  M5.Display.printf("Node ID: %s\nName: %s\nLocation: %s\nFirmware: %s\nConfig Ver: %u\nUpdated By: %s\n",
+    gnState.nodeId.c_str(), gnState.nodeName.c_str(), gnState.location.c_str(), gnState.firmware.c_str(), gnState.configVersion, gnState.updatedBy.c_str());
+}
+
+void drawCalibrationPage() {
+  drawHeader("CALIBRATION");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
+  M5.Display.printf("Roll Offset: %.2f deg\nPitch Offset: %.2f deg\nMag Calibrated: %s\nSoil Calibrated: %s\n\nC TARE IMU NOW",
+    gnState.rollOffset, gnState.pitchOffset, gnState.magCalibrated ? "YES" : "NO", gnState.soilCalibrated ? "YES" : "NO");
+}
+
+void drawAbout() {
+  drawHeader("ABOUT GEONAIL");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
+  M5.Display.printf("GeoNail OS v%s\nTeam Stellar (SIH 2026)\n\nNode ID: %s\nLocation: %s\n\nLandslide & Soil Motion Monitoring Node.",
+    FW_VERSION, gnState.nodeId.c_str(), gnState.location.c_str());
+}
+
+void drawDemoPage() {
+  drawHeader("DEMO MODE");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
+  M5.Display.printf("Demo Mode: %s\n\nC TOGGLE DEMO MODE", demoMode ? "ENABLED" : "DISABLED");
+}
+
+void drawSettingsDetail() {
+  if (settingsDetailPage == 0) drawNodeConfig();
+  else if (settingsDetailPage == 1) drawCalibrationPage();
+  else if (settingsDetailPage == 2) drawLogs();
+  else if (settingsDetailPage == 3) drawAbout();
+  else drawDemoPage();
+}
+
 void renderUI() {
   M5.Display.fillScreen(COLOR_BG);
   if (currentScreen == "home") drawMenu("GEONAIL OS");
   else if (currentScreen == "network") drawMenu("NETWORK");
+  else if (currentScreen == "settings") drawMenu("SETTINGS");
   else if (currentScreen == "dashboard") drawDashboard();
   else if (currentScreen == "sensors") drawSensors();
+  else if (currentScreen == "telemetry") drawTelemetry();
+  else if (currentScreen == "diagnostics") drawDiagnostics();
   else if (currentScreen == "network_detail") drawNetworkDetail();
+  else if (currentScreen == "settings_detail") drawSettingsDetail();
   else drawMenu(currentScreen);
 }
 
@@ -1216,6 +1306,7 @@ void navigateTo(const String &target) {
   currentScreen = target;
   menuCursor = 0;
   if (target == "network") networkMenuCursor = 0;
+  if (target == "settings") settingsMenuCursor = 0;
   if (target == "sensors") sensorPage = 0;
   renderUI();
 }
@@ -1248,7 +1339,7 @@ void toggleBLE() {
 
 void selectCurrent() {
   if (currentScreen == "home") {
-    const char *targets[] = { "dashboard", "sensors", "network", "dashboard", "dashboard", "network" };
+    const char *targets[] = { "dashboard", "sensors", "network", "telemetry", "diagnostics", "settings" };
     navigateTo(targets[menuCursor]);
     return;
   }
@@ -1257,9 +1348,25 @@ void selectCurrent() {
     navigateTo("network_detail");
     return;
   }
+  if (currentScreen == "settings") {
+    settingsDetailPage = settingsMenuCursor;
+    navigateTo("settings_detail");
+    return;
+  }
   if (currentScreen == "network_detail") {
     if (networkDetailPage == 0) toggleWiFi();
     else if (networkDetailPage == 1) toggleBLE();
+    return;
+  }
+  if (currentScreen == "settings_detail") {
+    if (settingsDetailPage == 1) {
+      autoTareIMU();
+      renderUI();
+    } else if (settingsDetailPage == 4) {
+      demoMode = !demoMode;
+      logEvent("DEMO", demoMode ? "Demo mode ON" : "Demo mode OFF");
+      renderUI();
+    }
     return;
   }
 }
@@ -1270,6 +1377,7 @@ void handleInput() {
   if (M5.BtnA.wasPressed() && now - lastAction > 80) {
     lastAction = now;
     if (currentScreen == "network") networkMenuCursor = (networkMenuCursor + 3) % 4;
+    else if (currentScreen == "settings") settingsMenuCursor = (settingsMenuCursor + 4) % 5;
     else if (currentScreen == "sensors") sensorPage = (sensorPage + 4) % 5;
     else if (menuLength()) menuCursor = (menuCursor + menuLength() - 1) % menuLength();
     renderUI();
@@ -1277,6 +1385,7 @@ void handleInput() {
   if (M5.BtnB.wasPressed() && now - lastAction > 80) {
     lastAction = now;
     if (currentScreen == "network") networkMenuCursor = (networkMenuCursor + 1) % 4;
+    else if (currentScreen == "settings") settingsMenuCursor = (settingsMenuCursor + 1) % 5;
     else if (currentScreen == "sensors") sensorPage = (sensorPage + 1) % 5;
     else if (menuLength()) menuCursor = (menuCursor + 1) % menuLength();
     renderUI();
@@ -1355,6 +1464,6 @@ void loop() {
 
   if (now - lastUiMs >= UI_REFRESH_MS) {
     lastUiMs = now;
-    if (currentScreen == "dashboard" || currentScreen == "sensors" || currentScreen == "network" || currentScreen == "network_detail") renderUI();
+    if (currentScreen == "dashboard" || currentScreen == "sensors" || currentScreen == "network" || currentScreen == "network_detail" || currentScreen == "telemetry" || currentScreen == "diagnostics" || currentScreen == "settings" || currentScreen == "settings_detail") renderUI();
   }
 }
