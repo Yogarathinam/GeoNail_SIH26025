@@ -134,7 +134,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
   const [packetCount, setPacketCount] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
   const [showSimControls, setShowSimControls] = useState(false);
-  const [xrayMode, setXrayMode] = useState(true);
+  const [xrayMode, setXrayMode] = useState(false);
   const [packetLogs, setPacketLogs] = useState<PacketLog[]>([]);
 
   // Simulated Telemetry Sliders State
@@ -537,18 +537,37 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
   const yawVal = transportMode === 'simulated' ? simYaw : (telemetry.motion.gz || 0);
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: 'calc(100vh - 64px)', overflow: 'hidden', background: '#090d16', fontFamily: 'Inter, sans-serif' }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: 'calc(100vh - 64px)',
+        overflow: 'hidden',
+        backgroundColor: '#f8fafc',
+        backgroundImage: `
+          linear-gradient(rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+          linear-gradient(rgba(148, 163, 184, 0.45) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(148, 163, 184, 0.45) 1px, transparent 1px)
+        `,
+        backgroundSize: '20px 20px, 20px 20px, 100px 100px, 100px 100px',
+        fontFamily: 'Inter, sans-serif',
+      }}
+    >
       
       {/* -------------------------------------------------------------
           1. CENTER STAGE: 3D REALTIME WEBGL CANVAS VISUALIZER
          ------------------------------------------------------------- */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
         <Canvas camera={{ position: [0, 2.0, 14.5], fov: 45 }} gl={{ antialias: true, alpha: true }}>
-          <ambientLight intensity={1.2} color="#ffffff" />
-          <hemisphereLight args={['#ffffff', '#94a3b8', 0.9]} />
-          <directionalLight position={[10, 16, 10]} intensity={2.4} castShadow />
-          <directionalLight position={[-10, 10, -10]} intensity={1.4} color="#38bdf8" />
-          <directionalLight position={[0, -8, 10]} intensity={0.8} color="#0284c7" />
+          <ambientLight intensity={1.8} color="#ffffff" />
+          <hemisphereLight args={['#ffffff', '#cbd5e1', 1.2]} />
+          <directionalLight position={[12, 20, 15]} intensity={3.2} castShadow />
+          <directionalLight position={[-12, 12, -15]} intensity={1.8} color="#e0f2fe" />
+          <directionalLight position={[0, -10, 12]} intensity={1.0} color="#0284c7" />
+
+          {/* 3D CAD Floor Measurement Grid */}
+          <gridHelper args={[40, 40, '#0284c7', '#94a3b8']} position={[0, -14.5, 0]} />
 
           <OrbitControls makeDefault enableDamping dampingFactor={0.05} minDistance={3} maxDistance={30} />
 
@@ -570,7 +589,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
             magDisplacementMm={displacementMm}
           />
 
-          <ContactShadows position={[0, -14.5, 0]} opacity={0.85} scale={22} blur={2.5} far={6} color="#000000" />
+          <ContactShadows position={[0, -14.5, 0]} opacity={0.65} scale={22} blur={2.0} far={6} color="#0f172a" />
         </Canvas>
       </div>
 
@@ -589,15 +608,15 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
           alignItems: 'center',
           padding: '10px 18px',
           borderRadius: '16px',
-          background: 'rgba(15, 23, 42, 0.72)',
+          background: 'rgba(255, 255, 255, 0.88)',
           backdropFilter: 'blur(16px)',
-          border: '1.5px solid rgba(56, 189, 248, 0.25)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+          border: '1.5px solid rgba(148, 163, 184, 0.4)',
+          boxShadow: '0 8px 32px rgba(15, 23, 42, 0.08)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, color: '#38bdf8', fontSize: '0.95rem', letterSpacing: '0.5px' }}>
-            <Cpu size={20} color="#38bdf8" />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, color: '#0f172a', fontSize: '0.95rem', letterSpacing: '0.5px' }}>
+            <Cpu size={20} color="#0284c7" />
             <span>GEONAIL OS v{telemetry.device.firmware} STREAM</span>
           </div>
           
@@ -610,12 +629,12 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '20px',
               fontSize: '0.74rem',
               fontWeight: 800,
-              background: connectionStatus === 'connected' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(2, 132, 199, 0.2)',
-              color: connectionStatus === 'connected' ? '#10b981' : '#38bdf8',
-              border: `1.5px solid ${connectionStatus === 'connected' ? '#10b981' : '#38bdf8'}`,
+              background: connectionStatus === 'connected' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(2, 132, 199, 0.15)',
+              color: connectionStatus === 'connected' ? '#059669' : '#0284c7',
+              border: `1.5px solid ${connectionStatus === 'connected' ? '#10b981' : '#0284c7'}`,
             }}
           >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: connectionStatus === 'connected' ? '#10b981' : '#38bdf8', boxShadow: `0 0 8px ${connectionStatus === 'connected' ? '#10b981' : '#38bdf8'}` }} />
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: connectionStatus === 'connected' ? '#10b981' : '#0284c7', boxShadow: `0 0 8px ${connectionStatus === 'connected' ? '#10b981' : '#0284c7'}` }} />
             <span>{transportMode.toUpperCase()} {connectionStatus.toUpperCase()}</span>
           </div>
 
@@ -628,9 +647,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '20px',
               fontSize: '0.74rem',
               fontWeight: 700,
-              background: 'rgba(51, 65, 85, 0.4)',
-              color: '#94a3b8',
-              border: '1px solid rgba(148, 163, 184, 0.2)',
+              background: 'rgba(241, 245, 249, 0.9)',
+              color: '#475569',
+              border: '1px solid rgba(203, 213, 225, 0.8)',
             }}
           >
             <span>Packets: {packetCount}</span>
@@ -649,9 +668,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 700,
-              background: transportMode === 'simulated' ? '#0284c7' : 'rgba(30, 41, 59, 0.6)',
-              color: '#ffffff',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: transportMode === 'simulated' ? '#0284c7' : 'rgba(241, 245, 249, 0.9)',
+              color: transportMode === 'simulated' ? '#ffffff' : '#334155',
+              border: `1px solid ${transportMode === 'simulated' ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
               transition: 'all 0.2s',
             }}
@@ -669,9 +688,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 700,
-              background: transportMode === 'wifi' ? '#0284c7' : 'rgba(30, 41, 59, 0.6)',
-              color: '#ffffff',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: transportMode === 'wifi' ? '#0284c7' : 'rgba(241, 245, 249, 0.9)',
+              color: transportMode === 'wifi' ? '#ffffff' : '#334155',
+              border: `1px solid ${transportMode === 'wifi' ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -688,9 +707,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 700,
-              background: transportMode === 'ble' ? '#0284c7' : 'rgba(30, 41, 59, 0.6)',
-              color: '#ffffff',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: transportMode === 'ble' ? '#0284c7' : 'rgba(241, 245, 249, 0.9)',
+              color: transportMode === 'ble' ? '#ffffff' : '#334155',
+              border: `1px solid ${transportMode === 'ble' ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -707,9 +726,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 700,
-              background: transportMode === 'serial' ? '#0284c7' : 'rgba(30, 41, 59, 0.6)',
-              color: '#ffffff',
-              border: '1px solid rgba(56, 189, 248, 0.3)',
+              background: transportMode === 'serial' ? '#0284c7' : 'rgba(241, 245, 249, 0.9)',
+              color: transportMode === 'serial' ? '#ffffff' : '#334155',
+              border: `1px solid ${transportMode === 'serial' ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -730,9 +749,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 800,
-              background: xrayMode ? 'rgba(16, 185, 129, 0.25)' : 'rgba(30, 41, 59, 0.6)',
-              color: xrayMode ? '#10b981' : '#94a3b8',
-              border: `1.5px solid ${xrayMode ? '#10b981' : 'rgba(148, 163, 184, 0.3)'}`,
+              background: xrayMode ? 'rgba(16, 185, 129, 0.2)' : 'rgba(241, 245, 249, 0.9)',
+              color: xrayMode ? '#059669' : '#475569',
+              border: `1.5px solid ${xrayMode ? '#10b981' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -750,9 +769,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 800,
-              background: showSimControls ? 'rgba(234, 179, 8, 0.25)' : 'rgba(30, 41, 59, 0.6)',
-              color: showSimControls ? '#eab308' : '#94a3b8',
-              border: `1.5px solid ${showSimControls ? '#eab308' : 'rgba(148, 163, 184, 0.3)'}`,
+              background: showSimControls ? 'rgba(217, 119, 6, 0.2)' : 'rgba(241, 245, 249, 0.9)',
+              color: showSimControls ? '#d97706' : '#475569',
+              border: `1.5px solid ${showSimControls ? '#d97706' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -770,9 +789,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.76rem',
               fontWeight: 800,
-              background: showTerminal ? 'rgba(56, 189, 248, 0.25)' : 'rgba(30, 41, 59, 0.6)',
-              color: showTerminal ? '#38bdf8' : '#94a3b8',
-              border: `1.5px solid ${showTerminal ? '#38bdf8' : 'rgba(148, 163, 184, 0.3)'}`,
+              background: showTerminal ? 'rgba(2, 132, 199, 0.2)' : 'rgba(241, 245, 249, 0.9)',
+              color: showTerminal ? '#0284c7' : '#475569',
+              border: `1.5px solid ${showTerminal ? '#0284c7' : 'rgba(203, 213, 225, 0.8)'}`,
               cursor: 'pointer',
             }}
           >
@@ -797,41 +816,41 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
           gap: 12,
           padding: '16px',
           borderRadius: '16px',
-          background: 'rgba(15, 23, 42, 0.72)',
+          background: 'rgba(255, 255, 255, 0.88)',
           backdropFilter: 'blur(16px)',
-          border: '1.5px solid rgba(56, 189, 248, 0.25)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+          border: '1.5px solid rgba(2, 132, 199, 0.3)',
+          boxShadow: '0 12px 36px rgba(15, 23, 42, 0.08)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', fontWeight: 800, color: '#38bdf8' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.85rem', fontWeight: 800, color: '#0284c7' }}>
             <Activity size={16} />
             <span>3D INERTIAL MOTION</span>
           </div>
-          <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '8px', background: '#10b98122', color: '#10b981', fontWeight: 800 }}>
+          <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '8px', background: '#10b98122', color: '#059669', fontWeight: 800 }}>
             {telemetry.sensor_status.mpu6500}
           </span>
         </div>
 
         {/* Euler 3D Rotation Gauges */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 6 }}>
-          <div style={{ background: 'rgba(2, 132, 199, 0.15)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(2, 132, 199, 0.3)', textAlign: 'center' }}>
-            <div style={{ fontSize: '0.62rem', color: '#94a3b8', fontWeight: 700 }}>ROLL (X)</div>
-            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: Math.abs(rollVal) > 5 ? '#ef4444' : '#38bdf8' }}>
+          <div style={{ background: 'rgba(240, 249, 255, 0.9)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(186, 230, 253, 0.8)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.62rem', color: '#64748b', fontWeight: 700 }}>ROLL (X)</div>
+            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: Math.abs(rollVal) > 5 ? '#dc2626' : '#0284c7' }}>
               {rollVal.toFixed(1)}°
             </div>
           </div>
 
-          <div style={{ background: 'rgba(2, 132, 199, 0.15)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(2, 132, 199, 0.3)', textAlign: 'center' }}>
-            <div style={{ fontSize: '0.62rem', color: '#94a3b8', fontWeight: 700 }}>PITCH (Z)</div>
-            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: Math.abs(pitchVal) > 5 ? '#ef4444' : '#38bdf8' }}>
+          <div style={{ background: 'rgba(240, 249, 255, 0.9)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(186, 230, 253, 0.8)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.62rem', color: '#64748b', fontWeight: 700 }}>PITCH (Z)</div>
+            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: Math.abs(pitchVal) > 5 ? '#dc2626' : '#0284c7' }}>
               {pitchVal.toFixed(1)}°
             </div>
           </div>
 
-          <div style={{ background: 'rgba(2, 132, 199, 0.15)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(2, 132, 199, 0.3)', textAlign: 'center' }}>
-            <div style={{ fontSize: '0.62rem', color: '#94a3b8', fontWeight: 700 }}>YAW (Y)</div>
-            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#38bdf8' }}>
+          <div style={{ background: 'rgba(240, 249, 255, 0.9)', padding: '8px', borderRadius: '8px', border: '1px solid rgba(186, 230, 253, 0.8)', textAlign: 'center' }}>
+            <div style={{ fontSize: '0.62rem', color: '#64748b', fontWeight: 700 }}>YAW (Y)</div>
+            <div style={{ fontSize: '1.05rem', fontWeight: 800, color: '#0284c7' }}>
               {yawVal.toFixed(1)}°
             </div>
           </div>
@@ -839,31 +858,31 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
 
         {/* Acceleration & Vibration Metrics */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
-          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
-            <div style={{ fontSize: '0.64rem', color: '#94a3b8' }}>VIBRATION RMS</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: telemetry.motion.vibration_level === 'HIGH' ? '#ef4444' : '#10b981' }}>
+          <div style={{ background: 'rgba(241, 245, 249, 0.9)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(203, 213, 225, 0.8)' }}>
+            <div style={{ fontSize: '0.64rem', color: '#64748b', fontWeight: 700 }}>VIBRATION RMS</div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: telemetry.motion.vibration_level === 'HIGH' ? '#dc2626' : '#059669' }}>
               {(telemetry.motion.vib_rms || telemetry.motion.vibration).toFixed(3)} g
             </div>
           </div>
 
-          <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(148, 163, 184, 0.2)' }}>
-            <div style={{ fontSize: '0.64rem', color: '#94a3b8' }}>PEAK SHOCK</div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: (telemetry.motion.shock_peak_g || 1.0) > 1.8 ? '#ef4444' : '#38bdf8' }}>
+          <div style={{ background: 'rgba(241, 245, 249, 0.9)', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(203, 213, 225, 0.8)' }}>
+            <div style={{ fontSize: '0.64rem', color: '#64748b', fontWeight: 700 }}>PEAK SHOCK</div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 800, color: (telemetry.motion.shock_peak_g || 1.0) > 1.8 ? '#dc2626' : '#0284c7' }}>
               {(telemetry.motion.shock_peak_g || 1.0).toFixed(2)} g
             </div>
           </div>
         </div>
 
         {/* Node Health Score & Anomaly Alert */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.15)', border: '1.5px solid #10b981' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '10px', background: 'rgba(236, 253, 245, 0.9)', border: '1.5px solid #10b981' }}>
           <div>
-            <div style={{ fontSize: '0.66rem', color: '#94a3b8', fontWeight: 700 }}>NODE HEALTH</div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#10b981' }}>{telemetry.status.health_score || 100}%</div>
+            <div style={{ fontSize: '0.66rem', color: '#64748b', fontWeight: 700 }}>NODE HEALTH</div>
+            <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#059669' }}>{telemetry.status.health_score || 100}%</div>
           </div>
 
           <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.66rem', color: '#94a3b8', fontWeight: 700 }}>ANOMALY TAG</div>
-            <div style={{ fontSize: '0.82rem', fontWeight: 800, color: telemetry.status.anomaly === 'NONE' || !telemetry.status.anomaly ? '#10b981' : '#ef4444' }}>
+            <div style={{ fontSize: '0.66rem', color: '#64748b', fontWeight: 700 }}>ANOMALY TAG</div>
+            <div style={{ fontSize: '0.82rem', fontWeight: 800, color: telemetry.status.anomaly === 'NONE' || !telemetry.status.anomaly ? '#059669' : '#dc2626' }}>
               {telemetry.status.anomaly || 'NONE'}
             </div>
           </div>
@@ -885,55 +904,55 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
           gap: 12,
           padding: '16px',
           borderRadius: '16px',
-          background: 'rgba(15, 23, 42, 0.72)',
+          background: 'rgba(255, 255, 255, 0.88)',
           backdropFilter: 'blur(16px)',
-          border: '1.5px solid rgba(234, 179, 8, 0.3)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+          border: '1.5px solid rgba(217, 119, 6, 0.4)',
+          boxShadow: '0 12px 36px rgba(15, 23, 42, 0.08)',
         }}
       >
         {/* SUB-SURFACE SOIL ANCHOR EXTENSION CARD */}
-        <div style={{ padding: '12px', borderRadius: '12px', background: 'rgba(234, 179, 8, 0.12)', border: '1.5px solid #eab308' }}>
+        <div style={{ padding: '12px', borderRadius: '12px', background: 'rgba(254, 243, 199, 0.6)', border: '1.5px solid #d97706' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#eab308', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ fontSize: '0.85rem', fontWeight: 800, color: '#b45309', display: 'flex', alignItems: 'center', gap: 6 }}>
               <Navigation size={16} />
               <span>SOIL ANCHOR DISPLACEMENT</span>
             </div>
-            <span style={{ fontSize: '0.68rem', padding: '2px 8px', borderRadius: '8px', background: '#eab30822', color: '#eab308', fontWeight: 800 }}>
+            <span style={{ fontSize: '0.68rem', padding: '2px 8px', borderRadius: '8px', background: '#fef3c7', color: '#b45309', fontWeight: 800, border: '1px solid #fde68a' }}>
               {telemetry.sensor_status.hmc5883l}
             </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, margin: '8px 0' }}>
-            <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#ffffff' }}>
-              {displacementMm.toFixed(2)} <span style={{ fontSize: '0.9rem', color: '#eab308' }}>mm</span>
+            <div style={{ fontSize: '1.6rem', fontWeight: 900, color: '#0f172a' }}>
+              {displacementMm.toFixed(2)} <span style={{ fontSize: '0.9rem', color: '#b45309' }}>mm</span>
             </div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#38bdf8' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0284c7' }}>
               ({displacementCm.toFixed(2)} cm)
             </div>
           </div>
 
           {/* Depth Extension Progress Bar */}
-          <div style={{ width: '100%', height: '8px', background: 'rgba(15, 23, 42, 0.8)', borderRadius: '4px', overflow: 'hidden', border: '1px solid rgba(234, 179, 8, 0.4)', margin: '6px 0' }}>
-            <div style={{ width: `${Math.min(100, (displacementMm / 50.0) * 100)}%`, height: '100%', background: '#eab308', transition: 'width 0.3s' }} />
+          <div style={{ width: '100%', height: '8px', background: 'rgba(203, 213, 225, 0.6)', borderRadius: '4px', overflow: 'hidden', border: '1px solid rgba(217, 119, 6, 0.4)', margin: '6px 0' }}>
+            <div style={{ width: `${Math.min(100, (displacementMm / 50.0) * 100)}%`, height: '100%', background: '#d97706', transition: 'width 0.3s' }} />
           </div>
 
-          <div style={{ fontSize: '0.66rem', color: '#cbd5e1', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+          <div style={{ fontSize: '0.66rem', color: '#475569', display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
             <span>Mag Field: <strong>{magVal.toFixed(1)} μT</strong></span>
             <span>Ref Base: <strong>47.60 μT</strong></span>
           </div>
         </div>
 
         {/* CLIMATE & SOIL ENVIRONMENT CARD */}
-        <div style={{ padding: '10px 12px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', fontWeight: 800, color: '#10b981', marginBottom: 6 }}>
+        <div style={{ padding: '10px 12px', borderRadius: '12px', background: 'rgba(236, 253, 245, 0.8)', border: '1px solid rgba(16, 185, 129, 0.4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: '0.78rem', fontWeight: 800, color: '#059669', marginBottom: 6 }}>
             <Thermometer size={15} />
             <span>CLIMATE & SOIL ENVIRONMENT</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: '0.76rem' }}>
-            <div>Temp: <strong style={{ color: '#ffffff' }}>{telemetry.environment.temperature_c.toFixed(1)}°C</strong></div>
-            <div>Humidity: <strong style={{ color: '#ffffff' }}>{telemetry.environment.humidity_percent.toFixed(0)}%</strong></div>
-            <div>Soil Moisture: <strong style={{ color: '#38bdf8' }}>{telemetry.environment.soil_percent.toFixed(1)}%</strong></div>
-            <div>MQ-7 Gas: <strong style={{ color: '#eab308' }}>{telemetry.environment.mq7_ppm.toFixed(1)} PPM</strong></div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: '0.76rem', color: '#334155' }}>
+            <div>Temp: <strong style={{ color: '#0f172a' }}>{telemetry.environment.temperature_c.toFixed(1)}°C</strong></div>
+            <div>Humidity: <strong style={{ color: '#0f172a' }}>{telemetry.environment.humidity_percent.toFixed(0)}%</strong></div>
+            <div>Soil Moisture: <strong style={{ color: '#0284c7' }}>{telemetry.environment.soil_percent.toFixed(1)}%</strong></div>
+            <div>MQ-7 Gas: <strong style={{ color: '#b45309' }}>{telemetry.environment.mq7_ppm.toFixed(1)} PPM</strong></div>
           </div>
         </div>
 
@@ -954,6 +973,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               alignItems: 'center',
               justifyContent: 'center',
               gap: 4,
+              boxShadow: '0 2px 6px rgba(2, 132, 199, 0.3)',
             }}
           >
             <RefreshCw size={13} />
@@ -966,9 +986,9 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
               borderRadius: '10px',
               fontSize: '0.74rem',
               fontWeight: 800,
-              background: 'rgba(234, 179, 8, 0.2)',
-              color: '#eab308',
-              border: '1.5px solid #eab308',
+              background: 'rgba(254, 243, 199, 0.9)',
+              color: '#b45309',
+              border: '1.5px solid #d97706',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -995,20 +1015,20 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
             zIndex: 10,
             padding: '14px',
             borderRadius: '16px',
-            background: 'rgba(15, 23, 42, 0.85)',
+            background: 'rgba(255, 255, 255, 0.92)',
             backdropFilter: 'blur(16px)',
-            border: '1.5px solid #eab308',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.5)',
+            border: '1.5px solid #d97706',
+            boxShadow: '0 12px 36px rgba(15, 23, 42, 0.12)',
           }}
         >
-          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#eab308', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#b45309', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
             <Sliders size={15} />
             <span>3D ORIENTATION & MAGNETIC SLIDERS</span>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8, fontSize: '0.72rem' }}>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#334155' }}>
                 <span>Roll Tilt (X): <strong>{simRoll.toFixed(1)}°</strong></span>
               </div>
               <input
@@ -1018,12 +1038,12 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
                 step="0.5"
                 value={simRoll}
                 onChange={(e) => setSimRoll(parseFloat(e.target.value))}
-                style={{ width: '100%', accentColor: '#38bdf8' }}
+                style={{ width: '100%', accentColor: '#0284c7' }}
               />
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#334155' }}>
                 <span>Pitch Tilt (Z): <strong>{simPitch.toFixed(1)}°</strong></span>
               </div>
               <input
@@ -1033,12 +1053,12 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
                 step="0.5"
                 value={simPitch}
                 onChange={(e) => setSimPitch(parseFloat(e.target.value))}
-                style={{ width: '100%', accentColor: '#38bdf8' }}
+                style={{ width: '100%', accentColor: '#0284c7' }}
               />
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#334155' }}>
                 <span>Yaw Heading (Y): <strong>{simYaw.toFixed(1)}°</strong></span>
               </div>
               <input
@@ -1048,12 +1068,12 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
                 step="5"
                 value={simYaw}
                 onChange={(e) => setSimYaw(parseFloat(e.target.value))}
-                style={{ width: '100%', accentColor: '#38bdf8' }}
+                style={{ width: '100%', accentColor: '#0284c7' }}
               />
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#cbd5e1' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#334155' }}>
                 <span>Mag Flux: <strong>{simMagLevel.toFixed(1)} μT</strong> ({displacementMm.toFixed(1)} mm)</span>
               </div>
               <input
@@ -1063,7 +1083,7 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
                 step="0.5"
                 value={simMagLevel}
                 onChange={(e) => setSimMagLevel(parseFloat(e.target.value))}
-                style={{ width: '100%', accentColor: '#eab308' }}
+                style={{ width: '100%', accentColor: '#d97706' }}
               />
             </div>
           </div>
@@ -1083,32 +1103,32 @@ export const MCUTelemetryDashboard: React.FC<MCUTelemetryDashboardProps> = ({
             maxHeight: '200px',
             zIndex: 10,
             borderRadius: '16px',
-            background: 'rgba(15, 23, 42, 0.92)',
+            background: 'rgba(255, 255, 255, 0.94)',
             backdropFilter: 'blur(16px)',
-            border: '1.5px solid #38bdf8',
+            border: '1.5px solid #0284c7',
             overflow: 'hidden',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6)',
+            boxShadow: '0 12px 36px rgba(15, 23, 42, 0.15)',
           }}
         >
-          <div style={{ padding: '8px 14px', background: 'rgba(2, 132, 199, 0.25)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8rem', fontWeight: 800, color: '#38bdf8' }}>
+          <div style={{ padding: '8px 14px', background: 'rgba(224, 242, 254, 0.9)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.8rem', fontWeight: 800, color: '#0284c7' }}>
               <Terminal size={15} />
               <span>LIVE PACKET STREAM TERMINAL ({packetLogs.length})</span>
             </div>
             <button
               onClick={() => setPacketLogs([])}
-              style={{ padding: '2px 8px', borderRadius: '6px', fontSize: '0.68rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', cursor: 'pointer' }}
+              style={{ padding: '2px 8px', borderRadius: '6px', fontSize: '0.68rem', background: 'rgba(254, 226, 226, 0.9)', color: '#dc2626', border: '1px solid #fca5a5', cursor: 'pointer' }}
             >
               Clear Logs
             </button>
           </div>
 
-          <div style={{ maxHeight: '160px', overflowY: 'auto', padding: '10px 14px', fontFamily: 'monospace', fontSize: '0.7rem', display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ maxHeight: '160px', overflowY: 'auto', padding: '10px 14px', fontFamily: 'monospace', fontSize: '0.7rem', display: 'flex', flexDirection: 'column', gap: 6, background: '#0f172a', color: '#f8fafc' }}>
             {packetLogs.length === 0 ? (
               <div style={{ color: '#94a3b8' }}>Waiting for raw JSON telemetry packets...</div>
             ) : (
               packetLogs.map((log) => (
-                <div key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: 4 }}>
+                <div key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: 4 }}>
                   <div style={{ display: 'flex', gap: 8, color: '#38bdf8', fontWeight: 700 }}>
                     <span>[{log.time}]</span>
                     <span style={{ color: log.transport === 'BLE' ? '#38bdf8' : log.transport === 'SERIAL' ? '#eab308' : '#10b981' }}>
