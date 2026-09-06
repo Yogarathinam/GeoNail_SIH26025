@@ -247,6 +247,10 @@ interface GeoNailAssemblyProps {
   spikeLockAngle?: number; // -Math.PI/4 (-45° CCW), 0 (Neutral), +Math.PI/4 (+45° CW)
   spikeDetached?: boolean; // Free-fall gravitational drop disengagement
   magSpikeOffset?: number; // Mag field driven axial displacement towards/away from Piece 1
+  magDisplacementMm?: number; // Real-time soil anchor displacement in mm
+  roll?: number;   // Live Roll angle in degrees (X-axis rotation)
+  pitch?: number;  // Live Pitch angle in degrees (Z-axis rotation)
+  yaw?: number;    // Live Yaw / Heading angle in degrees (Y-axis rotation)
   explodedProgress: number;
   cutawayMode: boolean;
   showLoadPath: boolean;
@@ -264,6 +268,10 @@ export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
   spikeLockAngle,
   spikeDetached = false,
   magSpikeOffset = 0,
+  magDisplacementMm = 0,
+  roll = 0,
+  pitch = 0,
+  yaw = 0,
   explodedProgress,
   cutawayMode,
   showLoadPath,
@@ -273,7 +281,13 @@ export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
   onSelectComponent,
   onDragStateChange,
 }) => {
+  // Convert 3D Euler angles from degrees to radians for Three.js
+  const rollRad = (roll * Math.PI) / 180.0;
+  const pitchRad = (pitch * Math.PI) / 180.0;
+  const yawRad = (yaw * Math.PI) / 180.0;
 
+  // Convert real-time soil displacement in mm to 3D scene Y-offset
+  const totalSpikeOffset = magSpikeOffset + (magDisplacementMm * -0.06);
 
   const capGroupRef = useRef<THREE.Group>(null!);
   const gateRef = useRef<THREE.Group>(null!);
@@ -473,7 +487,8 @@ export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
       onDragStart={() => onDragStateChange?.(true)}
       onDragEnd={() => onDragStateChange?.(false)}
     >
-      <group position={[0, 6.5, 0]}>
+        {/* INNER WRAPPER GROUP FOR REAL-TIME 3D EULER ROTATION (ROLL, PITCH, YAW) */}
+        <group position={[0, 6.5, 0]} rotation={[pitchRad, yawRad, rollRad]}>
 
         {/* Interactive Floating Hover Tooltip */}
         {hoveredComp && GEONAIL_COMPONENTS[hoveredComp] && (
@@ -706,8 +721,8 @@ export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
           // When FREE-FALLING (detached at 0° neutral), spike drops down to subterranean bedrock floor (Y=-18.00)!
           // Mag Field level drives relative axial displacement towards or away from Piece 1 rock shoe!
           const spikeYPos = isFreeFalling
-            ? -18.00 + expY_spike + magSpikeOffset
-            : -16.25 + expY_spike + activeThreadOffset + magSpikeOffset;
+            ? -18.00 + expY_spike + totalSpikeOffset
+            : -16.25 + expY_spike + activeThreadOffset + totalSpikeOffset;
           // When locked, whole spike rotates together with top cap & threaded rod! When disengaged (0°), spike body stays stationary (0°).
           const spikeBodyRotation = isSpikeLocked ? capRotationAngle + (spikeLockAngle || 0) : 0;
 

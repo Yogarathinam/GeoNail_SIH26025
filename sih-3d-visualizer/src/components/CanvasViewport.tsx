@@ -38,13 +38,17 @@ export interface ViewportSettings {
   lithoPinSpikeLock?: number; // -Math.PI/4 (-45° CCW), 0 (Neutral), +Math.PI/4 (+45° CW)
   lithoPinSpikeDetached?: boolean; // Free-fall gravitational drop disengagement
   lithoPinExploded: number; // 0 to 1
-
-
   lithoPinCutaway: boolean;
   lithoPinLoadPath: boolean;
   lithoPinDragMode: boolean; // Interactive 3D drag & translate components
   showComponentLabels?: boolean; // Dynamic 3D leader-line callout labels
   selectedComponent: string | null;
+
+  // Real-time telemetry orientation & displacement props
+  roll?: number;
+  pitch?: number;
+  yaw?: number;
+  magDisplacementMm?: number;
 }
 
 
@@ -159,10 +163,13 @@ export const CanvasViewport: React.FC<CanvasViewportProps> = ({
               dragModeEnabled={settings.lithoPinDragMode}
               showLabels={settings.showComponentLabels}
               selectedComponent={settings.selectedComponent}
+              roll={settings.roll}
+              pitch={settings.pitch}
+              yaw={settings.yaw}
+              magDisplacementMm={settings.magDisplacementMm}
               onSelectComponent={onSelectComponent}
               onDragStateChange={(isDragging: boolean) => setIsDraggingComponent(isDragging)}
             />
-
           )}
         </Center>
 
