@@ -95,9 +95,12 @@ struct GeoNailState {
   float shockPeakG = 1.0f;
   String vibrationLevel = "N/A";
   float rollOffset = 0.0f, pitchOffset = 0.0f;
+  float gxOffset = 0.0f, gyOffset = 0.0f, gzOffset = 0.0f;
+  bool imuCalibrated = false;
 
   float mx = NAN, my = NAN, mz = NAN;
   float magneticMagnitude = NAN;
+  float magOffX = 0.0f, magOffY = 0.0f, magOffZ = 0.0f;
   bool magCalibrated = false;
 
   float temperature = NAN, humidity = NAN;
@@ -245,6 +248,13 @@ void loadConfiguration() {
   gnState.thresholds.eventPersistenceMs = preferences.getUInt("persist_ms", 1500);
   gnState.rollOffset = preferences.getFloat("roll_off", 0.0f);
   gnState.pitchOffset = preferences.getFloat("pitch_off", 0.0f);
+  gnState.gxOffset = preferences.getFloat("gx_off", 0.0f);
+  gnState.gyOffset = preferences.getFloat("gy_off", 0.0f);
+  gnState.gzOffset = preferences.getFloat("gz_off", 0.0f);
+  gnState.imuCalibrated = preferences.getBool("imu_cal", false);
+  gnState.magOffX = preferences.getFloat("mag_off_x", 0.0f);
+  gnState.magOffY = preferences.getFloat("mag_off_y", 0.0f);
+  gnState.magOffZ = preferences.getFloat("mag_off_z", 0.0f);
   gnState.magCalibrated = preferences.getBool("mag_cal", false);
   gnState.soilCalibrated = preferences.getBool("soil_cal", false);
   gnState.transports.wifiEnabled = preferences.getBool("wifi_en", true);
@@ -265,6 +275,13 @@ void saveConfiguration(const String &source) {
   preferences.putUInt("persist_ms", gnState.thresholds.eventPersistenceMs);
   preferences.putFloat("roll_off", gnState.rollOffset);
   preferences.putFloat("pitch_off", gnState.pitchOffset);
+  preferences.putFloat("gx_off", gnState.gxOffset);
+  preferences.putFloat("gy_off", gnState.gyOffset);
+  preferences.putFloat("gz_off", gnState.gzOffset);
+  preferences.putBool("imu_cal", gnState.imuCalibrated);
+  preferences.putFloat("mag_off_x", gnState.magOffX);
+  preferences.putFloat("mag_off_y", gnState.magOffY);
+  preferences.putFloat("mag_off_z", gnState.magOffZ);
   preferences.putBool("mag_cal", gnState.magCalibrated);
   preferences.putBool("soil_cal", gnState.soilCalibrated);
   preferences.putBool("wifi_en", gnState.transports.wifiEnabled);
@@ -353,9 +370,9 @@ void readMPU6500() {
   gnState.ax = ax / 16384.0f;
   gnState.ay = ay / 16384.0f;
   gnState.az = az / 16384.0f;
-  gnState.gx = gx / 131.0f;
-  gnState.gy = gy / 131.0f;
-  gnState.gz = gz / 131.0f;
+  gnState.gx = (gx / 131.0f) - gnState.gxOffset;
+  gnState.gy = (gy / 131.0f) - gnState.gyOffset;
+  gnState.gz = (gz / 131.0f) - gnState.gzOffset;
 }
 
 void readHMC5883L() {
@@ -368,9 +385,9 @@ void readHMC5883L() {
   int16_t x = (int16_t)((d[0] << 8) | d[1]);
   int16_t z = (int16_t)((d[2] << 8) | d[3]);
   int16_t y = (int16_t)((d[4] << 8) | d[5]);
-  gnState.mx = x / 1090.0f * 100.0f;
-  gnState.my = y / 1090.0f * 100.0f;
-  gnState.mz = z / 1090.0f * 100.0f;
+  gnState.mx = (x / 1090.0f * 100.0f) - gnState.magOffX;
+  gnState.my = (y / 1090.0f * 100.0f) - gnState.magOffY;
+  gnState.mz = (z / 1090.0f * 100.0f) - gnState.magOffZ;
   gnState.magneticMagnitude = sqrtf(gnState.mx * gnState.mx + gnState.my * gnState.my + gnState.mz * gnState.mz);
 }
 
@@ -440,23 +457,115 @@ void evaluateAnomalies() {
   }
 }
 
+void drawProgressBar(int x, int y, int w, int h, int percent, uint16_t color, const String &label) {
+  M5.Display.fillRect(x, y, w, h, 0x10A2);
+  int fillW = (w - 4) * percent / 100;
+  if (fillW > 0) M5.Display.fillRect(x + 2, y + 2, fillW, h - 4, color);
+  M5.Display.drawRect(x, y, w, h, TFT_WHITE);
+  M5.Display.setTextSize(1);
+  M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.setCursor(x + 10, y + h + 6);
+  M5.Display.print(label);
+  M5.Display.printf(" (%d%%)", percent);
+}
+
 void autoTareIMU() {
   if (gnState.imuStatus != HEALTHY) return;
+  M5.Display.fillScreen(COLOR_BG);
+  drawHeader("TARE ACCEL & TILT");
+  M5.Display.setTextSize(2);
+  M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.setCursor(10, 42);
+  M5.Display.print("Keep node still...");
+
   float sumRoll = 0, sumPitch = 0;
-  int count = 50;
+  int count = 100;
   for (int i = 0; i < count; i++) {
     readMPU6500();
     float r = atan2f(gnState.ay, gnState.az) * 180.0f / PI;
     float p = atan2f(-gnState.ax, sqrtf(gnState.ay * gnState.ay + gnState.az * gnState.az)) * 180.0f / PI;
     sumRoll += r;
     sumPitch += p;
-    delay(10);
+    delay(20);
+    drawProgressBar(20, 100, 280, 24, (i + 1) * 100 / count, COLOR_GREEN, "Sampling Accelerometer Baseline");
   }
   gnState.rollOffset = sumRoll / count;
   gnState.pitchOffset = sumPitch / count;
-  preferences.putFloat("roll_off", gnState.rollOffset);
-  preferences.putFloat("pitch_off", gnState.pitchOffset);
+  gnState.imuCalibrated = true;
+  saveConfiguration("calibration");
+  M5.Speaker.tone(1800, 150);
   logEvent("CAL", "Auto-tare complete");
+  delay(400);
+}
+
+void calibrateGyro() {
+  if (gnState.imuStatus != HEALTHY) return;
+  M5.Display.fillScreen(COLOR_BG);
+  drawHeader("GYRO ZERO BIAS");
+  M5.Display.setTextSize(2);
+  M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.setCursor(10, 42);
+  M5.Display.print("Zeroing Gyro Bias...");
+
+  float sumGx = 0, sumGy = 0, sumGz = 0;
+  int count = 150;
+  for (int i = 0; i < count; i++) {
+    uint8_t d[6];
+    if (readRegs(MPU_ADDR, MPU_ACCEL_XOUT_H + 8, d, 6)) {
+      int16_t rawGx = (int16_t)((d[0] << 8) | d[1]);
+      int16_t rawGy = (int16_t)((d[2] << 8) | d[3]);
+      int16_t rawGz = (int16_t)((d[4] << 8) | d[5]);
+      sumGx += rawGx / 131.0f;
+      sumGy += rawGy / 131.0f;
+      sumGz += rawGz / 131.0f;
+    }
+    delay(15);
+    drawProgressBar(20, 100, 280, 24, (i + 1) * 100 / count, COLOR_CYAN, "Calculating 3-Axis Gyro Drift");
+  }
+  gnState.gxOffset = sumGx / count;
+  gnState.gyOffset = sumGy / count;
+  gnState.gzOffset = sumGz / count;
+  gnState.imuCalibrated = true;
+  saveConfiguration("gyro_cal");
+  M5.Speaker.tone(2000, 150);
+  logEvent("CAL", "Gyro zero-bias complete");
+  delay(400);
+}
+
+void calibrateMag() {
+  if (gnState.magStatus != HEALTHY && gnState.magStatus != UNCALIBRATED) return;
+  M5.Display.fillScreen(COLOR_BG);
+  drawHeader("MAG 8-FIGURE CAL");
+  M5.Display.setTextSize(2);
+  M5.Display.setTextColor(COLOR_YEL);
+  M5.Display.setCursor(10, 40);
+  M5.Display.print("Rotate in 8-figures!");
+
+  float minX = 9999, maxX = -9999;
+  float minY = 9999, maxY = -9999;
+  float minZ = 9999, maxZ = -9999;
+  int count = 200;
+  for (int i = 0; i < count; i++) {
+    readHMC5883L();
+    if (!isnan(gnState.mx)) {
+      if (gnState.mx < minX) minX = gnState.mx;
+      if (gnState.mx > maxX) maxX = gnState.mx;
+      if (gnState.my < minY) minY = gnState.my;
+      if (gnState.my > maxY) maxY = gnState.my;
+      if (gnState.mz < minZ) minZ = gnState.mz;
+      if (gnState.mz > maxZ) maxZ = gnState.mz;
+    }
+    delay(30);
+    drawProgressBar(20, 100, 280, 24, (i + 1) * 100 / count, COLOR_YEL, "Sweeping Magnetic Field Bounds");
+  }
+  gnState.magOffX = (maxX + minX) / 2.0f;
+  gnState.magOffY = (maxY + minY) / 2.0f;
+  gnState.magOffZ = (maxZ + minZ) / 2.0f;
+  gnState.magCalibrated = true;
+  saveConfiguration("mag_cal");
+  M5.Speaker.tone(2400, 200);
+  logEvent("CAL", "Mag 8-fig calibration complete");
+  delay(400);
 }
 
 void processMotion() {
@@ -1181,16 +1290,28 @@ void drawSensors() {
 
 void drawWiFiPage() {
   drawHeader("WIFI SETTING");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("Enabled: %s\nStatus: %s\nSSID: %s\nPassword: %s\nIP: %s\nClients: %u\n\nAPI: /api/v1/telemetry\n\nC TOGGLE",
-    gnState.transports.wifiEnabled ? "YES" : "NO", gnState.apActive ? "ACTIVE" : "OFF", AP_SSID, AP_PASS, gnState.apIp.c_str(), gnState.apClientCount);
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 36);
+  M5.Display.printf("Status:   %s\n", gnState.apActive ? "ACTIVE" : "OFF");
+  M5.Display.printf("SSID:     %s\n", AP_SSID);
+  M5.Display.printf("Password: %s\n", AP_PASS);
+  M5.Display.printf("IP:       %s\n", gnState.apIp.c_str());
+  M5.Display.printf("Clients:  %u\n\n", gnState.apClientCount);
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.println("REST API Endpoint: /api/v1/telemetry");
+  M5.Display.setTextColor(COLOR_GRAY); M5.Display.setCursor(10, 226);
+  M5.Display.print("PRESS C TO TOGGLE WIFI ON/OFF");
 }
 
 void drawBLEPage() {
   drawHeader("BLUETOOTH SETTING");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("Enabled: %s\nName: %s\nStatus: %s\nConnected: %s\n\nTelemetry: READ + NOTIFY\n\nService:\n%s\n\nTelemetry:\n%s\n\nUse Chrome BLE or nRF Connect",
-    gnState.transports.bleEnabled ? "YES" : "NO", gnState.nodeName.c_str(), gnState.bleAdvertising ? "ADVERTISING" : "OFF", gnState.bleClientConnected ? "YES" : "NO", BLE_SERVICE_UUID, BLE_TELEMETRY_UUID);
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 36);
+  M5.Display.printf("Status:    %s\n", gnState.bleAdvertising ? "ADVERTISING" : "OFF");
+  M5.Display.printf("Connected: %s\n", gnState.bleClientConnected ? "YES" : "NO");
+  M5.Display.printf("Name:      %s\n\n", gnState.nodeName.c_str());
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.printf("Service UUID:\n%s\n", BLE_SERVICE_UUID);
+  M5.Display.setTextColor(COLOR_GRAY); M5.Display.setCursor(10, 226);
+  M5.Display.print("PRESS C TO TOGGLE BLE ON/OFF");
 }
 
 void drawNetworkDetail() {
@@ -1201,40 +1322,53 @@ void drawNetworkDetail() {
 
 void drawTelemetry() {
   drawHeader("TELEMETRY MONITOR");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 40);
-  M5.Display.printf("Interval: %u ms\n", gnState.telemetryIntervalMs);
-  M5.Display.printf("Burst Mode: %s\n", gnState.isBurstActive ? "ACTIVE (100ms)" : "IDLE (1000ms)");
-  M5.Display.printf("SD Card Log: %s\n", gnState.sdMounted ? "MOUNTED (/geonail_telemetry.jsonl)" : "NOT MOUNTED");
-  M5.Display.printf("Packets Sent: %u\n", gnState.packetCount);
-  M5.Display.printf("Last TX: %lu ms ago\n\n", millis() - gnState.lastTxMs);
-  M5.Display.setTextColor(COLOR_CYAN);
-  M5.Display.println("Transports Active:");
-  M5.Display.setTextColor(TFT_WHITE);
-  M5.Display.printf("BLE: %s  Serial: %s  AP: %s\n",
-    gnState.bleAdvertising ? (gnState.bleClientConnected ? "CONNECTED" : "ADVERTISING") : "OFF",
+  M5.Display.setTextSize(2); M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.setCursor(10, 36); M5.Display.printf("Interval: %u ms", gnState.telemetryIntervalMs);
+  
+  M5.Display.setCursor(10, 64);
+  M5.Display.setTextColor(gnState.isBurstActive ? COLOR_YEL : COLOR_GREEN);
+  M5.Display.printf("Burst: %s", gnState.isBurstActive ? "ACTIVE (100ms)" : "IDLE (1000ms)");
+
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.setCursor(10, 92); M5.Display.printf("SD Log: %s", gnState.sdMounted ? "MOUNTED" : "NO SD CARD");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_GRAY);
+  M5.Display.setCursor(10, 114); M5.Display.print("File: /geonail_telemetry.jsonl");
+
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.setCursor(10, 134); M5.Display.printf("Packets Sent: %u", gnState.packetCount);
+  M5.Display.setCursor(10, 162); M5.Display.printf("Last TX: %lu ms ago", millis() - gnState.lastTxMs);
+
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_GRAY);
+  M5.Display.setCursor(10, 226);
+  M5.Display.printf("BLE: %s  Serial: %s  AP: %s",
+    gnState.bleAdvertising ? (gnState.bleClientConnected ? "CONN" : "ADV") : "OFF",
     gnState.serialActive ? "ACTIVE" : "OFF",
     gnState.apActive ? "ACTIVE" : "OFF");
 }
 
 void drawDiagnostics() {
   drawHeader("DIAGNOSTICS");
-  M5.Display.setTextSize(2); M5.Display.setTextColor(systemColor(gnState.systemStatus)); M5.Display.setCursor(10, 36);
-  M5.Display.printf("Health: %u%%", gnState.healthScore);
   
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 70);
-  M5.Display.printf("Anomaly: %s\n", gnState.primaryAnomaly.c_str());
-  M5.Display.printf("Free Heap: %u B\n", ESP.getFreeHeap());
-  M5.Display.printf("Uptime: %lu ms\n\n", millis());
-  
-  M5.Display.setTextColor(COLOR_CYAN);
-  M5.Display.println("Sensor Health Status:");
-  M5.Display.setTextColor(TFT_WHITE);
-  M5.Display.printf("MPU6500: %s\nHMC5883L: %s\nDHT11: %s\nSOIL: %s\nMQ7: %s\n",
-    sensorStatusName(gnState.imuStatus),
-    sensorStatusName(gnState.magStatus),
-    sensorStatusName(gnState.dhtStatus),
-    sensorStatusName(gnState.soilStatus),
-    sensorStatusName(gnState.mq7Status));
+  M5.Display.fillRect(10, 32, 145, 52, 0x10A2);
+  M5.Display.drawRect(10, 32, 145, 52, COLOR_GREEN);
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_GREEN); M5.Display.setCursor(16, 36); M5.Display.print("HEALTH SCORE");
+  M5.Display.setTextSize(3); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(16, 52); M5.Display.printf("%u%%", gnState.healthScore);
+
+  M5.Display.fillRect(165, 32, 145, 52, 0x10A2);
+  M5.Display.drawRect(165, 32, 145, 52, gnState.primaryAnomaly == "NONE" ? COLOR_GREEN : COLOR_RED);
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN); M5.Display.setCursor(171, 36); M5.Display.print("PRIMARY ANOMALY");
+  M5.Display.setTextSize(2); M5.Display.setTextColor(gnState.primaryAnomaly == "NONE" ? COLOR_GREEN : COLOR_RED);
+  M5.Display.setCursor(171, 54); M5.Display.print(gnState.primaryAnomaly);
+
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.setCursor(10, 92); M5.Display.printf("Free Heap: %u B", ESP.getFreeHeap());
+  M5.Display.setCursor(10, 116); M5.Display.printf("Uptime:    %lu s", millis() / 1000);
+
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN); M5.Display.setCursor(10, 145); M5.Display.print("SENSOR STATUSES:");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.setCursor(10, 162); M5.Display.printf("MPU6500: %s  HMC5883L: %s", sensorStatusName(gnState.imuStatus), sensorStatusName(gnState.magStatus));
+  M5.Display.setCursor(10, 178); M5.Display.printf("DHT11:   %s  SOIL:     %s", sensorStatusName(gnState.dhtStatus), sensorStatusName(gnState.soilStatus));
+  M5.Display.setCursor(10, 194); M5.Display.printf("MQ7:     %s", sensorStatusName(gnState.mq7Status));
 }
 
 void drawLogs() {
@@ -1250,29 +1384,59 @@ void drawLogs() {
 
 void drawNodeConfig() {
   drawHeader("NODE CONFIG");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("Node ID: %s\nName: %s\nLocation: %s\nFirmware: %s\nConfig Ver: %u\nUpdated By: %s\n",
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 38);
+  M5.Display.printf("Node ID:  %s\nName:     %s\nLocation: %s\nFirmware: v%s\nCfg Ver:  %u\nBy:       %s\n",
     gnState.nodeId.c_str(), gnState.nodeName.c_str(), gnState.location.c_str(), gnState.firmware.c_str(), gnState.configVersion, gnState.updatedBy.c_str());
 }
 
+static int calibrationCursor = 0;
+
 void drawCalibrationPage() {
-  drawHeader("CALIBRATION");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("Roll Offset: %.2f deg\nPitch Offset: %.2f deg\nMag Calibrated: %s\nSoil Calibrated: %s\n\nC TARE IMU NOW",
-    gnState.rollOffset, gnState.pitchOffset, gnState.magCalibrated ? "YES" : "NO", gnState.soilCalibrated ? "YES" : "NO");
+  drawHeader("CALIBRATION SUITE");
+  const char *items[] = { "1. Tare Tilt & Accel", "2. Gyro Zero-Bias", "3. Mag 8-Figure Cal" };
+  M5.Display.setTextSize(2);
+  for (int i = 0; i < 3; ++i) {
+    int y = 34 + i * 30;
+    if (i == calibrationCursor) {
+      M5.Display.fillRect(5, y - 2, 310, 26, COLOR_CYAN);
+      M5.Display.setTextColor(TFT_BLACK);
+    } else {
+      M5.Display.setTextColor(TFT_WHITE);
+    }
+    M5.Display.setCursor(14, y);
+    M5.Display.print(items[i]);
+  }
+
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.setCursor(10, 130);
+  M5.Display.printf("IMU Cal: %s | RollOff: %.2f | PitchOff: %.2f\n", gnState.imuCalibrated ? "OK" : "NO", gnState.rollOffset, gnState.pitchOffset);
+  M5.Display.setCursor(10, 148);
+  M5.Display.printf("GyroOff: X:%.1f Y:%.1f Z:%.1f\n", gnState.gxOffset, gnState.gyOffset, gnState.gzOffset);
+  M5.Display.setCursor(10, 166);
+  M5.Display.printf("Mag Cal: %s | Offsets: X:%.1f Y:%.1f Z:%.1f\n", gnState.magCalibrated ? "OK" : "NO", gnState.magOffX, gnState.magOffY, gnState.magOffZ);
+
+  M5.Display.setTextColor(COLOR_GRAY);
+  M5.Display.setCursor(5, 226);
+  M5.Display.print("A/B MOVE CURSOR  C EXECUTE CALIBRATION");
 }
 
 void drawAbout() {
   drawHeader("ABOUT GEONAIL");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("GeoNail OS v%s\nTeam Stellar (SIH 2026)\n\nNode ID: %s\nLocation: %s\n\nLandslide & Soil Motion Monitoring Node.",
-    FW_VERSION, gnState.nodeId.c_str(), gnState.location.c_str());
+  M5.Display.setTextSize(2); M5.Display.setTextColor(COLOR_GREEN); M5.Display.setCursor(10, 36);
+  M5.Display.printf("GeoNail OS v%s\n", FW_VERSION);
+  M5.Display.setTextColor(TFT_WHITE);
+  M5.Display.printf("Team Stellar (SIH 2026)\n\nNode ID:  %s\nLocation: %s\n\n", gnState.nodeId.c_str(), gnState.location.c_str());
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN);
+  M5.Display.print("Sub-surface Soil Deformation & Motion Node");
 }
 
 void drawDemoPage() {
   drawHeader("DEMO MODE");
-  M5.Display.setTextSize(1); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(8, 42);
-  M5.Display.printf("Demo Mode: %s\n\nC TOGGLE DEMO MODE", demoMode ? "ENABLED" : "DISABLED");
+  M5.Display.setTextSize(2); M5.Display.setTextColor(TFT_WHITE); M5.Display.setCursor(10, 42);
+  M5.Display.printf("Demo Mode: %s\n\n", demoMode ? "ENABLED" : "DISABLED");
+  M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_GRAY);
+  M5.Display.setCursor(10, 226);
+  M5.Display.print("PRESS C TO TOGGLE DEMO MODE");
 }
 
 void drawSettingsDetail() {
@@ -1360,7 +1524,9 @@ void selectCurrent() {
   }
   if (currentScreen == "settings_detail") {
     if (settingsDetailPage == 1) {
-      autoTareIMU();
+      if (calibrationCursor == 0) autoTareIMU();
+      else if (calibrationCursor == 1) calibrateGyro();
+      else if (calibrationCursor == 2) calibrateMag();
       renderUI();
     } else if (settingsDetailPage == 4) {
       demoMode = !demoMode;
@@ -1378,6 +1544,7 @@ void handleInput() {
     lastAction = now;
     if (currentScreen == "network") networkMenuCursor = (networkMenuCursor + 3) % 4;
     else if (currentScreen == "settings") settingsMenuCursor = (settingsMenuCursor + 4) % 5;
+    else if (currentScreen == "settings_detail" && settingsDetailPage == 1) calibrationCursor = (calibrationCursor + 2) % 3;
     else if (currentScreen == "sensors") sensorPage = (sensorPage + 4) % 5;
     else if (menuLength()) menuCursor = (menuCursor + menuLength() - 1) % menuLength();
     renderUI();
@@ -1386,6 +1553,7 @@ void handleInput() {
     lastAction = now;
     if (currentScreen == "network") networkMenuCursor = (networkMenuCursor + 1) % 4;
     else if (currentScreen == "settings") settingsMenuCursor = (settingsMenuCursor + 1) % 5;
+    else if (currentScreen == "settings_detail" && settingsDetailPage == 1) calibrationCursor = (calibrationCursor + 1) % 3;
     else if (currentScreen == "sensors") sensorPage = (sensorPage + 1) % 5;
     else if (menuLength()) menuCursor = (menuCursor + 1) % menuLength();
     renderUI();
