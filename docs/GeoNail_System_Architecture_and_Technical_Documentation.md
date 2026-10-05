@@ -7,7 +7,7 @@
 * **Hackathon Event**: Smart India Hackathon 2026 (SIH 2026)
 * **Problem Statement ID**: SIH26025
 * **Project Name**: GeoNail Subterranean Monitoring System
-* **Team Name**: Team Stellar
+* **Team Name**: Team XLR8
 * **Team Lead**: Yogarathinam
 * **Development Team**: GeoNail Hardware & Software Engineering Group
 * **Repository**: [Yogarathinam/GeoNail_SIH26025](https://github.com/Yogarathinam/GeoNail_SIH26025)

@@ -1425,7 +1425,7 @@ void drawAbout() {
   M5.Display.setTextSize(2); M5.Display.setTextColor(COLOR_GREEN); M5.Display.setCursor(10, 36);
   M5.Display.printf("GeoNail OS v%s\n", FW_VERSION);
   M5.Display.setTextColor(TFT_WHITE);
-  M5.Display.printf("Team Stellar (SIH 2026)\n\nNode ID:  %s\nLocation: %s\n\n", gnState.nodeId.c_str(), gnState.location.c_str());
+  M5.Display.printf("Team XLR8 (SIH 2026)\n\nNode ID:  %s\nLocation: %s\n\n", gnState.nodeId.c_str(), gnState.location.c_str());
   M5.Display.setTextSize(1); M5.Display.setTextColor(COLOR_CYAN);
   M5.Display.print("Sub-surface Soil Deformation & Motion Node");
 }

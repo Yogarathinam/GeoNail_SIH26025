@@ -1,127 +1,177 @@
 <div align="center">
 
-# 🏔️ GeoNail Subterranean System
-### *Smart India Hackathon (SIH 2026) — Problem Statement Solution #SIH26025*
-
-[![Team](https://img.shields.io/badge/Team-Team%20Stellar-blueviolet?style=for-the-badge&logo=shield)](https://github.com/Yogarathinam/GeoNail_SIH26025)
-[![Firmware](https://img.shields.io/badge/Firmware-GeoNail%20OS%20v0.7.1-007ACC?style=for-the-badge&logo=arduino)](file:///e:/SIH/firmware/GeoNail_M5Stack_Firmware.ino)
-[![Visualizer](https://img.shields.io/badge/Web%20App-3D%20Kinematics%20%26%20Dashboard-61DAFB?style=for-the-badge&logo=react)](file:///e:/SIH/sih-3d-visualizer)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](#license)
+# 🏔️ GeoNail™ Subterranean Monitoring System
+### *Intelligent Sub-Surface Rock Anchor, Multi-Transport Edge Telemetry & 3D Digital Twin*
+#### **Smart India Hackathon 2026 (SIH 2026) — Problem Statement Solution #SIH26025**
 
 <br />
 
-**GeoNail** is an advanced, multi-transport early warning geotechnical rock anchor and subterranean telemetry monitoring system. Engineered for open-pit mines, underground tunnels, and landslide-prone slopes, it combines **heavy-duty mechanical bedrock locking mechanisms** with **real-time 6-DOF IMU motion, vibration, magnetic, and environmental telemetry** broadcasted seamlessly via **BLE GATT, Wi-Fi REST, and Web Serial**.
+[![Team](https://img.shields.io/badge/Team-Team%20XLR8-ff0055?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/Yogarathinam/GeoNail_SIH26025)
+[![Institution](https://img.shields.io/badge/College-R.M.D.%20Engineering%20College-0284c7?style=for-the-badge&logo=mortarboard&logoColor=white)](https://rmd.ac.in)
+[![Firmware](https://img.shields.io/badge/Firmware-GeoNail%20OS%20v0.8.0-0ea5e9?style=for-the-badge&logo=arduino&logoColor=white)](./firmware/GeoNail_M5Stack_Firmware.ino)
+[![Visualizer](https://img.shields.io/badge/Web%20App-3D%20Kinematics%20%26%20Dashboard-61DAFB?style=for-the-badge&logo=react&logoColor=black)](./sih-3d-visualizer)
+[![Docs](https://img.shields.io/badge/Spec-Engineering%20PDF%20v1.0-8b5cf6?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf)
+[![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](./LICENSE)
 
-[Explore 3D Visualizer App](file:///e:/SIH/sih-3d-visualizer) • [View Firmware Code](file:///e:/SIH/firmware/GeoNail_M5Stack_Firmware.ino) • [Live HTML Dashboard](file:///e:/SIH/firmware/geonail_dashboard_debug.html)
+<br />
+
+[⚡ Team Roster](#-team-xlr8-roster) • [📐 Exploded CAD Animation](#-animated-prototype-cad-exploded-view) • [🎯 Solution Overview](#-executive-summary--sih-value-proposition) • [⚙️ Mechanical Kinematics](#️-mechanical-kinematics--subterranean-locking) • [📡 Telemetry Architecture](#-multi-transport-telemetry-architecture) • [🚀 Quick Start](#-quick-start-guide)
+
+---
+
+</div>
+
+<br />
+
+## 🎬 Animated Prototype CAD (Exploded View)
+
+> [!TIP]
+> **Dynamic CAD Kinematics Model**: Below is the animated vector blueprint of the GeoNail assembly illustrating its 7-tier mechanical separation, two-stage captive bayonet mechanism, central Acme threaded rod, internal sensor core, and tungsten carbide bedrock spike.
+
+<div align="center">
+  <a href="./view_geonail_animation.html" title="Click to open interactive animated viewer with Zoom/Pan & Play/Pause controls">
+    <img src="./geonail_prototype_exploded_animation.svg" alt="GeoNail Prototype Exploded CAD Animation" width="100%" style="border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.4);" />
+  </a>
+  <p><em>Figure 1: Full-assembly exploded view kinematics animation. Click image or <a href="./view_geonail_animation.html">launch the Interactive SVG Controller</a> to zoom, pan, or pause stages.</em></p>
+</div>
+
+<br />
+
+<div align="center">
+
+| 🛠️ Interactive CAD Asset | 📋 Description | 🔗 Quick Action |
+| :--- | :--- | :--- |
+| **Exploded Kinematics SVG** | Dynamic 6-tier expanding & contracting vector CAD animation | [Open Animated Viewer](./view_geonail_animation.html) |
+| **Translucent CAD Diagram** | 1200 DPI vector technical blueprint with component callouts | [Open Blueprint Viewer](./view_geonail_diagram.html) |
+| **Complete System Spec PDF** | 30+ Page XeLaTeX comprehensive engineering specification | [Download Technical PDF](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf) |
+| **Live Web Bluetooth HUD** | Standalone Chrome Web BLE/Serial telemetry dashboard | [Launch Web HUD](./firmware/geonail_dashboard_debug.html) |
 
 </div>
 
 ---
 
-## 👨‍💻 Team Stellar Roster
+## ⚡ Team XLR8 Roster
 
 > [!NOTE]
-> Developed by **Team Stellar** from **R.M.D. Engineering College** for Smart India Hackathon (SIH).
+> Engineered with passion and precision by **Team XLR8** representing **R.M.D. Engineering College** for **Smart India Hackathon (SIH 2026)**.
 
-| Role | Name | Email Contact | Institutional Affiliation |
-| :--- | :--- | :--- | :--- |
+<div align="center">
+
+| Role | Member Name | Official Email Contact | Institutional Affiliation |
+| :---: | :--- | :--- | :--- |
 | 👑 **Team Leader** | **YOGARATHINAM T L** | `23104177@rmd.ac.in` | R.M.D. Engineering College |
-| 🛡️ Team Member | **Goutham V** | `23104180@rmd.ac.in` | R.M.D. Engineering College |
-| ⚙️ Team Member | **Sanjay Kumar K** | `23104142@rmd.ac.in` | R.M.D. Engineering College |
-| 🔬 Team Member | **Saravan kumaar R** | `23104146@rmd.ac.in` | R.M.D. Engineering College |
-| 📊 Team Member | **Thangaroja K** | `23104163@rmd.ac.in` | R.M.D. Engineering College |
-| 🎨 Team Member | **Yogasree V** | `23104178@rmd.ac.in` | R.M.D. Engineering College |
+| 🛡️ **Team Member** | **Goutham V** | `23104180@rmd.ac.in` | R.M.D. Engineering College |
+| ⚙️ **Team Member** | **Sanjay Kumar K** | `23104142@rmd.ac.in` | R.M.D. Engineering College |
+| 🔬 **Team Member** | **Saravan kumaar R** | `23104146@rmd.ac.in` | R.M.D. Engineering College |
+| 📊 **Team Member** | **Thangaroja K** | `23104163@rmd.ac.in` | R.M.D. Engineering College |
+| 🎨 **Team Member** | **Yogasree V** | `23104178@rmd.ac.in` | R.M.D. Engineering College |
+
+</div>
 
 ---
 
-## 🎯 Executive Summary & Jury Value Proposition
+## 🎯 Executive Summary & SIH Value Proposition
 
-Mine disasters, rockbursts, and slope collapses are primarily caused by undetectable sub-surface displacement and micro-vibrations inside rock strata. Traditional monitoring relies on manual surveys or costly wired extensometers.
+Open-cast mines, sub-surface shafts, and highway cuttings face catastrophic rockbursts, bench sliding, and slope failures. Traditional instrumentation (manual extensometers, crackmeters, and periodic tachymetric surveys) suffers from severe latency, cable shearing, high maintenance costs, and an inability to deliver predictive early warnings before strata deformation occurs.
 
-**GeoNail** solves this with an integrated end-to-end hardware-software ecosystem:
+**GeoNail** is an Internet of Subsurface Things (**IoST**) edge-telemetry platform that unifies high-tensile subterranean mechanical anchorage with continuous multi-spectral geophysical monitoring:
 
 > [!IMPORTANT]
 > **Key Innovations for SIH Jury Evaluation**:
-> 1. **Two-Stage Captive Bayonet & Acme Screw Anchor**: Pneumatically driven into subterranean bedrock with dual-opposed rotary locking tabs capable of withstanding 250 kN pull-out force.
-> 2. **Multi-Transport Zero-Deallocation Firmware**: Custom ESP32 C++ firmware (GeoNail OS v0.7.1) streaming 1Hz single-packet JSON telemetry over Web Bluetooth (BLE GATT), Wi-Fi Access Point REST API, and Web Serial simultaneously.
-> 3. **Interactive 3D Kinematics & HUD Visualizer**: WebGL/Three.js-powered digital twin rendering real-time roll, pitch, acceleration, vibration, subterranean strata depth, and emergency geo-event alerts.
+> 1. **Two-Stage Captive Bayonet & Acme Screw Anchor**: Pneumatically driven into subterranean bedrock with dual-opposed rotary locking tabs capable of withstanding **250 kN pull-out tensile force**.
+> 2. **Multi-Transport Zero-Deallocation Firmware (GeoNail OS v0.8.0)**: Ultra-efficient C++ engine simultaneously streaming 1 Hz real-time JSON packets over **Web Bluetooth (BLE GATT)**, **Wi-Fi Access Point REST API**, and **Web Serial UART**.
+> 3. **Integrated 5-Sensor Geophysical Sensing Array**: Sub-millimeter strata displacement via tri-axial accelerometer, tri-axial gyroscope, magnetometer tilt compass, subterranean soil pore moisture, ambient temperature/humidity, and toxic CO gas monitoring.
+> 4. **1:1 Scale 3D WebGL Digital Twin Visualizer**: Photorealistic Three.js visualizer rendering live roll/pitch kinematics, strata depth, vibration intensity spectra, and automatic audio-visual emergency alarms.
 
 ---
 
-## 📐 System Architecture & Data Flow
+## ⚙️ Mechanical Kinematics & Subterranean Locking
+
+The GeoNail assembly employs an innovative two-stage locking mechanism engineered to prevent accidental uncoupling during high-vibration rotary drilling, followed by infinite 360° captive drive rotation:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Step0_Separation: Step 0: Free Mid-Air Tool Separation
+    Step0_Separation --> Step1_Alignment: Step 1: Align Cap to 0° OPEN Index Mark
+    Step1_Alignment --> Step2_AxialPush: Step 2: Push 1.5u Down into Level 1 Channel
+    Step2_AxialPush --> Step3_IndexingRotate: Step 3: Rotate 90° CW along Indexing Track
+    Step3_IndexingRotate --> Step4_PlungerGate: Step 4: Depress Spring Plunger Gate (Level 2)
+    Step4_PlungerGate --> Step5_CaptiveEngagement: Step 5: Enter Captive Continuous Drive Ring
+    Step5_CaptiveEngagement --> AnchorTorqueDrive: Continuous 360° CW Rotation (Drives Acme Rod)
+    AnchorTorqueDrive --> RockLocked: Subterranean Bedrock Locked (250 kN Tensile Rating)
+```
+
+### Mechanical Component Breakdown
+
+```
+GEONAIL PROTOTYPE ASSEMBLY
+├── [Tier 1] AISI 4340 Hardened Steel Strike Cap (Impact-tolerant tool interface)
+├── [Tier 2] Two-Stage Captive Bayonet Collar (J-slot indexing track & lock ring)
+├── [Tier 3] Chromoly Sch 80 Outer Casing (Translucent/Hermetic environmental sleeve)
+├── [Tier 4] Electronics & Sensor Core (ESP32 MCU, MPU-6500 IMU, HMC5883L, DHT11)
+├── [Tier 5] Hardened Acme Threaded Central Rod (Torque-to-thrust transmission)
+├── [Tier 6] Dual-Opposed Rotary Locking Crossbar (Bedrock tab deployment)
+└── [Tier 7] Tungsten Carbide Rock Penetration Spike (Ultra-hard drilling tip)
+```
+
+---
+
+## 📡 Multi-Transport Telemetry Architecture
 
 ```mermaid
 graph TD
     subgraph Subterranean Rock Strata
-        A[Bedrock Anchor Spike] -->|Axial Force| B[Hardened Steel Main Shaft]
-        Sensors[MPU-6500 6-Axis IMU + HMC5883L Mag + DHT11 + ADC] -->|I2C / ADC| MCU[ESP32 / M5Stack Core MCU]
+        Spike[Bedrock Anchor Spike] -->|Axial Force| Shaft[Hardened Steel Main Shaft]
+        Sensors[MPU-6500 6-Axis IMU + HMC5883L Mag + DHT11 + Soil Moisture + MQ-7 CO] -->|I2C / ADC / 1-Wire| MCU[ESP32 / M5Stack Core MCU]
     end
 
-    subgraph GeoNail OS Firmware v0.7.1
+    subgraph GeoNail OS Firmware v0.8.0
         MCU -->|1Hz Zero-Alloc JSON| Core[Telemetry Dispatch Engine]
-        Core -->|Service UUID: f2e50000| BLE[BLE GATT Server]
-        Core -->|Port 80 REST API| WiFi[Wi-Fi Access Point]
-        Core -->|115200 Baud| Serial[Web Serial TX/RX]
+        Core -->|BLE GATT f2e50000| BLE[Web Bluetooth GATT Server]
+        Core -->|Port 80 REST /api/v1/telemetry| WiFi[Wi-Fi Access Point]
+        Core -->|115200 Baud TX/RX| Serial[Web Serial Interface]
     end
 
-    subgraph Mine Monitoring Station & Web Dashboard
-        BLE -->|Web Bluetooth GATT| WebApp[React + Three.js 3D Visualizer]
-        WiFi -->|HTTP GET /api/v1/telemetry| WebApp
-        Serial -->|Web Serial API| WebApp
-        WebApp -->|Live Render| HUD[HUD Dashboard & Kinematics Engine]
+    subgraph Mine Monitoring Station & Digital Twin
+        BLE -->|Direct Browser GATT| WebApp[React 19 + Three.js 3D Visualizer]
+        WiFi -->|HTTP JSON Polling| WebApp
+        Serial -->|Direct Browser Web Serial| WebApp
+        WebApp -->|Real-Time Kinematics| Twin[3D Digital Twin & HUD Visualizer]
+        Twin -->|Vibration Alerts & Telemetry| HUD[Safety Operator Station]
     end
 ```
 
----
-
-## ⚙️ Operational Kinematics & Subterranean Anchor Workflow
-
-```mermaid
-stateDiagram-v2
-    [*] --> Step0_Floating: Step 0 - Free Mid-Air Separation
-    Step0_Floating --> Step1_Alignment: Step 1 - Align Cap to 0° OPEN Mark
-    Step1_Alignment --> Step2_Level1: Step 2 - Push 1.5u Down into Level 1 Channel
-    Step2_Level1 --> Step3_Rotate90: Step 3 - Rotate 90° CW along Indexing Track
-    Step3_Rotate90 --> Step4_Level2: Step 4 - Push 0.6u Down through Gate Plunger into Level 2
-    Step4_Level2 --> Step5_CaptiveDrive: Step 5 - Infinite 360° Captive Rotation (Drives Acme Rod)
-    Step5_CaptiveDrive --> AnchorLocked: Subterranean Bedrock Locked (250 kN Tensile Rating)
-```
-
----
-
-## 📊 Telemetry Data Schema & Sensor Integration
-
-The system reads 5 sensor modules simultaneously and packages a compact ~340-byte JSON telemetry payload:
+### Telemetry Packet Schema (~340 Bytes)
 
 ```json
 {
   "device": {
     "node_id": "GN-001",
     "name": "GeoNail Node 001",
-    "location": "ZONE-A",
-    "firmware": "0.7.1"
+    "location": "ZONE-A-SLOPE-4",
+    "firmware": "0.8.0"
   },
   "timestamp_ms": 264108,
   "motion": {
-    "roll": -163.86,
-    "pitch": 93.38,
-    "acceleration": 0.99,
+    "roll": -12.45,
+    "pitch": 4.18,
+    "acceleration": 1.02,
     "vibration": 0.007,
     "vibration_level": "LOW"
   },
   "magnetic": {
-    "magnitude_ut": 40.0,
-    "calibrated": false
+    "magnitude_ut": 41.2,
+    "calibrated": true
   },
   "environment": {
-    "temperature_c": 32.9,
-    "humidity_percent": 89.9,
-    "soil_raw": 1238,
-    "mq7_raw": 4095
+    "temperature_c": 28.4,
+    "humidity_percent": 64.2,
+    "soil_raw": 1420,
+    "mq7_raw": 412
   },
   "sensor_status": {
     "mpu6500": "HEALTHY",
-    "hmc5883l": "UNCALIBRATED",
+    "hmc5883l": "HEALTHY",
     "dht11": "HEALTHY"
   },
   "status": {
@@ -132,74 +182,123 @@ The system reads 5 sensor modules simultaneously and packages a compact ~340-byt
 
 ---
 
-## 🔌 Hardware Pinout & Communication Protocols
+## 📈 Geotechnical Sensor Data & Field Plots
 
-| Sensor / Module | Protocol | ESP32 / M5Stack Pin | Specification |
+The embedded multi-sensor telemetry engine records real-time physical phenomena within subterranean strata:
+
+<div align="center">
+
+| Subterranean Displacement Analysis | 3-Axis Orientation Kinematics | Tri-Axial Vibration vs Seismic Threshold |
+| :---: | :---: | :---: |
+| <img src="./docs/plot_displacement.png" width="100%" alt="Subterranean Displacement Plot" /> | <img src="./docs/plot_orientation.png" width="100%" alt="3-Axis Orientation Kinematics Plot" /> | <img src="./docs/plot_vibration.png" width="100%" alt="Vibration vs Seismic Threshold Plot" /> |
+| *Figure 2: Strata shear micro-displacement (mm)* | *Figure 3: Euler angle pitch/roll drift (deg)* | *Figure 4: Tri-axial acceleration & alarm trigger (g)* |
+
+</div>
+
+---
+
+## 🔌 Hardware Pinout & Sensor Specifications
+
+| Sub-System / Sensor | Communication Protocol | ESP32 / M5Stack Pinout | Functional Description |
 | :--- | :--- | :--- | :--- |
-| **MPU-6500 IMU** | I2C (Address `0x68`) | SDA: `GPIO 21`, SCL: `GPIO 22` | 3-axis Accel + 3-axis Gyro |
-| **HMC5883L Mag** | I2C (Address `0x1E`) | SDA: `GPIO 21`, SCL: `GPIO 22` | 3-axis Subterranean Magnetic Field |
-| **DHT11 Temp/Hum** | Single Wire | `GPIO 26` | Operating Temp: -20°C to +60°C |
-| **Soil Moisture ADC** | Analog Input | `GPIO 34` (ADC1_CH6) | 12-bit Resolution (0–4095) |
-| **MQ-7 Gas Sensor** | Analog Input | `GPIO 36` (ADC1_CH0) | Carbon Monoxide Subterranean Monitor |
-| **BLE GATT Service** | Bluetooth Low Energy | UUID: `f2e50000-6c9b-4bd4-8c39-4f3c7e000001` | Read + Notify (`f2e50001-...`) |
-| **Wi-Fi REST API** | HTTP Server | SSID: `GeoNail-AP` (`192.168.4.1`) | Port 80 Endpoint: `/api/v1/telemetry` |
+| **MPU-6500 6-Axis IMU** | I2C (`0x68`) | SDA: `GPIO 21`, SCL: `GPIO 22` | Sub-millimeter dynamic tilt, angular velocity & vibration |
+| **HMC5883L Magnetometer** | I2C (`0x1E`) | SDA: `GPIO 21`, SCL: `GPIO 22` | 3-Axis subterranean geomagnetic flux orientation |
+| **DHT11 Micro-Climate** | 1-Wire Digital | `GPIO 26` | Mine borehole temperature (-20°C to +60°C) & relative humidity |
+| **Capacitive Soil Moisture** | Analog ADC1 | `GPIO 34` (ADC1_CH6) | Subterranean pore-water pressure & strata saturation |
+| **MQ-7 Hazardous Gas** | Analog ADC1 | `GPIO 36` (ADC1_CH0) | Underground carbon monoxide (CO) concentration detection |
+| **BLE GATT Radio** | 2.4 GHz Bluetooth 4.2 | Custom Service UUID | Direct mobile & browser telemetry streaming |
+| **Wi-Fi Access Point** | 802.11 b/g/n HTTP | SSID: `GeoNail-AP` (Port 80) | Standalone REST endpoint (`/api/v1/telemetry`) |
+| **Hardware Serial** | UART0 @ 115200 Baud | TX: `GPIO 1`, RX: `GPIO 3` | Web Serial browser direct connection |
+
+---
+
+## 💻 3D Digital Twin Visualizer (React + Three.js)
+
+The project includes a production-grade 3D Digital Twin visualizer located in [`sih-3d-visualizer`](./sih-3d-visualizer/):
+
+* **Real-Time 6-DOF Kinematics**: Synchronous 3D mesh rotation tracking physical GeoNail movement in real time.
+* **Dual Multi-Transport Connectors**: 1-click Web Bluetooth GATT or Web Serial connection right inside standard Chrome/Edge browsers.
+* **Subterranean Strata Simulation**: Dynamic underground shaft environment showing depth strata layers and bedrock anchoring status.
+* **Interactive HUD Instruments**: Analog gauges for roll, pitch, acceleration, vibration level, ambient climate, and gas safety.
+* **Emergency Audio Alarm Synthesizer**: Web Audio API generated sirens when seismic threshold or dangerous slope movement is detected.
 
 ---
 
 ## 🚀 Quick Start Guide
 
-### 1. Hardware Firmware Flash
-1. Open [GeoNail_M5Stack_Firmware.ino](file:///e:/SIH/firmware/GeoNail_M5Stack_Firmware.ino) in Arduino IDE.
-2. Install required libraries: `M5Unified`, `ArduinoJson`, `DHT sensor library`, `Adafruit Unified Sensor`.
+### 1. Flash GeoNail OS Firmware to Hardware
+1. Open [`firmware/GeoNail_M5Stack_Firmware.ino`](./firmware/GeoNail_M5Stack_Firmware.ino) in Arduino IDE or VS Code with PlatformIO.
+2. Install required dependencies:
+   * `M5Unified`
+   * `ArduinoJson` (v6 or v7)
+   * `DHT sensor library`
+   * `Adafruit Unified Sensor`
 3. Select Board: **M5Stack-Core-ESP32** (or Generic ESP32 Dev Module).
-4. Flash the sketch via USB-C at 115200 baud.
+4. Connect via USB-C and flash firmware at `115200` baud.
 
-### 2. Launch 3D Visualizer Web Application
+### 2. Launch the 3D Digital Twin Visualizer
 ```bash
-# Navigate to web visualizer folder
+# Navigate to the visualizer directory
 cd sih-3d-visualizer
 
 # Install dependencies
 npm install
 
-# Start local dev server
+# Start Vite development server
 npm run dev
 ```
+Open `http://localhost:5173` in a Chromium browser (Google Chrome, Microsoft Edge, or Brave).
 
-### 3. Connect Live Dashboard
-1. Open `http://localhost:5173` or open [geonail_dashboard_debug.html](file:///e:/SIH/firmware/geonail_dashboard_debug.html) directly in Chrome.
-2. Click **Connect BLE** (Select `GeoNail Node 001`) or **Connect Serial** (115200 baud).
-3. Observe live 3D rock nail rotation, roll/pitch gauge changes, and real-time vibration alerts!
+### 3. Standalone Live Debug Dashboard (Zero Install)
+You can also directly open [`firmware/geonail_dashboard_debug.html`](./firmware/geonail_dashboard_debug.html) in your browser:
+* Click **Connect BLE** to pair with `GeoNail Node 001`.
+* Or click **Connect Serial** to establish a direct 115200 baud UART stream over USB.
 
 ---
 
-## 📂 Repository Structure
+## 📂 Repository File Structure
 
 ```
-├── firmware/
-│   ├── GeoNail_M5Stack_Firmware.ino   # Main GeoNail OS v0.7.1 C++ Firmware
-│   ├── geonail_dashboard_debug.html  # Standalone Live Debug Dashboard (Chrome Web BLE)
-│   └── GeoNail_BLE_Test.ino          # Standalone Verification Sketch
-├── sih-3d-visualizer/                 # React 3D Digital Twin & HUD Web App (Three.js/Vite)
+GeoNail_SIH26025/
+├── README.md                                          # Modernized Project Manual & SIH Documentation
+├── geonail_prototype_exploded_animation.svg          # Master Animated Exploded View CAD
+├── geonail_prototype_transparent.svg                 # High-Resolution Translucent Technical Blueprint
+├── view_geonail_animation.html                        # Interactive Animated SVG Controller (Pan/Zoom/Play)
+├── view_geonail_diagram.html                          # Interactive Static Blueprint Viewer
+├── sih-3d-visualizer/                                 # 3D Digital Twin Web Application (Vite + React + Three.js)
 │   ├── src/
 │   │   ├── components/
-│   │   │   ├── MCUTelemetryDashboard.tsx # BLE/Serial Transport & Telemetry HUD
-│   │   │   ├── LithoPinAssembly.tsx      # 3D Rock Anchor CAD Kinematics Model
-│   │   │   └── UndergroundShaft.tsx      # Subterranean Mine Shaft Scene
-│   │   └── App.tsx
+│   │   │   ├── MCUTelemetryDashboard.tsx             # Real-Time Telemetry HUD & Protocol Manager
+│   │   │   ├── GeoNailAssembly.tsx                   # 3D Mechanical CAD Model & Kinematics Renderer
+│   │   │   └── UndergroundShaft.tsx                  # Subterranean Strata Geological Environment
+│   │   ├── App.tsx                                   # Main React Application Container
+│   │   └── index.css                                 # Glassmorphic Dark-Mode Design System
 │   └── package.json
-├── docs/                             # Physical CAD & Kinematic Specifications
-│   ├── Component_Architecture_and_Kinematics.md
-│   ├── GeoNail_Physical_System_Documentation.md
-├── SIH.code-workspace                # VS Code Workspace Configuration
-└── README.md                         # Project Documentation
+├── firmware/
+│   ├── GeoNail_M5Stack_Firmware.ino                  # GeoNail OS v0.8.0 Production C++ Firmware
+│   ├── geonail_dashboard_debug.html                  # Standalone Chrome Web BLE/Serial HUD
+│   └── GeoNail_BLE_Test.ino                          # Minimal Bluetooth Verification Sketch
+└── docs/
+    ├── GeoNail_System_Architecture_and_Technical_Documentation.pdf # Complete 30+ Page XeLaTeX Engineering Specification
+    ├── GeoNail_System_Architecture_and_Technical_Documentation.tex # Source XeLaTeX Technical Paper
+    ├── GeoNail_System_Architecture_and_Technical_Documentation.md  # Markdown System Architecture Reference
+    ├── GeoNail_Physical_System_Documentation.md       # Mechanical Dimensions & Kinematic Tolerances
+    ├── Component_Architecture_and_Kinematics.md      # Bayonet Indexing Track Kinematic Spec
+    ├── geonail_prototype_diagram.svg                 # Master 1200 DPI Vector Diagram
+    ├── plot_displacement.png                         # Subterranean Shear Displacement Plot
+    ├── plot_orientation.png                          # 3-Axis Euler Angle Kinematics Plot
+    └── plot_vibration.png                            # Tri-Axial Vibration & Seismic Alarm Plot
 ```
 
 ---
 
 <div align="center">
 
-### 🏆 Team Stellar — SIH 2026
-*Protecting subterranean mining operations through intelligent hardware and digital twin technology.*
+### 🏆 Team XLR8 — Smart India Hackathon 2026
+*Protecting subterranean mining operations & infrastructure through intelligent hardware and digital twin technology.*
+
+<br />
+
+**R.M.D. Engineering College** • Problem Statement #SIH26025 • Category: Hardware & IoT
 
 </div>
