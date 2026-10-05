@@ -1,0 +1,947 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1300" width="100%" height="100%" style="background:#070b14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <defs>
+    <!-- Background Gradients -->
+    <radialGradient id="bg-glow" cx="50%" cy="40%" r="65%">
+      <stop offset="0%" stop-color="#0e172a" />
+      <stop offset="100%" stop-color="#050811" />
+    </radialGradient>
+    <linearGradient id="header-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#00f2fe" />
+    </linearGradient>
+
+    <!-- Metal & Component Gradients -->
+    <linearGradient id="steel-outer" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="25%" stop-color="#64748b" />
+      <stop offset="50%" stop-color="#475569" />
+      <stop offset="85%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#1e293b" />
+    </linearGradient>
+
+    <linearGradient id="strike-cap-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#64748b" />
+      <stop offset="30%" stop-color="#cbd5e1" />
+      <stop offset="70%" stop-color="#94a3b8" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <linearGradient id="shaft-steel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="30%" stop-color="#475569" />
+      <stop offset="60%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="acme-rod-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#94a3b8" />
+      <stop offset="35%" stop-color="#f8fafc" />
+      <stop offset="65%" stop-color="#cbd5e1" />
+      <stop offset="100%" stop-color="#64748b" />
+    </linearGradient>
+
+    <linearGradient id="carbide-cone" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="35%" stop-color="#334155" />
+      <stop offset="70%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#090d16" />
+    </linearGradient>
+
+    <linearGradient id="gold-thread" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#b45309" />
+      <stop offset="50%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+
+    <linearGradient id="blue-coupling" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0369a1" />
+      <stop offset="50%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+
+    <linearGradient id="bedrock-strata" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1c1917" />
+      <stop offset="40%" stop-color="#292524" />
+      <stop offset="70%" stop-color="#1c1917" />
+      <stop offset="100%" stop-color="#0c0a09" />
+    </linearGradient>
+
+    <!-- Glowing Filters -->
+    <filter id="glow-cyan" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="glow-yellow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="card-shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+
+    <!-- Grid Patterns -->
+    <pattern id="grid-pattern" width="30" height="30" patternUnits="userSpaceOnUse">
+      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.7" opacity="0.35" />
+    </pattern>
+    <pattern id="crosshatch-steel" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#475569" stroke-width="1.2" opacity="0.4" />
+    </pattern>
+    <pattern id="crosshatch-electronics" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="0" y2="6" stroke="#0284c7" stroke-width="1" opacity="0.45" />
+    </pattern>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow-dim" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+    <marker id="arrow-dim-white" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#94a3b8" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#ef4444" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#10b981" />
+    </marker>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#00f2fe" />
+    </marker>
+  </defs>
+
+  <!-- Background Layer -->
+  <rect width="2000" height="1300" fill="url(#bg-glow)" />
+  <rect width="2000" height="1300" fill="url(#grid-pattern)" />
+
+  <!-- ========================================================================= -->
+  <!-- HEADER & TITLE BANNER -->
+  <!-- ========================================================================= -->
+  <g id="header-section" transform="translate(40, 24)">
+    <!-- Header Box -->
+    <rect width="1920" height="80" rx="12" fill="#0f172a" fill-opacity="0.85" stroke="#1e293b" stroke-width="1.5" filter="url(#card-shadow)" />
+    
+    <!-- Title Text -->
+    <text x="30" y="36" fill="#f8fafc" font-size="22" font-weight="900" letter-spacing="1.5">
+      GEONAIL™ SUBTERRANEAN ROCK ANCHOR &amp; TELEMETRY SYSTEM
+    </text>
+    <text x="30" y="62" fill="#94a3b8" font-size="13" font-weight="500">
+      Smart India Hackathon 2026 | Problem Statement Solution #SIH26025 | Team Stellar (R.M.D. Engineering College)
+    </text>
+
+    <!-- Top Status Badges -->
+    <g transform="translate(1220, 24)">
+      <!-- Badge 1: Firmware -->
+      <rect x="0" y="0" width="145" height="32" rx="6" fill="#0369a1" fill-opacity="0.25" stroke="#0284c7" stroke-width="1.2" />
+      <circle cx="16" cy="16" r="4" fill="#38bdf8" filter="url(#glow-cyan)" />
+      <text x="28" y="21" fill="#e0f2fe" font-size="11.5" font-weight="700">OS v0.7.1 C++</text>
+
+      <!-- Badge 2: Mechanical Rating -->
+      <rect x="155" y="0" width="165" height="32" rx="6" fill="#15803d" fill-opacity="0.2" stroke="#10b981" stroke-width="1.2" />
+      <circle cx="171" cy="16" r="4" fill="#34d399" filter="url(#glow-green)" />
+      <text x="183" y="21" fill="#dcfce7" font-size="11.5" font-weight="700">250 kN PULL-OUT</text>
+
+      <!-- Badge 3: Protection -->
+      <rect x="330" y="0" width="160" height="32" rx="6" fill="#b45309" fill-opacity="0.2" stroke="#f59e0b" stroke-width="1.2" />
+      <circle cx="346" cy="16" r="4" fill="#fbbf24" filter="url(#glow-yellow)" />
+      <text x="358" y="21" fill="#fef3c7" font-size="11.5" font-weight="700">IP68 / AISI 4340</text>
+
+      <!-- Badge 4: Live 3D Twin -->
+      <rect x="500" y="0" width="180" height="32" rx="6" fill="#4338ca" fill-opacity="0.2" stroke="#818cf8" stroke-width="1.2" />
+      <circle cx="516" cy="16" r="4" fill="#a5b4fc" />
+      <text x="528" y="21" fill="#e0e7ff" font-size="11.5" font-weight="700">3D DIGITAL TWIN</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- PANEL 1: MAIN ASSEMBLY ELEVATION & CUTAWAY SECTION (LEFT, X: 40 to 680) -->
+  <!-- ========================================================================= -->
+  <g id="panel-assembly" transform="translate(40, 120)">
+    <!-- Container Card -->
+    <rect width="650" height="1140" rx="14" fill="#0b1120" fill-opacity="0.9" stroke="#1e293b" stroke-width="1.5" filter="url(#card-shadow)" />
+    
+    <!-- Section Header -->
+    <rect x="0" y="0" width="650" height="46" rx="14" fill="#1e293b" fill-opacity="0.6" />
+    <path d="M 0 14 Q 0 0 14 0 L 636 0 Q 650 0 650 14 L 650 46 L 0 46 Z" fill="#0f172a" />
+    <text x="24" y="28" fill="#38bdf8" font-size="14" font-weight="800" letter-spacing="1">
+      SECTION A-A: STRUCTURAL ELEVATION &amp; INTERNAL CUTAWAY
+    </text>
+    <text x="470" y="28" fill="#94a3b8" font-size="11" font-weight="600">
+      SCALE 1:1 [CAD METRIC]
+    </text>
+
+    <!-- Subterranean Bedrock Strata Backdrop (Bottom Zone) -->
+    <g transform="translate(40, 780)">
+      <rect x="0" y="0" width="570" height="320" rx="8" fill="url(#bedrock-strata)" stroke="#44403c" stroke-width="1.2" />
+      <!-- Rock fracture lines -->
+      <path d="M 30 40 L 90 75 L 140 60 L 210 110 M 350 70 L 420 50 L 490 95 L 540 80" stroke="#57534e" stroke-width="1.5" fill="none" opacity="0.6" stroke-dasharray="4 2" />
+      <path d="M 40 180 L 110 200 L 190 170 M 370 210 L 460 190 L 530 230" stroke="#57534e" stroke-width="1.5" fill="none" opacity="0.6" stroke-dasharray="4 2" />
+      <!-- Strata Labels -->
+      <text x="20" y="30" fill="#78716c" font-size="10.5" font-weight="700">ZONE II: SEDIMENTARY SANDSTONE</text>
+      <text x="20" y="160" fill="#a8a29e" font-size="10.5" font-weight="700">ZONE III: BASAL BEDROCK STRATA (COMPRESSIVE RESISTANCE: 180 MPa)</text>
+    </g>
+
+    <!-- MAIN SHAFT & COMPONENTS GROUP (Centered at X = 325) -->
+    <!-- Center Line -->
+    <line x1="325" y1="60" x2="325" y2="1080" stroke="#0284c7" stroke-width="1" stroke-dasharray="10 4 2 4" opacity="0.7" />
+    <text x="330" y="75" fill="#0284c7" font-size="9" font-weight="700">CL AXIS</text>
+
+    <!-- Exterior View on Left (X: 180 to 325), Cutaway on Right (X: 325 to 470) -->
+
+    <!-- ==================== 1. HARDENED STRIKE CAP ==================== -->
+    <!-- Left Exterior -->
+    <rect x="220" y="90" width="105" height="24" rx="2" fill="url(#strike-cap-grad)" stroke="#94a3b8" stroke-width="1.2" />
+    <!-- Right Cutaway (Solid Steel Crosshatch) -->
+    <rect x="325" y="90" width="105" height="24" rx="2" fill="url(#strike-cap-grad)" stroke="#94a3b8" stroke-width="1.2" />
+    <rect x="325" y="90" width="105" height="24" fill="url(#crosshatch-steel)" />
+    <!-- Impact Force Arrows -->
+    <g transform="translate(325, 60)">
+      <line x1="0" y1="0" x2="0" y2="24" stroke="#ef4444" stroke-width="2.5" marker-end="url(#arrow-red)" filter="url(#glow-red)" />
+      <line x1="-50" y1="5" x2="-50" y2="24" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)" />
+      <line x1="50" y1="5" x2="50" y2="24" stroke="#ef4444" stroke-width="2" marker-end="url(#arrow-red)" />
+      <text x="0" y="-8" fill="#f87171" font-size="11" font-weight="800" text-anchor="middle">PNEUMATIC PILE-DRIVE IMPULSE (250 kN)</text>
+    </g>
+
+    <!-- ==================== 2. TOP CAP SHELL ==================== -->
+    <!-- Left Exterior: Outer Shell with 16 Grip Ribs -->
+    <rect x="180" y="114" width="145" height="200" rx="4" fill="url(#steel-outer)" stroke="#475569" stroke-width="1.5" />
+    <!-- Grip Ribs Left -->
+    <g fill="#1e293b" stroke="#334155" stroke-width="0.8">
+      <rect x="190" y="120" width="6" height="188" rx="2" />
+      <rect x="206" y="120" width="6" height="188" rx="2" />
+      <rect x="222" y="120" width="6" height="188" rx="2" />
+      <rect x="238" y="120" width="6" height="188" rx="2" />
+      <rect x="254" y="120" width="6" height="188" rx="2" />
+      <rect x="270" y="120" width="6" height="188" rx="2" />
+      <rect x="286" y="120" width="6" height="188" rx="2" />
+      <rect x="302" y="120" width="6" height="188" rx="2" />
+    </g>
+    <!-- Cyan Alignment Triangle (0° OPEN Mark on Cap Wall) -->
+    <polygon points="186,290 196,284 196,296" fill="#00f2fe" filter="url(#glow-cyan)" />
+    <text x="110" y="294" fill="#00f2fe" font-size="9.5" font-weight="700">0° OPEN MARK</text>
+    <line x1="175" y1="290" x2="184" y2="290" stroke="#00f2fe" stroke-width="1.2" stroke-dasharray="2 1" />
+
+    <!-- Right Cutaway: 3 Internal Chambers -->
+    <!-- Cap Outer Shell Section Cut -->
+    <path d="M 325 114 L 470 114 L 470 314 L 440 314 L 440 134 L 325 134 Z" fill="url(#steel-outer)" stroke="#475569" stroke-width="1.2" />
+    <path d="M 325 114 L 470 114 L 470 314 L 440 314 L 440 134 L 325 134 Z" fill="url(#crosshatch-steel)" />
+
+    <!-- Bulkhead Plate 2 (Partition: Chamber 3 Telemetry / Chamber 2 Drive, at Y = 186) -->
+    <rect x="340" y="186" width="100" height="8" fill="#38bdf8" stroke="#0284c7" stroke-width="1" filter="url(#glow-cyan)" />
+
+    <!-- Chamber 3: Telemetry Electronics (Y: 134 to 186) -->
+    <rect x="335" y="136" width="100" height="48" rx="3" fill="#0f172a" stroke="#0284c7" stroke-width="1" />
+    <rect x="335" y="136" width="100" height="48" fill="url(#crosshatch-electronics)" />
+    <!-- Internal MCU / Sensors representation -->
+    <rect x="345" y="142" width="30" height="20" rx="2" fill="#0284c7" stroke="#38bdf8" stroke-width="0.8" />
+    <text x="360" y="155" fill="#ffffff" font-size="7.5" font-weight="800" text-anchor="middle">ESP32</text>
+    <!-- Sensor ICs -->
+    <rect x="382" y="142" width="16" height="10" rx="1" fill="#10b981" />
+    <text x="390" y="150" fill="#ffffff" font-size="6" font-weight="700" text-anchor="middle">IMU</text>
+    <rect x="403" y="142" width="16" height="10" rx="1" fill="#f59e0b" />
+    <text x="411" y="150" fill="#ffffff" font-size="6" font-weight="700" text-anchor="middle">MAG</text>
+    <!-- BLE Antenna Trace -->
+    <path d="M 345 168 L 360 168 L 360 174 L 375 174 L 375 168 L 390 168" stroke="#38bdf8" stroke-width="1.2" fill="none" />
+    <text x="400" y="174" fill="#38bdf8" font-size="7" font-weight="700">BLE/Wi-Fi</text>
+
+    <!-- Chamber 2: Screw Drive Chamber (Y: 194 to 250) -->
+    <!-- Blue Hex Socket Coupling Head (stops DEAD at Bulkhead 1) -->
+    <rect x="350" y="196" width="36" height="16" rx="2" fill="url(#blue-coupling)" stroke="#38bdf8" stroke-width="1" />
+    <text x="368" y="208" fill="#ffffff" font-size="7.5" font-weight="800" text-anchor="middle">HEX DRIVE</text>
+
+    <!-- Bulkhead Plate 1 (Partition: Chamber 2 Drive / Chamber 1 Locking, at Y = 250) -->
+    <rect x="340" y="250" width="100" height="8" fill="#334155" stroke="#64748b" stroke-width="1" />
+
+    <!-- Chamber 1: 2-Stage Bayonet Locking Chamber (Y: 258 to 314) -->
+    <!-- Level 2 Captive Track (Green, Y = 264 to 276) -->
+    <rect x="340" y="266" width="95" height="10" rx="2" fill="#047857" fill-opacity="0.8" stroke="#10b981" stroke-width="1.2" filter="url(#glow-green)" />
+    <text x="387" y="274" fill="#ffffff" font-size="7.5" font-weight="800" text-anchor="middle">LEVEL 2 CAPTIVE (360° SPIN)</text>
+    <!-- Level 1 Bayonet Track (Cyan, Y = 286 to 296) -->
+    <rect x="340" y="288" width="95" height="10" rx="2" fill="#0369a1" fill-opacity="0.8" stroke="#00f2fe" stroke-width="1.2" filter="url(#glow-cyan)" />
+    <text x="387" y="296" fill="#ffffff" font-size="7.5" font-weight="800" text-anchor="middle">LEVEL 1 BAYONET (90° LOCK)</text>
+    <!-- Transfer Push Channel bridging Level 1 to Level 2 (Yellow, Y = 276 to 288) -->
+    <rect x="415" y="276" width="14" height="12" fill="#d97706" stroke="#f59e0b" stroke-width="1.2" filter="url(#glow-yellow)" />
+    <!-- Retractable Spring Plunger Safety Gate -->
+    <rect x="424" y="280" width="14" height="5" rx="1" fill="#cbd5e1" stroke="#475569" stroke-width="0.8" />
+
+    <!-- ==================== 3. MAIN STRUCTURAL SHAFT TUBE ==================== -->
+    <!-- Outer Diameter: 44mm (Width 220, X: 215 to 435) -->
+    <!-- Left Exterior Shaft Tube -->
+    <rect x="215" y="314" width="110" height="420" fill="url(#shaft-steel)" stroke="#475569" stroke-width="1.5" />
+    
+    <!-- Lock Pin A Left (0°) -->
+    <rect x="195" y="330" width="20" height="12" rx="2" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1" />
+    <circle cx="205" cy="336" r="3" fill="#64748b" />
+    <text x="135" y="340" fill="#cbd5e1" font-size="9.5" font-weight="700">LOCK PIN A (0°)</text>
+    <line x1="190" y1="336" x2="195" y2="336" stroke="#cbd5e1" stroke-width="1" />
+
+    <!-- Right Cutaway Shaft Tube (Solid wall 15.5mm thickness + 13mm central bore) -->
+    <path d="M 325 314 L 435 314 L 435 734 L 360 734 L 360 314 Z" fill="url(#shaft-steel)" stroke="#475569" stroke-width="1.2" />
+    <path d="M 360 314 L 435 314 L 435 734 L 360 734 Z" fill="url(#crosshatch-steel)" />
+
+    <!-- Lock Pin B Right (180°) -->
+    <rect x="435" y="330" width="20" height="12" rx="2" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1" />
+    <circle cx="445" cy="336" r="3" fill="#64748b" />
+    <text x="465" y="340" fill="#cbd5e1" font-size="9.5" font-weight="700">LOCK PIN B (180°)</text>
+
+    <!-- Fixed Shaft 0° Triangle Marker -->
+    <polygon points="215,360 205,354 205,366" fill="#ffffff" />
+    <text x="125" y="364" fill="#f8fafc" font-size="9.5" font-weight="700">SHAFT 0° MARK</text>
+
+    <!-- ==================== 4. CENTRAL ACME LEAD-SCREW ROD ==================== -->
+    <!-- Centered in bore (X: 308 to 342, Width 34) -->
+    <g transform="translate(0, 0)">
+      <!-- Acme Rod Core -->
+      <rect x="312" y="212" width="26" height="660" rx="3" fill="url(#acme-rod-grad)" stroke="#94a3b8" stroke-width="1" />
+      <!-- Helical Acme Thread Rings Pattern -->
+      <g stroke="#f59e0b" stroke-width="1.8" opacity="0.85">
+        <line x1="310" y1="230" x2="340" y2="234" />
+        <line x1="310" y1="245" x2="340" y2="249" />
+        <line x1="310" y1="260" x2="340" y2="264" />
+        <line x1="310" y1="275" x2="340" y2="279" />
+        <line x1="310" y1="290" x2="340" y2="294" />
+        <line x1="310" y1="305" x2="340" y2="309" />
+        <line x1="310" y1="320" x2="340" y2="324" />
+        <line x1="310" y1="340" x2="340" y2="344" />
+        <line x1="310" y1="360" x2="340" y2="364" />
+        <line x1="310" y1="380" x2="340" y2="384" />
+        <line x1="310" y1="410" x2="340" y2="414" />
+        <line x1="310" y1="440" x2="340" y2="444" />
+        <line x1="310" y1="470" x2="340" y2="474" />
+        <line x1="310" y1="500" x2="340" y2="504" />
+        <line x1="310" y1="530" x2="340" y2="534" />
+        <line x1="310" y1="560" x2="340" y2="564" />
+        <line x1="310" y1="590" x2="340" y2="594" />
+        <line x1="310" y1="620" x2="340" y2="624" />
+        <line x1="310" y1="650" x2="340" y2="654" />
+        <line x1="310" y1="680" x2="340" y2="684" />
+        <line x1="310" y1="710" x2="340" y2="714" />
+        <line x1="310" y1="740" x2="340" y2="744" />
+        <line x1="310" y1="770" x2="340" y2="774" />
+        <line x1="310" y1="800" x2="340" y2="804" />
+        <line x1="310" y1="830" x2="340" y2="834" />
+        <line x1="310" y1="860" x2="340" y2="864" />
+      </g>
+    </g>
+
+    <!-- ==================== 5. PIECE 1: FLAT-TIP CONICAL ROCK SHOE ==================== -->
+    <!-- Frustum tapering from Ø44mm (Width 220) to Ø22mm (Width 110), Height 70 (Y: 734 to 810) -->
+    <!-- Left Exterior Frustum -->
+    <polygon points="215,734 325,734 325,810 270,810" fill="url(#shaft-steel)" stroke="#475569" stroke-width="1.5" />
+    <!-- Right Cutaway Frustum -->
+    <polygon points="325,734 435,734 380,810 325,810" fill="url(#shaft-steel)" stroke="#475569" stroke-width="1.2" />
+    <polygon points="360,734 435,734 380,810 360,810" fill="url(#crosshatch-steel)" />
+
+    <!-- ==================== 6. ROTARY DRIVE PLATE WITH OPPOSED TABS ==================== -->
+    <!-- Mounted on Acme Rod tip at Y = 816 -->
+    <rect x="290" y="816" width="70" height="14" rx="2" fill="url(#blue-coupling)" stroke="#38bdf8" stroke-width="1" />
+    <!-- Tab A (Left, seats in Grooves 1 or 2) -->
+    <rect x="282" y="820" width="10" height="12" rx="1" fill="#f59e0b" stroke="#d97706" stroke-width="1" filter="url(#glow-yellow)" />
+    <!-- Tab B (Right, seats in Grooves 3 or 4) -->
+    <rect x="358" y="820" width="10" height="12" rx="1" fill="#f59e0b" stroke="#d97706" stroke-width="1" filter="url(#glow-yellow)" />
+    <text x="325" y="827" fill="#ffffff" font-size="7.5" font-weight="800" text-anchor="middle">ROTARY DRIVE PLATE</text>
+
+    <!-- ==================== 7. PIECE 2: SHARP CONICAL SPIKE ANCHOR ==================== -->
+    <!-- Sharp Cone Frustum tapering from Ø22mm (Width 110) to Sharp Tip Ø0.5mm, Height 140 (Y: 834 to 980) -->
+    <!-- Left Exterior Spike -->
+    <polygon points="270,834 325,834 325,980 323,980" fill="url(#carbide-cone)" stroke="#334155" stroke-width="1.5" />
+    <!-- Right Cutaway Spike -->
+    <polygon points="325,834 380,834 327,980 325,980" fill="url(#carbide-cone)" stroke="#334155" stroke-width="1.2" />
+    <!-- Carbide Tip Insert -->
+    <polygon points="318,950 332,950 325,984" fill="#94a3b8" stroke="#cbd5e1" stroke-width="1" filter="url(#glow-cyan)" />
+
+    <!-- Bedrock Expansion Arrows (Locking force into rock strata) -->
+    <g transform="translate(325, 930)">
+      <line x1="0" y1="0" x2="-65" y2="25" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)" filter="url(#glow-green)" />
+      <line x1="0" y1="0" x2="65" y2="25" stroke="#10b981" stroke-width="2.5" marker-end="url(#arrow-green)" filter="url(#glow-green)" />
+      <text x="0" y="45" fill="#34d399" font-size="11" font-weight="800" text-anchor="middle">250 kN BEDROCK LOCK RESISTANCE</text>
+    </g>
+
+    <!-- ==================== HAMMER LOAD PATH (PULSE STREAM) ==================== -->
+    <!-- Shows structural force flowing through strike cap and outer tube directly into rock shoe, bypassing electronics -->
+    <g stroke="#ef4444" stroke-width="2.2" stroke-dasharray="6 3" fill="none" opacity="0.85">
+      <path d="M 230 114 L 215 314 L 215 734 L 270 810" />
+      <path d="M 420 114 L 435 314 L 435 734 L 380 810" />
+    </g>
+    <!-- Load Path Callout Badge -->
+    <g transform="translate(50, 480)">
+      <rect x="0" y="0" width="140" height="48" rx="6" fill="#1e1b4b" fill-opacity="0.85" stroke="#ef4444" stroke-width="1" />
+      <text x="70" y="18" fill="#f87171" font-size="9" font-weight="800" text-anchor="middle">⚡ HAMMER LOAD PATH</text>
+      <text x="70" y="32" fill="#cbd5e1" font-size="8" font-weight="500" text-anchor="middle">100% Force to Outer Tube</text>
+      <text x="70" y="42" fill="#38bdf8" font-size="7.5" font-weight="700" text-anchor="middle">Electronics 100% Isolated</text>
+    </g>
+
+    <!-- ==================== DIMENSION CALLOUTS & LEADER LINES ==================== -->
+    <g stroke="#38bdf8" stroke-width="1" fill="none">
+      <!-- Top Cap Ø58mm -->
+      <line x1="180" y1="110" x2="180" y2="80" />
+      <line x1="470" y1="110" x2="470" y2="80" />
+      <line x1="180" y1="85" x2="470" y2="85" marker-start="url(#arrow-dim)" marker-end="url(#arrow-dim)" />
+      <text x="325" y="80" fill="#38bdf8" font-size="10.5" font-weight="700" text-anchor="middle" stroke="none">Ø 58 mm [CAP OUTER]</text>
+
+      <!-- Main Shaft Ø44mm -->
+      <line x1="215" y1="420" x2="175" y2="420" />
+      <line x1="435" y1="420" x2="475" y2="420" />
+      <line x1="180" y1="420" x2="470" y2="420" marker-start="url(#arrow-dim)" marker-end="url(#arrow-dim)" />
+      <text x="325" y="415" fill="#38bdf8" font-size="10.5" font-weight="700" text-anchor="middle" stroke="none">Ø 44 mm [MAIN SHAFT]</text>
+
+      <!-- Acme Rod Ø9mm Core -->
+      <line x1="312" y1="520" x2="280" y2="520" />
+      <line x1="338" y1="520" x2="370" y2="520" />
+      <text x="325" y="535" fill="#fde047" font-size="9" font-weight="800" text-anchor="middle" stroke="none">Ø 9 mm ACME</text>
+
+      <!-- Piece 1 Conical Frustum Ø22mm Flat Tip -->
+      <line x1="270" y1="810" x2="245" y2="810" />
+      <line x1="380" y1="810" x2="405" y2="810" />
+      <line x1="250" y1="810" x2="400" y2="810" marker-start="url(#arrow-dim)" marker-end="url(#arrow-dim)" />
+      <text x="325" y="805" fill="#10b981" font-size="9.5" font-weight="700" text-anchor="middle" stroke="none">Ø 22 mm FLAT TIP</text>
+
+      <!-- Total Subterranean Travel 300 mm -->
+      <line x1="500" y1="734" x2="550" y2="734" />
+      <line x1="500" y1="980" x2="550" y2="980" />
+      <line x1="540" y1="734" x2="540" y2="980" marker-start="url(#arrow-dim)" marker-end="url(#arrow-dim)" />
+      <text x="555" y="860" fill="#38bdf8" font-size="10" font-weight="700" stroke="none" transform="rotate(90 555 860)">TRAVEL: 300 mm</text>
+    </g>
+
+    <!-- Component Number Callout Badges -->
+    <g font-size="9.5" font-weight="800" text-anchor="middle">
+      <circle cx="490" cy="102" r="10" fill="#0284c7" />
+      <text x="490" y="106" fill="#ffffff">1</text>
+      <text x="508" y="106" fill="#e2e8f0" text-anchor="start">Hardened Strike Cap Disk</text>
+
+      <circle cx="490" cy="155" r="10" fill="#0284c7" />
+      <text x="490" y="159" fill="#ffffff">2</text>
+      <text x="508" y="159" fill="#e2e8f0" text-anchor="start">Chamber 3: Telemetry Bay</text>
+
+      <circle cx="490" cy="205" r="10" fill="#0284c7" />
+      <text x="490" y="209" fill="#ffffff">3</text>
+      <text x="508" y="209" fill="#e2e8f0" text-anchor="start">Blue Hex Coupling Head</text>
+
+      <circle cx="490" cy="285" r="10" fill="#0284c7" />
+      <text x="490" y="289" fill="#ffffff">4</text>
+      <text x="508" y="289" fill="#e2e8f0" text-anchor="start">2-Stage Bayonet Chamber</text>
+
+      <circle cx="490" cy="370" r="10" fill="#0284c7" />
+      <text x="490" y="374" fill="#ffffff">5</text>
+      <text x="508" y="374" fill="#e2e8f0" text-anchor="start">Structural Chromoly Tube</text>
+
+      <circle cx="490" cy="600" r="10" fill="#0284c7" />
+      <text x="490" y="604" fill="#ffffff">6</text>
+      <text x="508" y="604" fill="#e2e8f0" text-anchor="start">Acme Helical Threaded Rod</text>
+
+      <circle cx="490" cy="770" r="10" fill="#0284c7" />
+      <text x="490" y="774" fill="#ffffff">7</text>
+      <text x="508" y="774" fill="#e2e8f0" text-anchor="start">Piece 1: Conical Rock Shoe</text>
+
+      <circle cx="490" cy="900" r="10" fill="#0284c7" />
+      <text x="490" y="904" fill="#ffffff">8</text>
+      <text x="508" y="904" fill="#e2e8f0" text-anchor="start">Piece 2: Sharp Spike Anchor</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- PANEL 2: TWO-STAGE BAYONET GROOVE TOPOLOGY & KINEMATICS (TOP-MID, X: 710 to 1330) -->
+  <!-- ========================================================================= -->
+  <g id="panel-bayonet-kinematics" transform="translate(710, 120)">
+    <!-- Container Card -->
+    <rect width="610" height="560" rx="14" fill="#0b1120" fill-opacity="0.9" stroke="#1e293b" stroke-width="1.5" filter="url(#card-shadow)" />
+
+    <!-- Section Header -->
+    <path d="M 0 14 Q 0 0 14 0 L 596 0 Q 610 0 610 14 L 610 46 L 0 46 Z" fill="#0f172a" />
+    <text x="24" y="28" fill="#38bdf8" font-size="14" font-weight="800" letter-spacing="1">
+      TWO-STAGE BAYONET &amp; CAPTIVE KINEMATICS
+    </text>
+    <text x="460" y="28" fill="#94a3b8" font-size="11" font-weight="600">
+      PATENT TOPOLOGY
+    </text>
+
+    <!-- 2D UNROLLED GROOVE TOPOLOGY MAP (Flat 360° Unwrapped Cylinder View) -->
+    <g transform="translate(30, 60)">
+      <rect x="0" y="0" width="550" height="210" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="20" y="24" fill="#94a3b8" font-size="11" font-weight="700">UNROLLED INTERNAL TRACK TOPOLOGY (360° CIRCUMFERENCE)</text>
+
+      <!-- Angular Guides -->
+      <g stroke="#1e293b" stroke-width="1" stroke-dasharray="3 3">
+        <line x1="60" y1="35" x2="60" y2="195" />
+        <line x1="180" y1="35" x2="180" y2="195" />
+        <line x1="300" y1="35" x2="300" y2="195" />
+        <line x1="420" y1="35" x2="420" y2="195" />
+        <line x1="500" y1="35" x2="500" y2="195" />
+      </g>
+      <text x="60" y="204" fill="#64748b" font-size="9" text-anchor="middle">0° OPEN</text>
+      <text x="180" y="204" fill="#64748b" font-size="9" text-anchor="middle">90° CW</text>
+      <text x="300" y="204" fill="#64748b" font-size="9" text-anchor="middle">180°</text>
+      <text x="420" y="204" fill="#64748b" font-size="9" text-anchor="middle">270° CW</text>
+      <text x="500" y="204" fill="#64748b" font-size="9" text-anchor="middle">360°</text>
+
+      <!-- Channel Paths -->
+      <!-- 1. Vertical Entry Slots (from Bottom Rim Y=180 to Level 1 Y=110) -->
+      <rect x="52" y="110" width="16" height="70" rx="3" fill="#0284c7" fill-opacity="0.4" stroke="#38bdf8" stroke-width="1.5" />
+      <rect x="292" y="110" width="16" height="70" rx="3" fill="#0284c7" fill-opacity="0.4" stroke="#38bdf8" stroke-width="1.5" />
+
+      <!-- 2. Level 1 90° Circumferential Bayonet Track (Cyan, Y = 110) -->
+      <rect x="52" y="102" width="136" height="16" rx="4" fill="#0369a1" fill-opacity="0.7" stroke="#00f2fe" stroke-width="1.8" filter="url(#glow-cyan)" />
+      <rect x="292" y="102" width="136" height="16" rx="4" fill="#0369a1" fill-opacity="0.7" stroke="#00f2fe" stroke-width="1.8" filter="url(#glow-cyan)" />
+      <text x="120" y="94" fill="#00f2fe" font-size="10" font-weight="800" text-anchor="middle">LEVEL 1: 90° INDEX TRACK</text>
+
+      <!-- 3. Vertical Transfer Drop Slot (Yellow, Y = 66 to 102 at 90° and 270°) -->
+      <rect x="172" y="66" width="16" height="40" rx="2" fill="#b45309" fill-opacity="0.8" stroke="#f59e0b" stroke-width="1.8" filter="url(#glow-yellow)" />
+      <rect x="412" y="66" width="16" height="40" rx="2" fill="#b45309" fill-opacity="0.8" stroke="#f59e0b" stroke-width="1.8" filter="url(#glow-yellow)" />
+      <!-- Safety Gate Plunger -->
+      <rect x="184" y="80" width="14" height="6" rx="1" fill="#f87171" stroke="#ef4444" stroke-width="1" />
+      <text x="235" y="86" fill="#f87171" font-size="8.5" font-weight="700">SAFETY GATE</text>
+
+      <!-- 4. Level 2 Annular Retaining Groove (Continuous 360° Track at Y = 56, Green) -->
+      <rect x="20" y="54" width="510" height="16" rx="4" fill="#065f46" fill-opacity="0.8" stroke="#10b981" stroke-width="2" filter="url(#glow-green)" />
+      <text x="275" y="46" fill="#34d399" font-size="10" font-weight="800" text-anchor="middle">LEVEL 2: 360° CONTINUOUS CAPTIVE ROTATION GROOVE</text>
+
+      <!-- Animated Motion Vector Flow Arrows -->
+      <g stroke="#ffffff" stroke-width="2" fill="none" marker-end="url(#arrow-cyan)">
+        <!-- Step 2: Push Down Entry -->
+        <path d="M 60 170 L 60 112" />
+        <!-- Step 3: Rotate 90° -->
+        <path d="M 68 110 L 170 110" />
+        <!-- Step 4: Drop into Level 2 -->
+        <path d="M 180 102 L 180 64" />
+        <!-- Step 5: Infinite Rotate -->
+        <path d="M 190 62 L 350 62" stroke="#10b981" marker-end="url(#arrow-green)" />
+      </g>
+    </g>
+
+    <!-- 5-PHASE OPERATIONAL KINEMATICS WORKFLOW -->
+    <g transform="translate(30, 290)">
+      <text x="0" y="16" fill="#f8fafc" font-size="12" font-weight="800">5-STEP DUAL-STAGE LOCKING SEQUENCE</text>
+
+      <!-- Phase 1 -->
+      <g transform="translate(0, 30)">
+        <rect x="0" y="0" width="102" height="195" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+        <rect x="8" y="8" width="22" height="22" rx="4" fill="#0284c7" />
+        <text x="19" y="23" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">0</text>
+        <text x="35" y="24" fill="#38bdf8" font-size="10" font-weight="700">PRE-ALIGN</text>
+        <text x="10" y="50" fill="#94a3b8" font-size="9" font-weight="600">Displacement:</text>
+        <text x="10" y="64" fill="#f8fafc" font-size="9.5" font-weight="700">Y = +18.0u</text>
+        <text x="10" y="84" fill="#94a3b8" font-size="9" font-weight="600">Rotation:</text>
+        <text x="10" y="98" fill="#f8fafc" font-size="9.5" font-weight="700">0° Neutral</text>
+        <text x="10" y="125" fill="#cbd5e1" font-size="8.5">Mid-air separated cap inspection view.</text>
+        <circle cx="51" cy="165" r="14" fill="#1e293b" stroke="#0284c7" stroke-width="1" />
+        <text x="51" y="169" fill="#38bdf8" font-size="10" font-weight="800" text-anchor="middle">▲</text>
+      </g>
+
+      <!-- Phase 2 -->
+      <g transform="translate(112, 30)">
+        <rect x="0" y="0" width="102" height="195" rx="8" fill="#0f172a" stroke="#334155" stroke-width="1" />
+        <rect x="8" y="8" width="22" height="22" rx="4" fill="#0284c7" />
+        <text x="19" y="23" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">1</text>
+        <text x="35" y="24" fill="#38bdf8" font-size="10" font-weight="700">0° ALIGN</text>
+        <text x="10" y="50" fill="#94a3b8" font-size="9" font-weight="600">Displacement:</text>
+        <text x="10" y="64" fill="#f8fafc" font-size="9.5" font-weight="700">Y = +8.8u</text>
+        <text x="10" y="84" fill="#94a3b8" font-size="9" font-weight="600">Rotation:</text>
+        <text x="10" y="98" fill="#f8fafc" font-size="9.5" font-weight="700">0° OPEN</text>
+        <text x="10" y="125" fill="#cbd5e1" font-size="8.5">Align white 0° shaft triangle to cap cyan arrow.</text>
+        <circle cx="51" cy="165" r="14" fill="#1e293b" stroke="#00f2fe" stroke-width="1" />
+        <text x="51" y="169" fill="#00f2fe" font-size="10" font-weight="800" text-anchor="middle">0°</text>
+      </g>
+
+      <!-- Phase 3 -->
+      <g transform="translate(224, 30)">
+        <rect x="0" y="0" width="102" height="195" rx="8" fill="#0f172a" stroke="#0284c7" stroke-width="1.5" />
+        <rect x="8" y="8" width="22" height="22" rx="4" fill="#0284c7" />
+        <text x="19" y="23" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">2</text>
+        <text x="35" y="24" fill="#38bdf8" font-size="10" font-weight="700">LEVEL 1</text>
+        <text x="10" y="50" fill="#94a3b8" font-size="9" font-weight="600">Push Down:</text>
+        <text x="10" y="64" fill="#f8fafc" font-size="9.5" font-weight="700">ΔY = -2.0u</text>
+        <text x="10" y="84" fill="#94a3b8" font-size="9" font-weight="600">Pin State:</text>
+        <text x="10" y="98" fill="#00f2fe" font-size="9.5" font-weight="700">Seats L1 Track</text>
+        <text x="10" y="125" fill="#cbd5e1" font-size="8.5">Shaft pins enter vertical slots to Level 1 track.</text>
+        <circle cx="51" cy="165" r="14" fill="#0369a1" stroke="#00f2fe" stroke-width="1" />
+        <text x="51" y="169" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle">↓</text>
+      </g>
+
+      <!-- Phase 4 -->
+      <g transform="translate(336, 30)">
+        <rect x="0" y="0" width="102" height="195" rx="8" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+        <rect x="8" y="8" width="22" height="22" rx="4" fill="#d97706" />
+        <text x="19" y="23" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">3</text>
+        <text x="35" y="24" fill="#f59e0b" font-size="10" font-weight="700">90° INDEX</text>
+        <text x="10" y="50" fill="#94a3b8" font-size="9" font-weight="600">Rotation:</text>
+        <text x="10" y="64" fill="#fde047" font-size="9.5" font-weight="700">+90° CW</text>
+        <text x="10" y="84" fill="#94a3b8" font-size="9" font-weight="600">Index Stop:</text>
+        <text x="10" y="98" fill="#f59e0b" font-size="9.5" font-weight="700">Drop Channel</text>
+        <text x="10" y="125" fill="#cbd5e1" font-size="8.5">Rotate quarter-turn into yellow transfer drop slot.</text>
+        <circle cx="51" cy="165" r="14" fill="#b45309" stroke="#f59e0b" stroke-width="1" />
+        <text x="51" y="169" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle">↻</text>
+      </g>
+
+      <!-- Phase 5 -->
+      <g transform="translate(448, 30)">
+        <rect x="0" y="0" width="102" height="195" rx="8" fill="#0f172a" stroke="#10b981" stroke-width="1.8" filter="url(#glow-green)" />
+        <rect x="8" y="8" width="22" height="22" rx="4" fill="#059669" />
+        <text x="19" y="23" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle">4-5</text>
+        <text x="35" y="24" fill="#34d399" font-size="10" font-weight="700">CAPTIVE</text>
+        <text x="10" y="50" fill="#94a3b8" font-size="9" font-weight="600">Drop &amp; Spin:</text>
+        <text x="10" y="64" fill="#34d399" font-size="9.5" font-weight="700">ΔY = -0.6u</text>
+        <text x="10" y="84" fill="#94a3b8" font-size="9" font-weight="600">Drive Mode:</text>
+        <text x="10" y="98" fill="#34d399" font-size="9.5" font-weight="700">360° Infinite</text>
+        <text x="10" y="125" fill="#cbd5e1" font-size="8.5">Enters Level 2: Drives central Acme rod downward.</text>
+        <circle cx="51" cy="165" r="14" fill="#047857" stroke="#34d399" stroke-width="1" />
+        <text x="51" y="169" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle">∞</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- PANEL 3: PIECE 2 ROTARY LOCK & GROOVE TOPOLOGY (BOT-MID, X: 710 to 1330) -->
+  <!-- ========================================================================= -->
+  <g id="panel-piece2-lock" transform="translate(710, 700)">
+    <!-- Container Card -->
+    <rect width="610" height="560" rx="14" fill="#0b1120" fill-opacity="0.9" stroke="#1e293b" stroke-width="1.5" filter="url(#card-shadow)" />
+
+    <!-- Section Header -->
+    <path d="M 0 14 Q 0 0 14 0 L 596 0 Q 610 0 610 14 L 610 46 L 0 46 Z" fill="#0f172a" />
+    <text x="24" y="28" fill="#38bdf8" font-size="14" font-weight="800" letter-spacing="1">
+      PIECE 2: ROTARY LOCK MECHANISM &amp; GROOVE GEOMETRY
+    </text>
+    <text x="460" y="28" fill="#94a3b8" font-size="11" font-weight="600">
+      TOP-DOWN SECTION
+    </text>
+
+    <!-- Top View Circular Disc (X = 180, Y = 200, Radius = 120) -->
+    <g transform="translate(180, 200)">
+      <!-- Outer Disc Face -->
+      <circle cx="0" cy="0" r="120" fill="url(#carbide-cone)" stroke="#475569" stroke-width="2.5" />
+      <circle cx="0" cy="0" r="110" fill="none" stroke="#334155" stroke-width="1" stroke-dasharray="4 2" />
+
+      <!-- Central Circular Clearance Zone (r = 45) -->
+      <circle cx="0" cy="0" r="45" fill="#090d16" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="3 2" />
+      <text x="0" y="4" fill="#38bdf8" font-size="8.5" font-weight="700" text-anchor="middle">CLEARANCE CIRCLE</text>
+
+      <!-- 4 Closed-Ended Diagonal Machined Grooves -->
+      <!-- Groove 1 (Upper-Left: 135° -> X: -65, Y: -65) -->
+      <g transform="rotate(-45)">
+        <rect x="-85" y="-12" width="60" height="24" rx="6" fill="#ef4444" fill-opacity="0.25" stroke="#ef4444" stroke-width="1.5" />
+        <circle cx="-85" cy="0" r="8" fill="#b91c1c" stroke="#f87171" stroke-width="1.2" filter="url(#glow-red)" />
+      </g>
+      <text x="-95" y="-85" fill="#f87171" font-size="10" font-weight="800">GROOVE 1 (135°)</text>
+
+      <!-- Groove 2 (Upper-Right: 45° -> X: 65, Y: -65) -->
+      <g transform="rotate(45)">
+        <rect x="25" y="-12" width="60" height="24" rx="6" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5" />
+        <circle cx="85" cy="0" r="8" fill="#047857" stroke="#34d399" stroke-width="1.2" filter="url(#glow-green)" />
+      </g>
+      <text x="65" y="-85" fill="#34d399" font-size="10" font-weight="800">GROOVE 2 (45°)</text>
+
+      <!-- Groove 3 (Lower-Left: 225° -> X: -65, Y: 65) -->
+      <g transform="rotate(45)">
+        <rect x="-85" y="-12" width="60" height="24" rx="6" fill="#10b981" fill-opacity="0.25" stroke="#10b981" stroke-width="1.5" />
+        <circle cx="-85" cy="0" r="8" fill="#047857" stroke="#34d399" stroke-width="1.2" filter="url(#glow-green)" />
+      </g>
+      <text x="-120" y="95" fill="#34d399" font-size="10" font-weight="800">GROOVE 3 (225°)</text>
+
+      <!-- Groove 4 (Lower-Right: 315° -> X: 65, Y: 65) -->
+      <g transform="rotate(-45)">
+        <rect x="25" y="-12" width="60" height="24" rx="6" fill="#ef4444" fill-opacity="0.25" stroke="#ef4444" stroke-width="1.5" />
+        <circle cx="85" cy="0" r="8" fill="#b91c1c" stroke="#f87171" stroke-width="1.2" filter="url(#glow-red)" />
+      </g>
+      <text x="70" y="95" fill="#f87171" font-size="10" font-weight="800">GROOVE 4 (315°)</text>
+
+      <!-- ROTARY DRIVE CROSSBAR WITH DUAL TABS (Blue plate rotated at +45° to show Lock Mode) -->
+      <g transform="rotate(45)">
+        <!-- Crossbar -->
+        <rect x="-95" y="-10" width="190" height="20" rx="4" fill="url(#blue-coupling)" stroke="#38bdf8" stroke-width="1.5" filter="url(#glow-cyan)" />
+        <circle cx="0" cy="0" r="14" fill="#0369a1" stroke="#38bdf8" stroke-width="1.2" />
+        <!-- Tab A -->
+        <circle cx="85" cy="0" r="7" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" filter="url(#glow-yellow)" />
+        <text x="85" y="4" fill="#0f172a" font-size="8" font-weight="900" text-anchor="middle">A</text>
+        <!-- Tab B -->
+        <circle cx="-85" cy="0" r="7" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" filter="url(#glow-yellow)" />
+        <text x="-85" y="4" fill="#0f172a" font-size="8" font-weight="900" text-anchor="middle">B</text>
+      </g>
+    </g>
+
+    <!-- Operational Lock Modes Side Table (Right side of Panel 3, X: 350) -->
+    <g transform="translate(345, 65)">
+      <!-- Mode 1 Card -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="240" height="85" rx="8" fill="#064e3b" fill-opacity="0.3" stroke="#10b981" stroke-width="1.2" />
+        <circle cx="16" cy="18" r="5" fill="#34d399" filter="url(#glow-green)" />
+        <text x="28" y="22" fill="#34d399" font-size="11" font-weight="800">MODE 1: +45° CW LOCK</text>
+        <text x="12" y="42" fill="#cbd5e1" font-size="9">Tab A → Groove 2 | Tab B → Groove 3</text>
+        <text x="12" y="58" fill="#a7f3d0" font-size="9" font-weight="700">Rotates &amp; drives sharp spike downward</text>
+        <text x="12" y="72" fill="#6ee7b7" font-size="8.5">Direct mechanical bedrock anchoring.</text>
+      </g>
+
+      <!-- Mode 2 Card -->
+      <g transform="translate(0, 95)">
+        <rect x="0" y="0" width="240" height="85" rx="8" fill="#7f1d1d" fill-opacity="0.3" stroke="#ef4444" stroke-width="1.2" />
+        <circle cx="16" cy="18" r="5" fill="#f87171" filter="url(#glow-red)" />
+        <text x="28" y="22" fill="#f87171" font-size="11" font-weight="800">MODE 2: -45° CCW LOCK</text>
+        <text x="12" y="42" fill="#cbd5e1" font-size="9">Tab A → Groove 1 | Tab B → Groove 4</text>
+        <text x="12" y="58" fill="#fecaca" font-size="9" font-weight="700">Reverse torque extraction lock</text>
+        <text x="12" y="72" fill="#fca5a5" font-size="8.5">Dual-lug high-retention pocket capture.</text>
+      </g>
+
+      <!-- Mode 3 Card -->
+      <g transform="translate(0, 190)">
+        <rect x="0" y="0" width="240" height="85" rx="8" fill="#0c4a6e" fill-opacity="0.3" stroke="#0284c7" stroke-width="1.2" />
+        <circle cx="16" cy="18" r="5" fill="#38bdf8" filter="url(#glow-cyan)" />
+        <text x="28" y="22" fill="#38bdf8" font-size="11" font-weight="800">MODE 3: 0° NEUTRAL DROP</text>
+        <text x="12" y="42" fill="#cbd5e1" font-size="9">Tabs float in clearance circle (r=0.50)</text>
+        <text x="12" y="58" fill="#bae6fd" font-size="9" font-weight="700">Free-fall gravitational detachment</text>
+        <text x="12" y="72" fill="#7dd3fc" font-size="8.5">Spike rests securely at bedrock floor.</text>
+      </g>
+    </g>
+
+    <!-- Mathematical Kinematics Box (Bottom of Panel 3) -->
+    <g transform="translate(30, 360)">
+      <rect x="0" y="0" width="550" height="175" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="24" fill="#f59e0b" font-size="11" font-weight="800">MATHEMATICAL KINEMATIC FORMULATION</text>
+
+      <g transform="translate(16, 40)" font-size="10.5" fill="#cbd5e1">
+        <text x="0" y="0" font-family="monospace" fill="#38bdf8" font-weight="700">1. Axial Thrust Displacement Equation:</text>
+        <text x="15" y="18" font-family="monospace" fill="#f8fafc">ΔY_thread = max(-3.40, min(0.0, -θ_cap × 0.54))</text>
+
+        <text x="0" y="44" font-family="monospace" fill="#38bdf8" font-weight="700">2. Subterranean Spike Position Equation:</text>
+        <text x="15" y="62" font-family="monospace" fill="#f8fafc">Y_spike = isDetached ? -18.00 : (-16.25 + ΔY_thread + Y_exploded)</text>
+
+        <text x="0" y="88" font-family="monospace" fill="#38bdf8" font-weight="700">3. Rotational Transfer Coupling:</text>
+        <text x="15" y="106" font-family="monospace" fill="#f8fafc">θ_spike = isSpikeLocked ? (θ_cap + θ_lock) : 0.0</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- PANEL 4: TELEMETRY ARCHITECTURE, HARDWARE PINOUT & JURY SPECS (RIGHT) -->
+  <!-- ========================================================================= -->
+  <g id="panel-telemetry-specs" transform="translate(1360, 120)">
+    <!-- Container Card -->
+    <rect width="600" height="1140" rx="14" fill="#0b1120" fill-opacity="0.9" stroke="#1e293b" stroke-width="1.5" filter="url(#card-shadow)" />
+
+    <!-- Section Header -->
+    <path d="M 0 14 Q 0 0 14 0 L 586 0 Q 600 0 600 14 L 600 46 L 0 46 Z" fill="#0f172a" />
+    <text x="24" y="28" fill="#38bdf8" font-size="14" font-weight="800" letter-spacing="1">
+      TELEMETRY FIRMWARE &amp; SENSOR PINOUTS
+    </text>
+    <text x="440" y="28" fill="#94a3b8" font-size="11" font-weight="600">
+      MULTI-TRANSPORT
+    </text>
+
+    <!-- SUB-PANEL 4A: TRIPLE TRANSPORT PIPELINE -->
+    <g transform="translate(24, 60)">
+      <rect x="0" y="0" width="552" height="145" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="22" fill="#38bdf8" font-size="11" font-weight="800">ZERO-DEALLOCATION TELEMETRY ENGINE (1 Hz SINGLE-PACKET)</text>
+
+      <!-- Transport Channel 1: BLE GATT -->
+      <g transform="translate(16, 36)">
+        <rect x="0" y="0" width="165" height="92" rx="6" fill="#0f172a" stroke="#0284c7" stroke-width="1" />
+        <rect x="10" y="8" width="145" height="18" rx="3" fill="#0369a1" />
+        <text x="82" y="21" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">BLE GATT SERVER</text>
+        <text x="10" y="44" fill="#94a3b8" font-size="8.5">UUID: f2e50000-6c9b...</text>
+        <text x="10" y="58" fill="#94a3b8" font-size="8.5">Char: f2e50001 (Notify)</text>
+        <text x="10" y="74" fill="#38bdf8" font-size="8.5" font-weight="700">Latency: &lt; 20 ms</text>
+        <text x="10" y="86" fill="#cbd5e1" font-size="7.5">Web Bluetooth API</text>
+      </g>
+
+      <!-- Transport Channel 2: Wi-Fi REST -->
+      <g transform="translate(193, 36)">
+        <rect x="0" y="0" width="165" height="92" rx="6" fill="#0f172a" stroke="#10b981" stroke-width="1" />
+        <rect x="10" y="8" width="145" height="18" rx="3" fill="#047857" />
+        <text x="82" y="21" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">WI-FI ACCESS POINT</text>
+        <text x="10" y="44" fill="#94a3b8" font-size="8.5">SSID: GeoNail-AP</text>
+        <text x="10" y="58" fill="#94a3b8" font-size="8.5">IP: 192.168.4.1</text>
+        <text x="10" y="74" fill="#34d399" font-size="8.5" font-weight="700">Port 80: /api/v1/telemetry</text>
+        <text x="10" y="86" fill="#cbd5e1" font-size="7.5">HTTP GET Polling</text>
+      </g>
+
+      <!-- Transport Channel 3: Web Serial -->
+      <g transform="translate(370, 36)">
+        <rect x="0" y="0" width="165" height="92" rx="6" fill="#0f172a" stroke="#f59e0b" stroke-width="1" />
+        <rect x="10" y="8" width="145" height="18" rx="3" fill="#b45309" />
+        <text x="82" y="21" fill="#ffffff" font-size="9" font-weight="800" text-anchor="middle">WEB SERIAL API</text>
+        <text x="10" y="44" fill="#94a3b8" font-size="8.5">Baud: 115,200</text>
+        <text x="10" y="58" fill="#94a3b8" font-size="8.5">Protocol: JSON Lines</text>
+        <text x="10" y="74" fill="#fbbf24" font-size="8.5" font-weight="700">Plug &amp; Play USB-C</text>
+        <text x="10" y="86" fill="#cbd5e1" font-size="7.5">Zero Configuration</text>
+      </g>
+    </g>
+
+    <!-- SUB-PANEL 4B: HARDWARE SENSOR INTEGRATION PINOUT TABLE -->
+    <g transform="translate(24, 220)">
+      <rect x="0" y="0" width="552" height="235" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="22" fill="#38bdf8" font-size="11" font-weight="800">HARDWARE PINOUT &amp; SENSOR REGISTRY</text>
+
+      <!-- Table Header -->
+      <g transform="translate(16, 32)">
+        <rect x="0" y="0" width="520" height="24" fill="#1e293b" rx="4" />
+        <text x="12" y="16" fill="#cbd5e1" font-size="9" font-weight="700">SENSOR / MODULE</text>
+        <text x="160" y="16" fill="#cbd5e1" font-size="9" font-weight="700">PROTOCOL</text>
+        <text x="270" y="16" fill="#cbd5e1" font-size="9" font-weight="700">MCU PINOUT</text>
+        <text x="390" y="16" fill="#cbd5e1" font-size="9" font-weight="700">SPECIFICATION</text>
+      </g>
+
+      <!-- Row 1: MPU-6500 -->
+      <g transform="translate(16, 62)">
+        <rect x="0" y="0" width="520" height="28" fill="#0f172a" rx="3" stroke="#1e293b" stroke-width="0.8" />
+        <text x="12" y="18" fill="#f8fafc" font-size="9.5" font-weight="800">MPU-6500 IMU</text>
+        <text x="160" y="18" fill="#38bdf8" font-size="9">I2C (0x68)</text>
+        <text x="270" y="18" fill="#cbd5e1" font-size="9">SDA: 21, SCL: 22</text>
+        <text x="390" y="18" fill="#94a3b8" font-size="8.5">6-DOF Accel &amp; Gyro</text>
+      </g>
+
+      <!-- Row 2: HMC5883L -->
+      <g transform="translate(16, 94)">
+        <rect x="0" y="0" width="520" height="28" fill="#0f172a" rx="3" stroke="#1e293b" stroke-width="0.8" />
+        <text x="12" y="18" fill="#f8fafc" font-size="9.5" font-weight="800">HMC5883L Mag</text>
+        <text x="160" y="18" fill="#38bdf8" font-size="9">I2C (0x1E)</text>
+        <text x="270" y="18" fill="#cbd5e1" font-size="9">SDA: 21, SCL: 22</text>
+        <text x="390" y="18" fill="#94a3b8" font-size="8.5">Subterranean Flux (µT)</text>
+      </g>
+
+      <!-- Row 3: DHT11 -->
+      <g transform="translate(16, 126)">
+        <rect x="0" y="0" width="520" height="28" fill="#0f172a" rx="3" stroke="#1e293b" stroke-width="0.8" />
+        <text x="12" y="18" fill="#f8fafc" font-size="9.5" font-weight="800">DHT11 Temp/Hum</text>
+        <text x="160" y="18" fill="#10b981" font-size="9">1-Wire</text>
+        <text x="270" y="18" fill="#cbd5e1" font-size="9">GPIO 26</text>
+        <text x="390" y="18" fill="#94a3b8" font-size="8.5">-20°C to +60°C / 5-95%</text>
+      </g>
+
+      <!-- Row 4: Soil Moisture -->
+      <g transform="translate(16, 158)">
+        <rect x="0" y="0" width="520" height="28" fill="#0f172a" rx="3" stroke="#1e293b" stroke-width="0.8" />
+        <text x="12" y="18" fill="#f8fafc" font-size="9.5" font-weight="800">Soil Moisture ADC</text>
+        <text x="160" y="18" fill="#f59e0b" font-size="9">Analog (ADC1)</text>
+        <text x="270" y="18" fill="#cbd5e1" font-size="9">GPIO 34 (CH6)</text>
+        <text x="390" y="18" fill="#94a3b8" font-size="8.5">12-Bit Resistivity</text>
+      </g>
+
+      <!-- Row 5: MQ-7 CO Gas -->
+      <g transform="translate(16, 190)">
+        <rect x="0" y="0" width="520" height="28" fill="#0f172a" rx="3" stroke="#1e293b" stroke-width="0.8" />
+        <text x="12" y="18" fill="#f8fafc" font-size="9.5" font-weight="800">MQ-7 Gas Sensor</text>
+        <text x="160" y="18" fill="#f59e0b" font-size="9">Analog (ADC1)</text>
+        <text x="270" y="18" fill="#cbd5e1" font-size="9">GPIO 36 (CH0)</text>
+        <text x="390" y="18" fill="#94a3b8" font-size="8.5">Subterranean CO PPM</text>
+      </g>
+    </g>
+
+    <!-- SUB-PANEL 4C: TELEMETRY JSON SCHEMA -->
+    <g transform="translate(24, 470)">
+      <rect x="0" y="0" width="552" height="190" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="22" fill="#38bdf8" font-size="11" font-weight="800">COMPACT TELEMETRY JSON SCHEMA (340 BYTES)</text>
+
+      <g transform="translate(16, 32)" font-family="monospace" font-size="9" fill="#94a3b8">
+        <text x="0" y="14" fill="#38bdf8">{</text>
+        <text x="15" y="28">"device": { <tspan fill="#fde047">"node_id"</tspan>: "GN-001", <tspan fill="#fde047">"fw"</tspan>: "0.7.1" },</text>
+        <text x="15" y="44">"motion": {</text>
+        <text x="30" y="60"><tspan fill="#34d399">"roll"</tspan>: -163.86, <tspan fill="#34d399">"pitch"</tspan>: 93.38, <tspan fill="#34d399">"accel"</tspan>: 0.99g,</text>
+        <text x="30" y="76"><tspan fill="#34d399">"vibration"</tspan>: 0.007, <tspan fill="#34d399">"level"</tspan>: "LOW"</text>
+        <text x="15" y="92">},</text>
+        <text x="15" y="108">"magnetic": { <tspan fill="#f87171">"magnitude_ut"</tspan>: 40.0, <tspan fill="#f87171">"calibrated"</tspan>: false },</text>
+        <text x="15" y="124">"environment": { <tspan fill="#60a5fa">"temp_c"</tspan>: 32.9, <tspan fill="#60a5fa">"hum_pct"</tspan>: 89.9, <tspan fill="#60a5fa">"mq7"</tspan>: 4095 },</text>
+        <text x="15" y="140">"status": { <tspan fill="#34d399">"overall"</tspan>: "NORMAL", <tspan fill="#34d399">"anchor_lock"</tspan>: "ENGAGED" }</text>
+        <text x="0" y="154" fill="#38bdf8">}</text>
+      </g>
+    </g>
+
+    <!-- SUB-PANEL 4D: ENGINEERING SPECIFICATIONS & RATINGS -->
+    <g transform="translate(24, 675)">
+      <rect x="0" y="0" width="552" height="225" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="22" fill="#38bdf8" font-size="11" font-weight="800">SYSTEM MECHANICAL &amp; ENVIRONMENTAL METRICS</text>
+
+      <g transform="translate(16, 36)">
+        <!-- Metric 1 -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="255" height="50" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+          <text x="12" y="20" fill="#94a3b8" font-size="9" font-weight="600">Bedrock Pull-Out Rating</text>
+          <text x="12" y="40" fill="#34d399" font-size="15" font-weight="900">250 kN Tensile</text>
+        </g>
+
+        <!-- Metric 2 -->
+        <g transform="translate(265, 0)">
+          <rect x="0" y="0" width="255" height="50" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+          <text x="12" y="20" fill="#94a3b8" font-size="9" font-weight="600">Peak Axial Thrust</text>
+          <text x="12" y="40" fill="#38bdf8" font-size="15" font-weight="900">5,550 N Force</text>
+        </g>
+
+        <!-- Metric 3 -->
+        <g transform="translate(0, 58)">
+          <rect x="0" y="0" width="255" height="50" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+          <text x="12" y="20" fill="#94a3b8" font-size="9" font-weight="600">Subterranean Travel Depth</text>
+          <text x="12" y="40" fill="#fde047" font-size="15" font-weight="900">300 mm (16.0u)</text>
+        </g>
+
+        <!-- Metric 4 -->
+        <g transform="translate(265, 58)">
+          <rect x="0" y="0" width="255" height="50" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+          <text x="12" y="20" fill="#94a3b8" font-size="9" font-weight="600">Enclosure Rating</text>
+          <text x="12" y="40" fill="#f87171" font-size="15" font-weight="900">IP68 Submersible</text>
+        </g>
+
+        <!-- Metric 5 -->
+        <g transform="translate(0, 116)">
+          <rect x="0" y="0" width="520" height="58" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+          <text x="12" y="20" fill="#94a3b8" font-size="9" font-weight="600">Core Metallurgical Composition</text>
+          <text x="12" y="40" fill="#ffffff" font-size="11" font-weight="700">AISI 4340 Hardened Strike Head | Chromoly Sch 80 Tube | Carbide Tip</text>
+        </g>
+      </g>
+    </g>
+
+    <!-- SUB-PANEL 4E: TEAM STELLAR ROSTER & CERTIFICATION -->
+    <g transform="translate(24, 915)">
+      <rect x="0" y="0" width="552" height="205" rx="8" fill="#090d16" stroke="#334155" stroke-width="1.2" />
+      <text x="16" y="22" fill="#38bdf8" font-size="11" font-weight="800">TEAM STELLAR — R.M.D. ENGINEERING COLLEGE</text>
+
+      <g transform="translate(16, 36)" font-size="9.5">
+        <!-- Team Lead -->
+        <g transform="translate(0, 0)">
+          <rect x="0" y="0" width="520" height="26" rx="4" fill="#0369a1" fill-opacity="0.25" stroke="#0284c7" stroke-width="1" />
+          <text x="12" y="17" fill="#38bdf8" font-weight="900">👑 TEAM LEADER:</text>
+          <text x="130" y="17" fill="#ffffff" font-weight="800">YOGARATHINAM T L</text>
+          <text x="320" y="17" fill="#cbd5e1">23104177@rmd.ac.in</text>
+        </g>
+
+        <!-- Members Grid -->
+        <g transform="translate(0, 32)">
+          <text x="12" y="16" fill="#cbd5e1">🛡️ Goutham V (23104180)</text>
+          <text x="270" y="16" fill="#cbd5e1">⚙️ Sanjay Kumar K (23104142)</text>
+
+          <text x="12" y="38" fill="#cbd5e1">🔬 Saravan kumaar R (23104146)</text>
+          <text x="270" y="38" fill="#cbd5e1">📊 Thangaroja K (23104163)</text>
+
+          <text x="12" y="60" fill="#cbd5e1">🎨 Yogasree V (23104178)</text>
+          <text x="270" y="60" fill="#38bdf8" font-weight="700">R.M.D. Engineering College</text>
+        </g>
+
+        <!-- SIH Official Seal / Footer -->
+        <g transform="translate(0, 110)">
+          <rect x="0" y="0" width="520" height="42" rx="4" fill="#1e293b" />
+          <text x="260" y="20" fill="#e2e8f0" font-size="10" font-weight="800" text-anchor="middle">
+            SMART INDIA HACKATHON 2026 — SUBTERRANEAN ROCK STABILIZATION
+          </text>
+          <text x="260" y="34" fill="#94a3b8" font-size="8.5" text-anchor="middle">
+            Official System Hardware &amp; Digital Twin CAD Prototype Schematic
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- FOOTER BAR -->
+  <!-- ========================================================================= -->
+  <g id="footer-section" transform="translate(40, 1270)">
+    <text x="10" y="16" fill="#64748b" font-size="11" font-weight="600">
+      CONFIDENTIAL &amp; PROPRIETARY — SIH 2026 #SIH26025 | CAD MODEL: LithoPin / GeoNail Assembly v2.4.0
+    </text>
+    <text x="1910" y="16" fill="#64748b" font-size="11" font-weight="600" text-anchor="end">
+      DIGITAL TWIN SYNCHRONIZED: 100% HARDWARE-SOFTWARE COMPLIANT
+    </text>
+  </g>
+</svg>

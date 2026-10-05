@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GeoNail™ Prototype — Exploded View Kinematics Animation | SIH 2026</title>
+  <style>
+    :root {
+      --bg: #070b14;
+      --accent-cyan: #00f2fe;
+      --accent-blue: #0284c7;
+      --border: #1e293b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    header {
+      background: rgba(11, 17, 32, 0.95);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 10;
+    }
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .title-group h1 {
+      font-size: 1.1rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #38bdf8, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: rgba(2, 132, 199, 0.2);
+      border: 1px solid var(--accent-blue);
+      color: #38bdf8;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .btn:hover {
+      background: #334155;
+      color: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+
+    .btn-primary {
+      background: #0284c7;
+      color: #fff;
+      border-color: #38bdf8;
+    }
+
+    #viewport-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 50% 50%, #0f172a 0%, #060913 100%);
+    }
+
+    #viewport-container:active {
+      cursor: grabbing;
+    }
+
+    #svg-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: 50% 50%;
+      transition: transform 0.05s linear;
+    }
+
+    #svg-wrapper object,
+    #svg-wrapper svg {
+      max-height: 92vh;
+      max-width: 92vw;
+      filter: drop-shadow(0 20px 45px rgba(0, 0, 0, 0.85));
+    }
+
+    .hud-controls {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .hud-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .hud-btn:hover {
+      background: #0284c7;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-group">
+      <span style="font-size: 1.3rem;">🏔️</span>
+      <div>
+        <h1>GeoNail™ Prototype — Exploded View Kinematics Animation</h1>
+        <p style="font-size: 0.72rem; color: #94a3b8;">Continuous animated cycle: Fully Assembled ⟷ Multi-Tier CAD Exploded View</p>
+      </div>
+      <span class="badge">CSS SMIL NATIVE</span>
+    </div>
+    <div class="toolbar">
+      <a href="./view_geonail_diagram.html" class="btn">
+        📐 Static View
+      </a>
+      <a href="./geonail_prototype_exploded_animation.svg" download="geonail_prototype_exploded_animation.svg" class="btn btn-primary">
+        💾 Download Animated SVG
+      </a>
+    </div>
+  </header>
+
+  <div id="viewport-container">
+    <div id="svg-wrapper">
+      <object data="./geonail_prototype_exploded_animation.svg" type="image/svg+xml">
+        <img src="./geonail_prototype_exploded_animation.svg" alt="GeoNail Prototype Exploded Animation" />
+      </object>
+    </div>
+
+    <div class="hud-controls">
+      <button id="play-pause-btn" class="hud-btn" onclick="togglePlayPause()" title="Pause / Resume Animation" style="font-size: 0.9rem;">⏸</button>
+      <button class="hud-btn" onclick="zoomIn()" title="Zoom In">+</button>
+      <span id="zoom-label" style="font-size: 0.8rem; font-weight: 700; color: #00f2fe; min-width: 45px; text-align: center;">100%</span>
+      <button class="hud-btn" onclick="zoomOut()" title="Zoom Out">−</button>
+      <button class="hud-btn" onclick="resetZoom()" title="Reset Zoom" style="font-size: 0.75rem;">⟲</button>
+    </div>
+  </div>
+
+  <script>
+    let scale = 1;
+    let posX = 0;
+    let posY = 0;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+    let isPaused = false;
+
+    const container = document.getElementById('viewport-container');
+    const wrapper = document.getElementById('svg-wrapper');
+    const zoomLabel = document.getElementById('zoom-label');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+
+    function updateTransform() {
+      wrapper.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+      zoomLabel.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    function togglePlayPause() {
+      const obj = document.querySelector('object');
+      if (!obj) return;
+      try {
+        const svgDoc = obj.contentDocument;
+        if (!svgDoc) return;
+        isPaused = !isPaused;
+        let pauseStyle = svgDoc.getElementById('dynamic-pause-style');
+        if (!pauseStyle) {
+          pauseStyle = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'style');
+          pauseStyle.id = 'dynamic-pause-style';
+          svgDoc.documentElement.appendChild(pauseStyle);
+        }
+        if (isPaused) {
+          pauseStyle.textContent = '* { animation-play-state: paused !important; }';
+          playPauseBtn.textContent = '▶';
+          playPauseBtn.title = 'Resume Animation';
+        } else {
+          pauseStyle.textContent = '* { animation-play-state: running !important; }';
+          playPauseBtn.textContent = '⏸';
+          playPauseBtn.title = 'Pause Animation';
+        }
+      } catch (e) {
+        console.warn('Cannot control embedded SVG animation state:', e);
+      }
+    }
+
+    container.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.15 : 0.87;
+      scale = Math.min(Math.max(0.4, scale * zoomFactor), 8);
+      updateTransform();
+    }, { passive: false });
+
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.clientX - posX;
+      startY = e.clientY - posY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      posX = e.clientX - startX;
+      posY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => { isDragging = false; });
+
+    function zoomIn() { scale = Math.min(8, scale * 1.25); updateTransform(); }
+    function zoomOut() { scale = Math.max(0.4, scale * 0.8); updateTransform(); }
+    function resetZoom() { scale = 1; posX = 0; posY = 0; updateTransform(); }
+  </script>
+</body>
+</html>
