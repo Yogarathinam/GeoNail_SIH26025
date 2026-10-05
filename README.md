@@ -7,6 +7,7 @@
 <br />
 
 [![Live Deployment](https://img.shields.io/badge/Live%20Deployment-geonail.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://geonail.vercel.app/)
+[![Views](https://hits.sh/github.com/Yogarathinam/GeoNail_SIH26025.svg?style=for-the-badge&label=VIEWS&color=0ea5e9&labelColor=1e293b)](https://hits.sh/github.com/Yogarathinam/GeoNail_SIH26025/)
 [![Team](https://img.shields.io/badge/Team-Team%20XLR8-ff0055?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/Yogarathinam/GeoNail_SIH26025)
 [![Institution](https://img.shields.io/badge/College-R.M.D.%20Engineering%20College-0284c7?style=for-the-badge&logo=mortarboard&logoColor=white)](https://rmd.ac.in)
 [![Firmware](https://img.shields.io/badge/Firmware-GeoNail%20OS%20v0.8.0-0ea5e9?style=for-the-badge&logo=arduino&logoColor=white)](./firmware/GeoNail_M5Stack_Firmware.ino)
