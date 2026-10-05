@@ -6,10 +6,10 @@
 
 <br />
 
+[![Live Deployment](https://img.shields.io/badge/Live%20Deployment-geonail.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://geonail.vercel.app/)
 [![Team](https://img.shields.io/badge/Team-Team%20XLR8-ff0055?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/Yogarathinam/GeoNail_SIH26025)
 [![Institution](https://img.shields.io/badge/College-R.M.D.%20Engineering%20College-0284c7?style=for-the-badge&logo=mortarboard&logoColor=white)](https://rmd.ac.in)
 [![Firmware](https://img.shields.io/badge/Firmware-GeoNail%20OS%20v0.8.0-0ea5e9?style=for-the-badge&logo=arduino&logoColor=white)](./firmware/GeoNail_M5Stack_Firmware.ino)
-[![Visualizer](https://img.shields.io/badge/Web%20App-3D%20Kinematics%20%26%20Dashboard-61DAFB?style=for-the-badge&logo=react&logoColor=black)](./sih-3d-visualizer)
 [![Docs](https://img.shields.io/badge/Spec-Engineering%20PDF%20v1.0-8b5cf6?style=for-the-badge&logo=adobeacrobatreader&logoColor=white)](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf)
 [![License](https://img.shields.io/badge/License-MIT-10b981?style=for-the-badge)](./LICENSE)
 
@@ -17,6 +17,7 @@
 
 <!-- Professional Icon Navigation Bar -->
 <p align="center">
+  <a href="https://geonail.vercel.app/" target="_blank"><img src="https://img.shields.io/badge/Live_Cloud_App-geonail.vercel.app-000000?style=flat-square&logo=vercel&logoColor=white" alt="Live Cloud App" /></a>
   <a href="#prototype-cad-exploded-view"><img src="https://img.shields.io/badge/CAD_Exploded_View-1e293b?style=flat-square&logo=autodesk&logoColor=38bdf8" alt="CAD View" /></a>
   <a href="#team-xlr8-roster"><img src="https://img.shields.io/badge/Team_Roster-1e293b?style=flat-square&logo=github&logoColor=38bdf8" alt="Team Roster" /></a>
   <a href="#executive-summary--sih-value-proposition"><img src="https://img.shields.io/badge/Executive_Summary-1e293b?style=flat-square&logo=target&logoColor=38bdf8" alt="Executive Summary" /></a>
@@ -24,17 +25,19 @@
   <a href="#multi-transport-telemetry-architecture"><img src="https://img.shields.io/badge/Telemetry-1e293b?style=flat-square&logo=bluetooth&logoColor=38bdf8" alt="Telemetry" /></a>
   <a href="#geotechnical-sensor-data--field-plots"><img src="https://img.shields.io/badge/Field_Plots-1e293b?style=flat-square&logo=plotly&logoColor=38bdf8" alt="Field Plots" /></a>
   <a href="#3d-digital-twin-visualizer"><img src="https://img.shields.io/badge/3D_Twin-1e293b?style=flat-square&logo=three.js&logoColor=38bdf8" alt="3D Digital Twin" /></a>
+  <a href="#official-releases--deployments"><img src="https://img.shields.io/badge/Releases-1e293b?style=flat-square&logo=githubactions&logoColor=38bdf8" alt="Releases" /></a>
   <a href="#quick-start-guide"><img src="https://img.shields.io/badge/Quick_Start-1e293b?style=flat-square&logo=gnubash&logoColor=38bdf8" alt="Quick Start" /></a>
 </p>
 
 <p align="center">
+  <a href="https://geonail.vercel.app/" target="_blank"><strong>Live Production App (geonail.vercel.app)</strong></a> &bull;
   <a href="#prototype-cad-exploded-view">CAD Animation</a> &bull;
   <a href="#team-xlr8-roster">Team Roster</a> &bull;
   <a href="#executive-summary--sih-value-proposition">Executive Summary</a> &bull;
   <a href="#mechanical-kinematics--subterranean-locking">Mechanical Kinematics</a> &bull;
   <a href="#multi-transport-telemetry-architecture">Telemetry Architecture</a> &bull;
   <a href="#geotechnical-sensor-data--field-plots">Field Plots</a> &bull;
-  <a href="#hardware-pinout--sensor-specifications">Hardware Specifications</a> &bull;
+  <a href="#official-releases--deployments">Releases & Deployments</a> &bull;
   <a href="#quick-start-guide">Quick Start</a>
 </p>
 
@@ -62,6 +65,7 @@
 
 | Technical Asset | Format & Description | Interface Link |
 | :--- | :--- | :--- |
+| **Live Cloud Application** | **[GeoNail \| Mine Safety Monitoring System](https://geonail.vercel.app/)** — Production WebGL 3D Twin & Telemetry HUD | [Launch geonail.vercel.app](https://geonail.vercel.app/) |
 | **Exploded Kinematics CAD** | Dynamic 6-tier expanding & contracting vector CAD animation | [Open Animated Viewer](./view_geonail_animation.html) |
 | **Translucent CAD Blueprint** | 1200 DPI vector technical blueprint with component callouts | [Open Blueprint Viewer](./view_geonail_diagram.html) |
 | **Complete System Spec PDF** | 30+ Page XeLaTeX comprehensive engineering specification | [Download Technical PDF](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf) |
@@ -102,7 +106,7 @@ Open-cast mines, sub-surface shafts, and highway cuttings face catastrophic rock
 > 1. **Two-Stage Captive Bayonet & Acme Screw Anchor**: Pneumatically driven into subterranean bedrock with dual-opposed rotary locking tabs capable of withstanding **250 kN pull-out tensile force**.
 > 2. **Multi-Transport Zero-Deallocation Firmware (GeoNail OS v0.8.0)**: Ultra-efficient C++ engine simultaneously streaming 1 Hz real-time JSON packets over **Web Bluetooth (BLE GATT)**, **Wi-Fi Access Point REST API**, and **Web Serial UART**.
 > 3. **Integrated 5-Sensor Geophysical Sensing Array**: Sub-millimeter strata displacement via tri-axial accelerometer, tri-axial gyroscope, magnetometer tilt compass, subterranean soil pore moisture, ambient temperature/humidity, and toxic CO gas monitoring.
-> 4. **1:1 Scale 3D WebGL Digital Twin Visualizer**: Photorealistic Three.js visualizer rendering live roll/pitch kinematics, strata depth, vibration intensity spectra, and automatic audio-visual emergency alarms.
+> 4. **1:1 Scale 3D WebGL Digital Twin Visualizer**: Photorealistic Three.js visualizer rendering live roll/pitch kinematics, strata depth, vibration intensity spectra, and automatic audio-visual emergency alarms, deployed live at [**geonail.vercel.app**](https://geonail.vercel.app/).
 
 ---
 
@@ -157,6 +161,7 @@ graph TD
         BLE -->|Direct Browser GATT| WebApp[React 19 + Three.js 3D Visualizer]
         WiFi -->|HTTP JSON Polling| WebApp
         Serial -->|Direct Browser Web Serial| WebApp
+        Cloud[Vercel Edge Cloud geonail.vercel.app] -->|PWA / HTTPS| WebApp
         WebApp -->|Real-Time Kinematics| Twin[3D Digital Twin & HUD Visualizer]
         Twin -->|Vibration Alerts & Telemetry| HUD[Safety Operator Station]
     end
@@ -235,7 +240,15 @@ The embedded multi-sensor telemetry engine records real-time physical phenomena 
 
 ## 3D Digital Twin Visualizer
 
-The project includes a production-grade 3D Digital Twin visualizer located in [`sih-3d-visualizer`](./sih-3d-visualizer/):
+> [!IMPORTANT]
+> **Production Cloud Web Application**:
+> The 3D Digital Twin and geotechnical monitoring platform is deployed live on Vercel:
+> 
+> **[GeoNail | Mine Safety Monitoring System (https://geonail.vercel.app/)](https://geonail.vercel.app/)**
+> 
+> Operators can connect directly from Google Chrome, Microsoft Edge, or Brave to physical GeoNail anchor nodes via Web Bluetooth Low Energy (BLE GATT) or Web Serial with zero local software setup required.
+
+The codebase for the 3D Digital Twin visualizer is located in [`sih-3d-visualizer`](./sih-3d-visualizer/):
 
 * **Real-Time 6-DOF Kinematics**: Synchronous 3D mesh rotation tracking physical GeoNail movement in real time.
 * **Dual Multi-Transport Connectors**: 1-click Web Bluetooth GATT or Web Serial connection right inside standard Chrome/Edge browsers.
@@ -245,9 +258,24 @@ The project includes a production-grade 3D Digital Twin visualizer located in [`
 
 ---
 
+## Official Releases & Deployments
+
+| Release Target | Version | Environment / Host | Link / Access |
+| :--- | :--- | :--- | :--- |
+| **Live Production Web Application** | `v1.0.0` | Vercel Global Edge | **[geonail.vercel.app](https://geonail.vercel.app/)** |
+| **GitHub Releases & Tags** | `v1.0.0` | GitHub Releases Archive | [GeoNail Releases](https://github.com/Yogarathinam/GeoNail_SIH26025/releases) |
+| **Embedded Firmware Core** | `v0.8.0` | ESP32 / M5Stack C++ | [GeoNail_M5Stack_Firmware.ino](./firmware/GeoNail_M5Stack_Firmware.ino) |
+| **Engineering Specification** | `v1.0.0` | XeLaTeX / PDF | [GeoNail Technical Documentation PDF](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf) |
+| **Local 3D Visualizer Source** | `v1.0.0` | Vite + React + Three.js | [sih-3d-visualizer](./sih-3d-visualizer/) |
+
+---
+
 ## Quick Start Guide
 
-### 1. Flash GeoNail OS Firmware to Hardware
+### 1. Instant Cloud Access (Zero Installation)
+Navigate to **[GeoNail | Mine Safety Monitoring System (geonail.vercel.app)](https://geonail.vercel.app/)** in any modern Chromium browser (Google Chrome, Microsoft Edge, Brave) to interact with the full 3D Digital Twin and live hardware telemetry streams.
+
+### 2. Flash GeoNail OS Firmware to Hardware
 1. Open [`firmware/GeoNail_M5Stack_Firmware.ino`](./firmware/GeoNail_M5Stack_Firmware.ino) in Arduino IDE or VS Code with PlatformIO.
 2. Install required dependencies:
    * `M5Unified`
@@ -257,7 +285,7 @@ The project includes a production-grade 3D Digital Twin visualizer located in [`
 3. Select Board: **M5Stack-Core-ESP32** (or Generic ESP32 Dev Module).
 4. Connect via USB-C and flash firmware at `115200` baud.
 
-### 2. Launch the 3D Digital Twin Visualizer
+### 3. Run the 3D Digital Twin Visualizer Locally
 ```bash
 # Navigate to the visualizer directory
 cd sih-3d-visualizer
@@ -270,7 +298,7 @@ npm run dev
 ```
 Open `http://localhost:5173` in a Chromium browser (Google Chrome, Microsoft Edge, or Brave).
 
-### 3. Standalone Live Debug Dashboard (Zero Install)
+### 4. Standalone Live Debug Dashboard (Zero Install)
 You can also directly open [`firmware/geonail_dashboard_debug.html`](./firmware/geonail_dashboard_debug.html) in your browser:
 * Click **Connect BLE** to pair with `GeoNail Node 001`.
 * Or click **Connect Serial** to establish a direct 115200 baud UART stream over USB.

@@ -11,6 +11,7 @@
 * **Team Lead**: Yogarathinam
 * **Development Team**: GeoNail Hardware & Software Engineering Group
 * **Repository**: [Yogarathinam/GeoNail_SIH26025](https://github.com/Yogarathinam/GeoNail_SIH26025)
+* **Production Deployment**: [GeoNail | Mine Safety Monitoring System](https://geonail.vercel.app/)
 * **Document Version**: v1.0.0 (Production Release)
 * **Date**: September 2026
 
