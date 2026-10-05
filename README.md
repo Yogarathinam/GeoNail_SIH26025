@@ -1,8 +1,8 @@
 <div align="center">
 
-# 🏔️ GeoNail™ Subterranean Monitoring System
-### *Intelligent Sub-Surface Rock Anchor, Multi-Transport Edge Telemetry & 3D Digital Twin*
-#### **Smart India Hackathon 2026 (SIH 2026) — Problem Statement Solution #SIH26025**
+# GeoNail™ Subterranean Monitoring System
+### Intelligent Sub-Surface Rock Anchor, Multi-Transport Edge Telemetry & 3D Digital Twin
+#### Smart India Hackathon 2026 (SIH 2026) — Problem Statement Solution #SIH26025
 
 <br />
 
@@ -15,7 +15,28 @@
 
 <br />
 
-[⚡ Team Roster](#-team-xlr8-roster) • [📐 Exploded CAD Animation](#-animated-prototype-cad-exploded-view) • [🎯 Solution Overview](#-executive-summary--sih-value-proposition) • [⚙️ Mechanical Kinematics](#️-mechanical-kinematics--subterranean-locking) • [📡 Telemetry Architecture](#-multi-transport-telemetry-architecture) • [🚀 Quick Start](#-quick-start-guide)
+<!-- Professional Icon Navigation Bar -->
+<p align="center">
+  <a href="#prototype-cad-exploded-view"><img src="https://img.shields.io/badge/CAD_Exploded_View-1e293b?style=flat-square&logo=autodesk&logoColor=38bdf8" alt="CAD View" /></a>
+  <a href="#team-xlr8-roster"><img src="https://img.shields.io/badge/Team_Roster-1e293b?style=flat-square&logo=github&logoColor=38bdf8" alt="Team Roster" /></a>
+  <a href="#executive-summary--sih-value-proposition"><img src="https://img.shields.io/badge/Executive_Summary-1e293b?style=flat-square&logo=target&logoColor=38bdf8" alt="Executive Summary" /></a>
+  <a href="#mechanical-kinematics--subterranean-locking"><img src="https://img.shields.io/badge/Kinematics-1e293b?style=flat-square&logo=cplusplus&logoColor=38bdf8" alt="Kinematics" /></a>
+  <a href="#multi-transport-telemetry-architecture"><img src="https://img.shields.io/badge/Telemetry-1e293b?style=flat-square&logo=bluetooth&logoColor=38bdf8" alt="Telemetry" /></a>
+  <a href="#geotechnical-sensor-data--field-plots"><img src="https://img.shields.io/badge/Field_Plots-1e293b?style=flat-square&logo=plotly&logoColor=38bdf8" alt="Field Plots" /></a>
+  <a href="#3d-digital-twin-visualizer"><img src="https://img.shields.io/badge/3D_Twin-1e293b?style=flat-square&logo=three.js&logoColor=38bdf8" alt="3D Digital Twin" /></a>
+  <a href="#quick-start-guide"><img src="https://img.shields.io/badge/Quick_Start-1e293b?style=flat-square&logo=gnubash&logoColor=38bdf8" alt="Quick Start" /></a>
+</p>
+
+<p align="center">
+  <a href="#prototype-cad-exploded-view">CAD Animation</a> &bull;
+  <a href="#team-xlr8-roster">Team Roster</a> &bull;
+  <a href="#executive-summary--sih-value-proposition">Executive Summary</a> &bull;
+  <a href="#mechanical-kinematics--subterranean-locking">Mechanical Kinematics</a> &bull;
+  <a href="#multi-transport-telemetry-architecture">Telemetry Architecture</a> &bull;
+  <a href="#geotechnical-sensor-data--field-plots">Field Plots</a> &bull;
+  <a href="#hardware-pinout--sensor-specifications">Hardware Specifications</a> &bull;
+  <a href="#quick-start-guide">Quick Start</a>
+</p>
 
 ---
 
@@ -23,7 +44,7 @@
 
 <br />
 
-## 🎬 Animated Prototype CAD (Exploded View)
+## Prototype CAD Exploded View
 
 > [!TIP]
 > **Dynamic CAD Kinematics Model**: Below is the animated vector blueprint of the GeoNail assembly illustrating its 7-tier mechanical separation, two-stage captive bayonet mechanism, central Acme threaded rod, internal sensor core, and tungsten carbide bedrock spike.
@@ -39,10 +60,10 @@
 
 <div align="center">
 
-| 🛠️ Interactive CAD Asset | 📋 Description | 🔗 Quick Action |
+| Technical Asset | Format & Description | Interface Link |
 | :--- | :--- | :--- |
-| **Exploded Kinematics SVG** | Dynamic 6-tier expanding & contracting vector CAD animation | [Open Animated Viewer](./view_geonail_animation.html) |
-| **Translucent CAD Diagram** | 1200 DPI vector technical blueprint with component callouts | [Open Blueprint Viewer](./view_geonail_diagram.html) |
+| **Exploded Kinematics CAD** | Dynamic 6-tier expanding & contracting vector CAD animation | [Open Animated Viewer](./view_geonail_animation.html) |
+| **Translucent CAD Blueprint** | 1200 DPI vector technical blueprint with component callouts | [Open Blueprint Viewer](./view_geonail_diagram.html) |
 | **Complete System Spec PDF** | 30+ Page XeLaTeX comprehensive engineering specification | [Download Technical PDF](./docs/GeoNail_System_Architecture_and_Technical_Documentation.pdf) |
 | **Live Web Bluetooth HUD** | Standalone Chrome Web BLE/Serial telemetry dashboard | [Launch Web HUD](./firmware/geonail_dashboard_debug.html) |
 
@@ -50,27 +71,27 @@
 
 ---
 
-## ⚡ Team XLR8 Roster
+## Team XLR8 Roster
 
 > [!NOTE]
-> Engineered with passion and precision by **Team XLR8** representing **R.M.D. Engineering College** for **Smart India Hackathon (SIH 2026)**.
+> Engineered and developed by **Team XLR8** representing **R.M.D. Engineering College** for **Smart India Hackathon (SIH 2026)**.
 
 <div align="center">
 
-| Role | Member Name | Official Email Contact | Institutional Affiliation |
-| :---: | :--- | :--- | :--- |
-| 👑 **Team Leader** | **YOGARATHINAM T L** | `23104177@rmd.ac.in` | R.M.D. Engineering College |
-| 🛡️ **Team Member** | **Goutham V** | `23104180@rmd.ac.in` | R.M.D. Engineering College |
-| ⚙️ **Team Member** | **Sanjay Kumar K** | `23104142@rmd.ac.in` | R.M.D. Engineering College |
-| 🔬 **Team Member** | **Saravan kumaar R** | `23104146@rmd.ac.in` | R.M.D. Engineering College |
-| 📊 **Team Member** | **Thangaroja K** | `23104163@rmd.ac.in` | R.M.D. Engineering College |
-| 🎨 **Team Member** | **Yogasree V** | `23104178@rmd.ac.in` | R.M.D. Engineering College |
+| Project Designation | Member Name | Official Email Contact | Institutional Affiliation |
+| :--- | :--- | :--- | :--- |
+| **Team Lead & Embedded Firmware Architect** | **YOGARATHINAM T L** | `23104177@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
+| **Mechanical Design & Kinematics Engineer** | **Goutham V** | `23104180@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
+| **Hardware & Sensor Systems Engineer** | **Sanjay Kumar K** | `23104142@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
+| **Wireless Protocols & Telemetry Engineer** | **Saravan kumaar R** | `23104146@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
+| **Data Analytics & Signal Processing Engineer** | **Thangaroja K** | `23104163@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
+| **Digital Twin UI/UX & WebGL Developer** | **Yogasree V** | `23104178@rmd.ac.in` | Department of ECE, R.M.D. Engineering College |
 
 </div>
 
 ---
 
-## 🎯 Executive Summary & SIH Value Proposition
+## Executive Summary & SIH Value Proposition
 
 Open-cast mines, sub-surface shafts, and highway cuttings face catastrophic rockbursts, bench sliding, and slope failures. Traditional instrumentation (manual extensometers, crackmeters, and periodic tachymetric surveys) suffers from severe latency, cable shearing, high maintenance costs, and an inability to deliver predictive early warnings before strata deformation occurs.
 
@@ -85,7 +106,7 @@ Open-cast mines, sub-surface shafts, and highway cuttings face catastrophic rock
 
 ---
 
-## ⚙️ Mechanical Kinematics & Subterranean Locking
+## Mechanical Kinematics & Subterranean Locking
 
 The GeoNail assembly employs an innovative two-stage locking mechanism engineered to prevent accidental uncoupling during high-vibration rotary drilling, followed by infinite 360° captive drive rotation:
 
@@ -116,7 +137,7 @@ GEONAIL PROTOTYPE ASSEMBLY
 
 ---
 
-## 📡 Multi-Transport Telemetry Architecture
+## Multi-Transport Telemetry Architecture
 
 ```mermaid
 graph TD
@@ -182,7 +203,7 @@ graph TD
 
 ---
 
-## 📈 Geotechnical Sensor Data & Field Plots
+## Geotechnical Sensor Data & Field Plots
 
 The embedded multi-sensor telemetry engine records real-time physical phenomena within subterranean strata:
 
@@ -197,7 +218,7 @@ The embedded multi-sensor telemetry engine records real-time physical phenomena 
 
 ---
 
-## 🔌 Hardware Pinout & Sensor Specifications
+## Hardware Pinout & Sensor Specifications
 
 | Sub-System / Sensor | Communication Protocol | ESP32 / M5Stack Pinout | Functional Description |
 | :--- | :--- | :--- | :--- |
@@ -212,7 +233,7 @@ The embedded multi-sensor telemetry engine records real-time physical phenomena 
 
 ---
 
-## 💻 3D Digital Twin Visualizer (React + Three.js)
+## 3D Digital Twin Visualizer
 
 The project includes a production-grade 3D Digital Twin visualizer located in [`sih-3d-visualizer`](./sih-3d-visualizer/):
 
@@ -224,7 +245,7 @@ The project includes a production-grade 3D Digital Twin visualizer located in [`
 
 ---
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 ### 1. Flash GeoNail OS Firmware to Hardware
 1. Open [`firmware/GeoNail_M5Stack_Firmware.ino`](./firmware/GeoNail_M5Stack_Firmware.ino) in Arduino IDE or VS Code with PlatformIO.
@@ -256,7 +277,7 @@ You can also directly open [`firmware/geonail_dashboard_debug.html`](./firmware/
 
 ---
 
-## 📂 Repository File Structure
+## Repository File Structure
 
 ```
 GeoNail_SIH26025/
@@ -294,7 +315,7 @@ GeoNail_SIH26025/
 
 <div align="center">
 
-### 🏆 Team XLR8 — Smart India Hackathon 2026
+### Team XLR8 — Smart India Hackathon 2026
 *Protecting subterranean mining operations & infrastructure through intelligent hardware and digital twin technology.*
 
 <br />
