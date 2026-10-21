@@ -1,0 +1,74 @@
+/* =====================================================================
+   GeoNail Industrial Monitoring System - Professional Dashboard Theme
+   ===================================================================== */
+
+.industrial-dashboard-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 64px);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  overflow: hidden;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.industrial-main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+.industrial-content-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+}
+
+/* Custom Scrollbar for Industrial Feel */
+.industrial-content-scrollable::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.industrial-content-scrollable::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.industrial-content-scrollable::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: 4px;
+}
+
+.industrial-content-scrollable::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Subtle spin animation for refresh icons */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Data table styling */
+table th,
+table td {
+  letter-spacing: -0.01em;
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

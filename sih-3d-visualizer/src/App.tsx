@@ -78,9 +78,9 @@ export default function App() {
             <Flame size={20} color="#ffffff" />
           </div>
           <div>
-            <span className="gradient-text">GeoNail 3D Visualizer</span>
+            <span className="gradient-text">GeoNail™ Geotechnical Studio</span>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: 8 }}>
-              v3.5.0 Digital Twin & MCU
+              v3.5.0 Enterprise Telemetry &amp; Digital Twin
             </span>
           </div>
         </div>

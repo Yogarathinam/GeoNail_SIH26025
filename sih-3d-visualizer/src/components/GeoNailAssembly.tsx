@@ -1186,7 +1186,7 @@ export const GeoNailAssembly: React.FC<GeoNailAssemblyProps> = ({
 
 
         {/* -------------------------------------------------------------
-            HAMMER LOAD PATH VISUALIZER OVERLAY
+            HAMMER LOAD PATH STRUCTURAL ANALYSIS OVERLAY
             (Direct strike cap to outer shaft force transmission)
            ------------------------------------------------------------- */}
         {showLoadPath && (
